@@ -90,12 +90,15 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
       </div>
       
       <div className="mt-4 text-center">
-        <button
-          onClick={onNextImage}
-          className="bg-red-100 text-red-700 px-6 py-2 rounded-lg hover:bg-red-200 transition-colors duration-200"
-        >
-          Next Task
-        </button>
+        <div className="text-sm text-gray-600">
+          <p className="mb-2">Progress: {annotatedCount} images annotated</p>
+          <div className="bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${Math.min((annotatedCount / 20) * 100, 100)}%` }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

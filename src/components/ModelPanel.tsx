@@ -84,10 +84,18 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
       )}
       
       <div className="mt-4 text-center">
-        <button className="bg-red-100 text-red-700 px-6 py-2 rounded-lg hover:bg-red-200 transition-colors duration-200">
-          Next Task
-        </button>
+    {hasTrainedModel && (
+      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+        <h4 className="font-medium text-gray-800 mb-2">Model Performance</h4>
+        <div className="text-sm text-gray-600">
+          <p>Accuracy: <span className="font-bold text-blue-600">{modelAccuracy}%</span></p>
+          <p className="mt-1">
+            {modelState === 'correct' && '✅ Model is well-trained with optimal data'}
+            {modelState === 'underfitting' && '⚠️ Model needs more training data'}
+            {modelState === 'overfitting' && '⚠️ Model may be overfitted - too much data'}
+          </p>
+        </div>
       </div>
-    </div>
+    )}
   );
 };
