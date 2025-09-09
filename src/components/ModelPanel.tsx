@@ -112,11 +112,6 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
                   testImage.modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                 }`}>
                   {testImage.modelPrediction ? `✓ Found ${currentCategory}` : `✗ No ${currentCategory} Found`}
-                  {testImage.confidence && (
-                    <div className="text-xs opacity-90">
-                      {Math.round(testImage.confidence * 100)}% confident
-                    </div>
-                  )}
                 </div>
               </div>
             )}
