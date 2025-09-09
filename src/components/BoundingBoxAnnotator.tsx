@@ -20,8 +20,13 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
-  const [currentBox, setCurrentBox] = useState<BoundingBox | null>(existingBox || null);
+  const [currentBox, setCurrentBox] = useState<BoundingBox | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Update currentBox when existingBox changes (new image)
+  React.useEffect(() => {
+    setCurrentBox(existingBox || null);
+  }, [existingBox]);
 
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return { x: 0, y: 0 };
