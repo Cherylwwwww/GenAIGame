@@ -45,6 +45,16 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
           After annotating your training data, use this panel to train and validate your AI model.
         </p>
         
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+          <h4 className="font-semibold text-yellow-800 mb-2">📋 How to Annotate Images:</h4>
+          <div className="text-sm text-yellow-700 space-y-2">
+            <p><strong>1. Look carefully at each image</strong> - Search for any {currentCategory} in the picture</p>
+            <p><strong>2. If you find {currentCategory}:</strong> Click and drag to draw a box around it</p>
+            <p><strong>3. If no {currentCategory} exists:</strong> Click "No {currentCategory} Found" button</p>
+            <p><strong>4. Be precise:</strong> The box should tightly surround the {currentCategory}</p>
+          </div>
+        </div>
+        
         {!hasTrainedModel && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
             <p className="text-sm text-blue-800">
