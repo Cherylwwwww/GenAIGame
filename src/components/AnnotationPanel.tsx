@@ -51,6 +51,7 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
         existingBox={currentImage.userAnnotation}
         disabled={disabled}
         currentCategory={currentCategory}
+        onNextImage={onNextImage}
       />
       </div>
       

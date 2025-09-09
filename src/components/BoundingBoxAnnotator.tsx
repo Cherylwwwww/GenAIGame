@@ -7,6 +7,7 @@ interface BoundingBoxAnnotatorProps {
   existingBox?: BoundingBox | null;
   disabled?: boolean;
   currentCategory: string;
+  onNextImage?: () => void;
 }
 
 export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
@@ -14,7 +15,8 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
   onAnnotate,
   existingBox,
   disabled = false,
-  currentCategory
+  currentCategory,
+  onNextImage
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
@@ -67,6 +69,10 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
     if (disabled) return;
     setCurrentBox(null);
     onAnnotate(null);
+    // Automatically advance to next image after marking "no object"
+    if (onNextImage) {
+      setTimeout(() => onNextImage(), 300); // Small delay for visual feedback
+    }
   };
 
   const displayBox = currentBox || existingBox;
