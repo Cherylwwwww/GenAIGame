@@ -70,22 +70,23 @@ export const GameContainer: React.FC = () => {
     // Simulate training delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
+    // Calculate values outside of setGameState callback
+    const calculatedAccuracy = calculateAccuracy(gameState.images);
+    const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
+    const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), calculatedAccuracy);
+    
     setGameState(prev => {
-      const newAccuracy = calculateAccuracy(prev.images);
-      const newModelState = determineModelState(prev.annotatedCount, newAccuracy);
-      const testImagesWithPredictions = simulateModelPrediction(testImages.slice(0, 1), newAccuracy);
-      
       return {
         ...prev,
-        modelAccuracy: newAccuracy,
+        modelAccuracy: calculatedAccuracy,
         isTraining: false,
         hasTrainedModel: true,
-        modelState: newModelState,
-        score: prev.score + Math.round(newAccuracy * 0.5)
+        modelState: calculatedModelState,
+        score: prev.score + Math.round(calculatedAccuracy * 0.5)
       };
     });
     
-    setTestImages(testImagesWithPredictions);
+    setTestImages(updatedTestImages);
   };
 
   const handleNextImage = () => {
