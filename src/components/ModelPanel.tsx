@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameImage } from '../types';
+import { GameImage, BoundingBox } from '../types';
 
 interface ModelPanelProps {
   images: GameImage[];
@@ -93,12 +93,25 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
               className="w-full h-64 object-cover rounded-lg border-2 border-gray-300"
             />
             
+            {/* Show bounding box if model predicts object exists */}
+            {hasTrainedModel && testImage.modelPrediction === true && (
+              <div
+                className="absolute border-3 border-green-500 bg-green-500 bg-opacity-20"
+                style={{
+                  left: '25%',
+                  top: '20%', 
+                  width: '50%',
+                  height: '60%'
+                }}
+              />
+            )}
+            
             {hasTrainedModel && testImage.modelPrediction !== undefined && (
               <div className="absolute top-2 right-2">
                 <div className={`px-3 py-1 rounded-lg text-sm font-medium ${
                   testImage.modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                 }`}>
-                  {testImage.modelPrediction ? `✓ Has ${currentCategory}` : `✗ No ${currentCategory}`}
+                  {testImage.modelPrediction ? `✓ Found ${currentCategory}` : `✗ No ${currentCategory} Found`}
                   {testImage.confidence && (
                     <div className="text-xs opacity-90">
                       {Math.round(testImage.confidence * 100)}% confident
