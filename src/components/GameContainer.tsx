@@ -467,6 +467,11 @@ export const GameContainer: React.FC = () => {
           <div className="flex flex-col items-center justify-center px-8">
             {/* Flowing Data Animation */}
             <div className="relative w-32 h-16 mb-6">
+              {/* Left Flow Direction Arrow */}
+              <div className="absolute -left-10 top-1/2 transform -translate-y-1/2">
+                <div className="text-4xl text-blue-600 animate-pulse">→</div>
+              </div>
+              
               {/* Conveyor Belt Track */}
               <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800 rounded-full shadow-inner">
                 {/* Moving Belt Segments */}
