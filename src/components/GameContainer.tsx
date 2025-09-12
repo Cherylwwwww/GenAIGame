@@ -481,6 +481,7 @@ export const GameContainer: React.FC = () => {
         </div>
         
         {/* Bottom Bar - Tips */}
+      </div>
     </div>
   );
 };
