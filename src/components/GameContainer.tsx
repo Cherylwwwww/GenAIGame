@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AnnotationPanel } from './AnnotationPanel';
 import { ModelPanel } from './ModelPanel';
 import { Header } from './Header';
@@ -25,6 +26,53 @@ export const GameContainer: React.FC = () => {
   const [isUsingRealTraining, setIsUsingRealTraining] = useState(false);
   const [playerName] = useState('Player');
   const [isRecordingAnnotation, setIsRecordingAnnotation] = useState(false);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
+  const [currentBox, setCurrentBox] = useState<BoundingBox | null>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
+    if (!imageRef.current) return { x: 0, y: 0 };
+    
+    const rect = imageRef.current.getBoundingClientRect();
+    return {
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100
+    };
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (gameState.isTraining || isRecordingAnnotation) return;
+    
+    const point = getRelativeCoordinates(e);
+    setStartPoint(point);
+    setIsDrawing(true);
+    setCurrentBox(null);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDrawing || gameState.isTraining || isRecordingAnnotation) return;
+    
+    const currentPoint = getRelativeCoordinates(e);
+    const box: BoundingBox = {
+      x: Math.min(startPoint.x, currentPoint.x),
+      y: Math.min(startPoint.y, currentPoint.y),
+      width: Math.abs(currentPoint.x - startPoint.x),
+      height: Math.abs(currentPoint.y - startPoint.y)
+    };
+    
+    setCurrentBox(box);
+  };
+
+  const handleMouseUp = () => {
+    if (!isDrawing || gameState.isTraining || isRecordingAnnotation) return;
+    
+    setIsDrawing(false);
+    if (currentBox && currentBox.width > 2 && currentBox.height > 2) {
+      handleAnnotate(gameState.images[currentImageIndex]?.id, currentBox);
+      setCurrentBox(null);
+    }
+  };
 
   // Initialize game images
   useEffect(() => {
@@ -406,7 +454,7 @@ export const GameContainer: React.FC = () => {
                   <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
                     Test Image 📸
                   </h3>
-                  <div className="relative">
+                  <div className="relative" ref={imageRef}>
                     <img
                       src={testImages[0].url}
                       alt="Test image"
@@ -429,6 +477,35 @@ export const GameContainer: React.FC = () => {
                     {/* Prediction Result */}
                     {gameState.hasTrainedModel && testImages[0].modelPrediction !== undefined && (
                       <div className="absolute top-4 right-4">
+                    
+                    {/* Mouse annotation overlay */}
+                    <div 
+                      className="absolute inset-0 cursor-crosshair"
+                      onMouseDown={(e) => handleMouseDown(e)}
+                      onMouseMove={(e) => handleMouseMove(e)}
+                      onMouseUp={() => handleMouseUp()}
+                      onMouseLeave={() => setIsDrawing(false)}
+                    >
+                      {/* Drawing box preview */}
+                      {isDrawing && currentBox && (
+                        <div
+                          className="absolute border-2 border-dashed border-red-500 bg-red-500 bg-opacity-10"
+                          style={{
+                            left: `${currentBox.x}%`,
+                            top: `${currentBox.y}%`,
+                            width: `${currentBox.width}%`,
+                            height: `${currentBox.height}%`
+                          }}
+                        />
+                      )}
+                      
+                      {/* Instruction overlay */}
+                      {!gameState.images[currentImageIndex]?.userAnnotation && !isDrawing && (
+                        <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                          Click & drag to draw box
+                        </div>
+                      )}
+                    </div>
                         <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                         }`}>
