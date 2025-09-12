@@ -443,10 +443,8 @@ export const GameContainer: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Panel - Annotation Zone */}
           <AnnotationPanel
             images={gameState.images}
