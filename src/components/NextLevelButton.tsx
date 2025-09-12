@@ -25,20 +25,20 @@ export const NextLevelButton: React.FC<NextLevelButtonProps> = ({
     if (!canProceed) {
       return {
         className: 'bg-gray-300 text-gray-500 cursor-not-allowed',
-        text: '需要训练模型'
+        text: 'Need to train model'
       };
     }
     
     if (isOverfitting) {
       return {
         className: 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:from-red-600 hover:to-orange-600 shadow-lg hover:shadow-xl transform hover:scale-105',
-        text: '⚠️ 继续下一关'
+        text: '⚠️ Continue to Next Level'
       };
     }
     
     return {
       className: 'bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:scale-105',
-      text: '🎉 进入下一关'
+      text: '🎉 Next Level'
     };
   };
 
@@ -58,29 +58,29 @@ export const NextLevelButton: React.FC<NextLevelButtonProps> = ({
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
-      {/* 过拟合警告弹窗 */}
+      {/* Overfitting Warning Dialog */}
       {showOverfitWarning && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-start space-x-3">
             <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-semibold text-red-800 mb-2">⚠️ 过拟合警告</h4>
+              <h4 className="font-semibold text-red-800 mb-2">⚠️ Overfitting Warning</h4>
               <p className="text-sm text-red-700 mb-3">
-                你的模型可能过度记忆了训练数据，在新数据上表现可能不佳。
-                建议减少标注数量或提高标注质量。
+                Your model may have memorized the training data and might perform poorly on new data.
+                Consider reducing annotation quantity or improving annotation quality.
               </p>
               <div className="flex space-x-3">
                 <button
                   onClick={onNextLevel}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
                 >
-                  仍然继续
+                  Continue Anyway
                 </button>
                 <button
                   onClick={() => setShowOverfitWarning(false)}
                   className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm"
                 >
-                  重新训练
+                  Retrain Model
                 </button>
               </div>
             </div>
@@ -88,7 +88,7 @@ export const NextLevelButton: React.FC<NextLevelButtonProps> = ({
         </div>
       )}
 
-      {/* 主按钮 */}
+      {/* Main Button */}
       <div className="text-center">
         <button
           onClick={handleClick}
@@ -101,29 +101,29 @@ export const NextLevelButton: React.FC<NextLevelButtonProps> = ({
           </div>
         </button>
         
-        {/* 状态提示 */}
+        {/* Status Tips */}
         <div className="mt-4 text-sm">
           {!hasTrainedModel && (
             <p className="text-gray-500">
-              💡 完成标注并训练模型后可进入下一关
+              💡 Complete annotations and train the model to proceed to next level
             </p>
           )}
           
           {hasTrainedModel && modelAccuracy < 70 && (
             <p className="text-orange-600">
-              📈 模型准确率需要达到70%以上 (当前: {modelAccuracy}%)
+              📈 Model accuracy needs to reach 70% or higher (Current: {modelAccuracy}%)
             </p>
           )}
           
           {canProceed && modelState === 'correct' && (
             <p className="text-green-600">
-              ✅ 模型表现优秀！准备好挑战第 {currentLevel + 1} 关了吗？
+              ✅ Excellent model performance! Ready to challenge level {currentLevel + 1}?
             </p>
           )}
           
           {canProceed && modelState === 'overfitting' && !showOverfitWarning && (
             <p className="text-red-600">
-              ⚠️ 模型可能过拟合，点击查看详情
+              ⚠️ Model may be overfitting, click to see details
             </p>
           )}
         </div>
