@@ -30,44 +30,6 @@ export const GameContainer: React.FC = () => {
   const [currentBox, setCurrentBox] = useState<BoundingBox | null>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  // Calculate dynamic confidence based on annotations
-  const calculateDynamicConfidence = (annotatedCount: number, accuracy: number) => {
-    if (annotatedCount === 0) return 50; // Start at center (total uncertainty)
-    
-    // Early stage: slight swinging (45-55%)
-    if (annotatedCount <= 3) {
-      const swing = Math.sin(Date.now() / 1000) * 5; // ±5% swing
-      return 50 + swing + (annotatedCount * 2); // Slight bias toward target
-    }
-    
-    // Mid stage: broader swings toward target (55-70%)
-    if (annotatedCount <= 10) {
-      const swing = Math.sin(Date.now() / 800) * 8; // ±8% swing
-      const base = 55 + (annotatedCount * 1.5);
-      return Math.min(70, base + swing);
-    }
-    
-    // Advanced stage: stabilizing (65-75%)
-    if (annotatedCount <= 15) {
-      const swing = Math.sin(Date.now() / 1200) * 3; // ±3% swing, slower
-      const base = 65 + (annotatedCount * 0.7);
-      return Math.min(75, base + swing);
-    }
-    
-    // Final stage: confident and stable (75-85%)
-    const finalConfidence = Math.min(85, 75 + (accuracy - 70) * 0.2);
-    return finalConfidence;
-  };
-
-  // Get humorous caption based on annotation progress
-  const getHumorousCaption = (annotatedCount: number, confidence: number) => {
-    if (annotatedCount === 0) return "🤔 Oh no... is it a cat?";
-    if (annotatedCount <= 3) return "🤷‍♂️ Hmm... I think it's a cat... or maybe not?";
-    if (annotatedCount <= 8) return "🧐 Wait, let me think... swinging back and forth here!";
-    if (annotatedCount <= 15) return "😊 It's starting to look more like a cat!";
-    return "✅ Definitely a cat! I'm confident now!";
-  };
-
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
     if (!imageRef.current) return { x: 0, y: 0 };
     
@@ -592,63 +554,25 @@ export const GameContainer: React.FC = () => {
                 </div>
                 
                 {/* Dynamic Confidence Progress Bar */}
-                {gameState.annotatedCount > 0 && (
-                  <div className="space-y-4">
-                    {/* Confidence Labels */}
-                    <div className="flex justify-between items-center text-sm font-bold">
-                      <span className="text-red-600">Not {gameState.currentCategory}</span>
-                      <span className="text-green-600">{gameState.currentCategory}</span>
-                    </div>
-                    
-                    {/* Progress Bar with Arrow */}
-                    <div className="relative">
-                      {/* Background Bar */}
-                      <div className="h-4 bg-gradient-to-r from-red-200 via-gray-200 to-green-200 rounded-full border-2 border-gray-300"></div>
-                      
-                      {/* Dynamic Fill */}
-                      <div 
-                        className="absolute top-0 left-0 h-4 bg-gradient-to-r from-red-400 to-green-400 rounded-full transition-all duration-500 ease-out"
-                        style={{ 
-                          width: `${calculateDynamicConfidence(gameState.annotatedCount, gameState.modelAccuracy)}%`,
-                          opacity: 0.7
-                        }}
-                      />
-                      
-                      {/* Red Arrow Indicator */}
-                      <div 
-                        className="absolute top-0 transform -translate-x-1/2 transition-all duration-300 ease-out"
-                        style={{ 
-                          left: `${calculateDynamicConfidence(gameState.annotatedCount, gameState.modelAccuracy)}%`,
-                          animation: gameState.annotatedCount <= 10 ? 'bounce 0.5s ease-in-out infinite alternate' : 'none'
-                        }}
-                      >
-                        <div className="w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-red-600 shadow-lg"></div>
-                        <div className="text-red-600 text-xl font-bold">🔴</div>
-                      </div>
-                    </div>
-                    
-                    {/* Humorous Caption */}
-                    <div className="text-center">
-                      <p className="text-sm text-gray-700 font-medium italic bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
-                        {getHumorousCaption(gameState.annotatedCount, calculateDynamicConfidence(gameState.annotatedCount, gameState.modelAccuracy))}
-                      </p>
-                    </div>
-                    
-                    {/* Confidence Percentage */}
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-800 mb-1">
-                        {Math.round(calculateDynamicConfidence(gameState.annotatedCount, gameState.modelAccuracy))}%
-                      </div>
-                      <div className="text-gray-600 text-sm">AI Confidence</div>
+                <div className="space-y-4">
+                  {/* Confidence Bar Labels */}
+                  <div className="flex justify-between items-center text-sm font-medium">
+                    <span className="text-red-600">Not {gameState.currentCategory}</span>
+                    <span className="text-green-600">{gameState.currentCategory}</span>
+                  </div>
+                  
+                  {/* Progress Bar with Arrow */}
+                  <div className="relative">
+                    {/* Background Bar */}
+                    <div className="bg-gradient-to-r from-red-200 via-gray-200 to-green-200 rounded-full h-4 shadow-inner">
+                      {/* Confidence Fill */}
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             )}
           </div>
         </div>
-        
-        {/* Bottom Bar - Tips */}
       </div>
     </div>
   );
