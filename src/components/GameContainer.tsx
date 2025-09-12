@@ -270,18 +270,66 @@ export const GameContainer: React.FC = () => {
             modelState={gameState.modelState}
           />
           
+          {/* Center - AI Training Section */}
+          <div className="lg:col-span-2 flex justify-center">
+            <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
+                  <Brain className="w-6 h-6 text-blue-600" />
+                  AI Model Training 🤖
+                </h2>
+                <p className="text-gray-600">Train your AI to recognize {gameState.currentCategory}</p>
+              </div>
+              
+              <div className="text-center">
+                <button
+                  onClick={handleTrainModel}
+                  disabled={gameState.isTraining || gameState.annotatedCount === 0}
+                  className={`w-full px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
+                    gameState.isTraining || gameState.annotatedCount === 0
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
+                  }`}
+                >
+                  <div className="flex items-center justify-center space-x-3">
+                    {gameState.isTraining ? (
+                      <>
+                        <div className="animate-spin">🔄</div>
+                        <span>Training AI...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Brain className="w-6 h-6" />
+                        <span>Train AI Model</span>
+                        <Zap className="w-6 h-6" />
+                      </>
+                    )}
+                  </div>
+                </button>
+                
+                {gameState.annotatedCount === 0 && (
+                  <p className="mt-3 text-gray-500 text-sm">
+                    📝 Annotate at least 1 image to start training
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          
           {/* Right Panel - Model Feedback Zone */}
-          <ModelPanel
-            images={testImages}
-            modelAccuracy={gameState.modelAccuracy}
-            isTraining={gameState.isTraining}
-            hasTrainedModel={gameState.hasTrainedModel}
-            onTrainModel={handleTrainModel}
-            canTrain={gameState.annotatedCount > 0}
-            modelState={gameState.modelState}
-            currentCategory={gameState.currentCategory}
-            annotatedCount={gameState.annotatedCount}
-          />
+          <div className="lg:col-span-2">
+            <ModelPanel
+              images={testImages}
+              modelAccuracy={gameState.modelAccuracy}
+              isTraining={gameState.isTraining}
+              hasTrainedModel={gameState.hasTrainedModel}
+              onTrainModel={handleTrainModel}
+              canTrain={gameState.annotatedCount > 0}
+              modelState={gameState.modelState}
+              currentCategory={gameState.currentCategory}
+              annotatedCount={gameState.annotatedCount}
+            />
+          </div>
         </div>
         
         {/* Bottom Bar - Tips */}
