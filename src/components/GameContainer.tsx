@@ -4,6 +4,7 @@ import { ModelPanel } from './ModelPanel';
 import { GameState, GameImage, BoundingBox } from '../types';
 import { categories } from '../utils/gameData';
 import { generateRandomImages, calculateAccuracy, simulateModelPrediction, generateTestImages } from '../utils/gameLogic';
+import { ModelTrainingService } from '../services/modelTrainingService';
 
 export const GameContainer: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -19,6 +20,7 @@ export const GameContainer: React.FC = () => {
   });
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [testImages, setTestImages] = useState<GameImage[]>([]);
+  const [currentTrainingJobId, setCurrentTrainingJobId] = useState<string | null>(null);
 
   // Initialize game images
   useEffect(() => {
@@ -48,6 +50,17 @@ export const GameContainer: React.FC = () => {
       
       const annotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
       
+      // Save annotation to database
+      const image = updatedImages.find(img => img.id === imageId);
+      if (image) {
+        ModelTrainingService.saveAnnotation({
+          image_url: image.url,
+          category: prev.currentCategory,
+          has_object: annotation !== null,
+          bounding_box: annotation || undefined
+        }).catch(console.error);
+      }
+      
       return {
         ...prev,
         images: updatedImages,
@@ -67,26 +80,80 @@ export const GameContainer: React.FC = () => {
   const handleTrainModel = async () => {
     setGameState(prev => ({ ...prev, isTraining: true }));
     
-    // Simulate training delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Calculate values outside of setGameState callback
-    const calculatedAccuracy = calculateAccuracy(gameState.images);
-    const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
-    const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), calculatedAccuracy);
-    
-    setGameState(prev => {
-      return {
+    try {
+      // Get annotations for current category
+      const annotations = await ModelTrainingService.getAnnotations(gameState.currentCategory);
+      
+      // Start real model training
+      const jobId = await ModelTrainingService.startTraining(gameState.currentCategory, annotations);
+      setCurrentTrainingJobId(jobId);
+      
+      // Poll for training completion
+      const pollInterval = setInterval(async () => {
+        const job = await ModelTrainingService.getTrainingStatus(jobId);
+        
+        if (job && job.status === 'completed') {
+          clearInterval(pollInterval);
+          
+          // Get predictions for test images
+          const predictions = await ModelTrainingService.getPredictions(
+            gameState.currentCategory,
+            testImages.map(img => img.url)
+          );
+          
+          const updatedTestImages = testImages.map((img, index) => ({
+            ...img,
+            modelPrediction: predictions[index]?.prediction,
+            confidence: predictions[index]?.confidence
+          }));
+          
+          setGameState(prev => ({
+            ...prev,
+            modelAccuracy: job.accuracy || 30,
+            isTraining: false,
+            hasTrainedModel: true,
+            modelState: job.model_state || 'underfitting',
+            score: prev.score + Math.round((job.accuracy || 30) * 0.5)
+          }));
+          
+          setTestImages(updatedTestImages);
+        } else if (job && job.status === 'failed') {
+          clearInterval(pollInterval);
+          // Fallback to simulation
+          const result = await ModelTrainingService.simulateTraining(gameState.images);
+          const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), result.accuracy);
+          
+          setGameState(prev => ({
+            ...prev,
+            modelAccuracy: result.accuracy,
+            isTraining: false,
+            hasTrainedModel: true,
+            modelState: result.modelState,
+            score: prev.score + Math.round(result.accuracy * 0.5)
+          }));
+          
+          setTestImages(updatedTestImages);
+        }
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Training failed, falling back to simulation:', error);
+      
+      // Fallback to simulation if backend is not available
+      const result = await ModelTrainingService.simulateTraining(gameState.images);
+      const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), result.accuracy);
+      
+      setGameState(prev => ({
         ...prev,
-        modelAccuracy: calculatedAccuracy,
+        modelAccuracy: result.accuracy,
         isTraining: false,
         hasTrainedModel: true,
-        modelState: calculatedModelState,
-        score: prev.score + Math.round(calculatedAccuracy * 0.5)
-      };
-    });
-    
-    setTestImages(updatedTestImages);
+        modelState: result.modelState,
+        score: prev.score + Math.round(result.accuracy * 0.5)
+      }));
+      
+      setTestImages(updatedTestImages);
+    }
   };
 
   const handleNextImage = () => {
