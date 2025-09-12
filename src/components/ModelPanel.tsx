@@ -41,15 +41,12 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
     <div className="bg-white rounded-lg border-2 border-blue-500 p-6">
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-800 mb-2">AI Model Training</h3>
-        <p className="text-sm text-gray-600 mb-4">
-          After annotating your training data, use this panel to train and validate your AI model.
-        </p>
         
         {!hasTrainedModel && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
             <p className="text-sm text-blue-800">
-              💡 <strong>Tip:</strong> The optimal number of annotations is 5 images. 
-              Too few leads to underfitting, too many can cause overfitting.
+              💡 <strong>Tip:</strong> You can start training with just a few annotations! 
+              More annotations = better accuracy, but you don't need to annotate all images.
             </p>
           </div>
         )}
@@ -58,15 +55,21 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
       <div className="text-center mb-6">
         <button
           onClick={onTrainModel}
-          disabled={isTraining}
+          disabled={isTraining || !canTrain}
           className={`px-8 py-3 rounded-lg font-medium transition-all duration-200 text-lg ${
-            isTraining
+            isTraining || !canTrain
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:scale-105'
           }`}
         >
           {isTraining ? '🔄 Training Model...' : '🚀 Train Model'}
         </button>
+        
+        {!canTrain && (
+          <p className="mt-2 text-sm text-gray-500">
+            Please annotate at least 1 image to start training
+          </p>
+        )}
         
         {isTraining && (
           <div className="mt-3">

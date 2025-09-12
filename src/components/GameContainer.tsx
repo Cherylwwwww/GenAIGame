@@ -190,7 +190,7 @@ export const GameContainer: React.FC = () => {
             isTraining={gameState.isTraining}
             hasTrainedModel={gameState.hasTrainedModel}
             onTrainModel={handleTrainModel}
-            canTrain={true}
+            canTrain={gameState.annotatedCount > 0}
             modelState={gameState.modelState}
             currentCategory={gameState.currentCategory}
           />

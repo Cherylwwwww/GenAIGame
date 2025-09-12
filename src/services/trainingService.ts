@@ -48,7 +48,7 @@ export class TrainingService {
       }));
 
     if (annotations.length === 0) {
-      throw new Error('No annotations found for training');
+      throw new Error('Please annotate at least 1 image before training');
     }
 
     // Call training edge function
