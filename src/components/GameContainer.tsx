@@ -140,11 +140,33 @@ export const GameContainer: React.FC = () => {
       // Calculate progressive accuracy based on annotation count
       const progressiveAccuracy = calculateProgressiveAccuracy(annotatedCount, updatedImages);
       
+      // Auto-generate test predictions when first annotation is made
+      if (annotatedCount === 1 && !prev.hasTrainedModel) {
+        // Simulate initial model predictions for test images
+        const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), progressiveAccuracy);
+        setTestImages(updatedTestImages);
+        
+        return {
+          ...prev,
+          images: updatedImages,
+          annotatedCount,
+          modelAccuracy: progressiveAccuracy,
+          hasTrainedModel: true // Enable test predictions
+        };
+      }
+      
+      // Update test predictions as more annotations are added
+      if (annotatedCount > 0) {
+        const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), progressiveAccuracy);
+        setTestImages(updatedTestImages);
+      }
+      
       return {
         ...prev,
         images: updatedImages,
         annotatedCount,
-        modelAccuracy: progressiveAccuracy
+        modelAccuracy: progressiveAccuracy,
+        hasTrainedModel: annotatedCount > 0 // Enable test predictions once annotation starts
       };
     });
   };
