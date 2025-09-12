@@ -178,36 +178,21 @@ export const GameContainer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Main Task Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 bg-white rounded-2xl shadow-lg px-8 py-6 border border-gray-200">
-            <div className="text-3xl">🎯</div>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-                AI Training Challenge
-              </h1>
-              <p className="text-lg text-gray-600 mt-1">
-                Current Task: Detect <span className="font-semibold text-blue-600">{gameState.currentCategory}</span>
-              </p>
-            </div>
+          <h1 className="text-4xl font-bold text-gray-800 border-2 border-blue-500 rounded-lg px-8 py-4 inline-block bg-white">
+            Task: {gameState.currentCategory}
             {isUsingRealTraining && (
-              <span className="ml-4 text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium">
-                🤖 Live AI Training
+              <span className="ml-3 text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                🤖 Real AI Training
               </span>
             )}
-          </div>
-          
-          {/* Level Indicator */}
-          <div className="mt-4 inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
-            <span>📊</span>
-            <span>Level {gameState.currentLevel}</span>
-          </div>
+          </h1>
         </div>
         
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <AnnotationPanel
             images={gameState.images}
             onAnnotate={handleAnnotate}
@@ -232,8 +217,8 @@ export const GameContainer: React.FC = () => {
           />
         </div>
         
-        {/* Next Level Section */}
-        <div className="max-w-2xl mx-auto">
+        {/* 下一关按钮 */}
+        <div className="mt-8">
           <NextLevelButton
             modelAccuracy={gameState.modelAccuracy}
             modelState={gameState.modelState}
