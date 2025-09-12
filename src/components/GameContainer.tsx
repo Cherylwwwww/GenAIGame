@@ -566,6 +566,13 @@ export const GameContainer: React.FC = () => {
                     {/* Background Bar */}
                     <div className="bg-gradient-to-r from-red-200 via-gray-200 to-green-200 rounded-full h-4 shadow-inner">
                       {/* Confidence Fill */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
