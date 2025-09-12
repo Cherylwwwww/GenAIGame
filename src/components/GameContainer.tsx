@@ -485,38 +485,6 @@ export const GameContainer: React.FC = () => {
                 <div className="text-4xl text-blue-600 animate-pulse">→</div>
               </div>
             </div>
-            
-            {/* Train AI Button */}
-            <button
-              onClick={handleTrainModel}
-              disabled={gameState.isTraining || gameState.annotatedCount === 0}
-              className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${
-                gameState.isTraining || gameState.annotatedCount === 0
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
-              }`}
-            >
-              <div className="flex items-center justify-center space-x-2">
-                {gameState.isTraining ? (
-                  <>
-                    <div className="animate-spin">🔄</div>
-                    <span>Training...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>🤖</span>
-                    <span>Train AI</span>
-                    <span>⚡</span>
-                  </>
-                )}
-              </div>
-            </button>
-            
-            {gameState.annotatedCount === 0 && (
-              <p className="mt-3 text-center text-gray-500 text-sm">
-                📝 Annotate images first
-              </p>
-            )}
           </div>
           
           {/* Right Side - Test Image */}
