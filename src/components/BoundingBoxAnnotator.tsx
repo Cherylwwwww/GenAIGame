@@ -112,8 +112,18 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
         )}
       </div>
       
-      <div className="flex space-x-3">
+      <div className="flex flex-col items-center space-y-3">
+        <p className="text-sm text-gray-600 text-center">
+          Can't find any {currentCategory}? Mark it as "not found"
+        </p>
+        <button
+          onClick={handleClearAnnotation}
+          disabled={disabled}
+          className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-lg hover:scale-105"
+        >
+          No {currentCategory} Found
+        </button>
+      </div>
+    </div>
   );
 };
-  )
-}
