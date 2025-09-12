@@ -79,12 +79,6 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
       
       {testImage && (
         <div className="space-y-4">
-          <div className="text-center mb-2">
-            <p className="text-xs text-gray-500">
-              {hasTrainedModel ? 'Model prediction shown below' : 'Train the model to see predictions'}
-            </p>
-          </div>
-          
           <div className="relative">
             <img
               src={testImage.url}
