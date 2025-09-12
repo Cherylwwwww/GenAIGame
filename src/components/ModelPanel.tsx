@@ -63,10 +63,67 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
   const displayAccuracy = hasTrainedModel ? modelAccuracy : Math.min(30 + annotatedCount * 3, 50);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Train Model Section */}
+      <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">AI Model Training 🤖</h2>
+          <p className="text-gray-600">Train your AI to recognize {currentCategory}</p>
+        </div>
+        
+        {/* Large Train Button */}
+        <div className="text-center mb-8">
+          <button
+            onClick={onTrainModel}
+            disabled={isTraining || !canTrain}
+            className={`w-full px-8 py-6 rounded-2xl font-bold text-2xl transition-all duration-300 ${
+              isTraining || !canTrain
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-3">
+              {isTraining ? (
+                <>
+                  <div className="animate-spin">🔄</div>
+                  <span>Training AI...</span>
+                </>
+              ) : (
+                <>
+                  <Brain className="w-8 h-8" />
+                  <span>Train AI Model</span>
+                  <Zap className="w-8 h-8" />
+                </>
+              )}
+            </div>
+          </button>
+          
+          {!canTrain && (
+            <p className="mt-3 text-gray-500">
+              📝 Annotate at least 1 image to start training
+            </p>
+          )}
+        </div>
+
+        {/* Training Progress Animation */}
+        {isTraining && (
+          <div className="mb-8">
+            <div className="bg-blue-50 rounded-xl p-4">
+              <div className="flex items-center justify-center space-x-2 text-blue-700 mb-3">
+                <Brain className="w-5 h-5 animate-pulse" />
+                <span className="font-medium">AI is learning from your annotations...</span>
+              </div>
+              <div className="bg-blue-200 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full animate-pulse" style={{ width: '60%' }} />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Test Image Section */}
       {testImage && (
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-6">
             <h3 className="text-xl font-bold text-gray-800 mb-2">Test Image 📸</h3>
             <p className="text-gray-600">See how your AI performs</p>
@@ -76,7 +133,7 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
             <img
               src={testImage.url}
               alt="Test image"
-              className="w-full h-80 object-cover rounded-xl border-4 border-gray-200"
+              className="w-full h-64 object-cover rounded-xl border-4 border-gray-200"
             />
             
             {/* Model Prediction Overlay */}
@@ -122,7 +179,7 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
       )}
       
       {/* Model Performance Section */}
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center mb-6">
           <h3 className="text-xl font-bold text-gray-800 mb-2">AI Performance 📊</h3>
         </div>
