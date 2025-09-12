@@ -8,6 +8,7 @@ interface BoundingBoxAnnotatorProps {
   disabled?: boolean;
   currentCategory: string;
   onNextImage?: () => void;
+  isRecording?: boolean;
 }
 
 export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
@@ -16,7 +17,8 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
   existingBox,
   disabled = false,
   currentCategory,
-  onNextImage
+  onNextImage,
+  isRecording = false
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
@@ -129,13 +131,26 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
       <div className="text-center mt-6">
         <button
           onClick={handleClearAnnotation}
-          disabled={disabled}
-          className="w-full px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold text-lg hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
+          disabled={disabled || isRecording}
+          className={`w-full px-8 py-4 rounded-xl font-bold text-lg transition-all duration-200 ${
+            disabled || isRecording
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105 active:scale-95'
+          }`}
           title={`Mark this image as having no ${currentCategory}`}
         >
           <div className="flex items-center gap-2">
-            <span className="text-xl">🚫</span>
-            <span>No {currentCategory}</span>
+            {isRecording ? (
+              <>
+                <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                <span>Recording...</span>
+              </>
+            ) : (
+              <>
+                <span className="text-xl">🚫</span>
+                <span>No {currentCategory}</span>
+              </>
+            )}
           </div>
         </button>
       </div>

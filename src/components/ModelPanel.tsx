@@ -186,10 +186,17 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
         
         {/* Large Accuracy Display */}
         <div className="text-center mb-6">
-          <div className="text-6xl font-bold text-gray-800 mb-2">
+          <div className="text-6xl font-bold text-gray-800 mb-2 transition-all duration-1000">
             {displayAccuracy}%
           </div>
-          <div className="text-gray-600">Accuracy Score</div>
+          <div className="text-gray-600">
+            AI Confidence
+            {annotatedCount > 0 && (
+              <div className="text-sm text-blue-600 mt-1">
+                📈 +{Math.min(annotatedCount * 3, 50)}% from {annotatedCount} annotations
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Animated Progress Bar */}

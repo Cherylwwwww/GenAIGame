@@ -1,6 +1,14 @@
 import { supabase } from '../lib/supabase';
 import { GameImage, BoundingBox } from '../types';
 
+interface AnnotationData {
+  imageId: string;
+  imageUrl: string;
+  hasObject: boolean;
+  boundingBox: BoundingBox | null;
+  actualLabel: boolean;
+}
+
 export class TrainingService {
   private sessionId: string | null = null;
 
@@ -25,6 +33,37 @@ export class TrainingService {
     
     this.sessionId = data.id;
     return data.id;
+  }
+
+  async recordAnnotation(annotationData: AnnotationData): Promise<void> {
+    if (!this.sessionId) {
+      throw new Error('No active training session');
+    }
+
+    const { error } = await supabase
+      .from('annotations')
+      .insert({
+        session_id: this.sessionId,
+        image_url: annotationData.imageUrl,
+        image_id: annotationData.imageId,
+        has_object: annotationData.hasObject,
+        bounding_box: annotationData.boundingBox,
+        actual_label: annotationData.actualLabel
+      });
+
+    if (error) throw error;
+  }
+
+  async getAnnotationCount(): Promise<number> {
+    if (!this.sessionId) return 0;
+
+    const { count, error } = await supabase
+      .from('annotations')
+      .select('*', { count: 'exact', head: true })
+      .eq('session_id', this.sessionId);
+
+    if (error) throw error;
+    return count || 0;
   }
 
   async trainModel(images: GameImage[]): Promise<{

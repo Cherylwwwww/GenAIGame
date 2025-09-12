@@ -9,6 +9,7 @@ interface AnnotationPanelProps {
   currentCategory: string;
   annotatedCount: number;
   disabled?: boolean;
+  isRecordingAnnotation?: boolean;
   currentImageIndex: number;
   onNextImage: () => void;
   onPrevImage: () => void;
@@ -24,6 +25,7 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   currentCategory,
   annotatedCount,
   disabled = false,
+  isRecordingAnnotation = false,
   currentImageIndex,
   onNextImage,
   onPrevImage,
@@ -87,9 +89,10 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
           imageUrl={currentImage.url}
           onAnnotate={handleAnnotation}
           existingBox={currentImage.userAnnotation}
-          disabled={disabled}
+          disabled={disabled || isRecordingAnnotation}
           currentCategory={currentCategory}
           onNextImage={onNextImage}
+          isRecording={isRecordingAnnotation}
         />
         
         {/* Navigation Controls */}

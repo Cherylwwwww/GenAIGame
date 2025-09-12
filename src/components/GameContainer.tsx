@@ -23,7 +23,8 @@ export const GameContainer: React.FC = () => {
   const [testImages, setTestImages] = useState<GameImage[]>([]);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [isUsingRealTraining, setIsUsingRealTraining] = useState(false);
-  const [playerName] = useState('Player'); // Could be made dynamic later
+  const [playerName] = useState('Player');
+  const [isRecordingAnnotation, setIsRecordingAnnotation] = useState(false);
 
   // Initialize game images
   useEffect(() => {
@@ -59,6 +60,13 @@ export const GameContainer: React.FC = () => {
   };
 
   const handleAnnotate = (imageId: string, annotation: BoundingBox | null) => {
+    setIsRecordingAnnotation(true);
+    
+    // Record annotation to Supabase
+    recordAnnotation(imageId, annotation).finally(() => {
+      setIsRecordingAnnotation(false);
+    });
+    
     setGameState(prev => {
       const updatedImages = prev.images.map(img =>
         img.id === imageId ? { ...img, userAnnotation: annotation } : img
@@ -66,14 +74,59 @@ export const GameContainer: React.FC = () => {
       
       const annotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
       
+      // Calculate progressive accuracy based on annotation count
+      const progressiveAccuracy = calculateProgressiveAccuracy(annotatedCount, updatedImages);
+      
       return {
         ...prev,
         images: updatedImages,
-        annotatedCount
+        annotatedCount,
+        modelAccuracy: progressiveAccuracy
       };
     });
   };
 
+  const recordAnnotation = async (imageId: string, annotation: BoundingBox | null) => {
+    if (!isUsingRealTraining) return;
+    
+    try {
+      const currentImage = gameState.images.find(img => img.id === imageId);
+      if (!currentImage) return;
+      
+      await trainingService.recordAnnotation({
+        imageId,
+        imageUrl: currentImage.url,
+        hasObject: annotation !== null,
+        boundingBox: annotation,
+        actualLabel: currentImage.actualLabel
+      });
+      
+      console.log('Annotation recorded successfully');
+    } catch (error) {
+      console.warn('Failed to record annotation:', error);
+    }
+  };
+
+  const calculateProgressiveAccuracy = (annotatedCount: number, images: GameImage[]): number => {
+    if (annotatedCount === 0) return 30; // Base accuracy
+    
+    // Calculate quality of annotations
+    const annotatedImages = images.filter(img => img.userAnnotation !== undefined);
+    const correctAnnotations = annotatedImages.filter(
+      img => (img.userAnnotation !== null) === img.actualLabel
+    ).length;
+    
+    const qualityScore = annotatedImages.length > 0 ? (correctAnnotations / annotatedImages.length) : 0;
+    
+    // Progressive improvement formula
+    const baseAccuracy = 30;
+    const quantityBonus = Math.min(annotatedCount * 3, 50); // Up to 50% bonus for quantity
+    const qualityMultiplier = 0.3 + (qualityScore * 0.7); // Quality affects 70% of the bonus
+    
+    const finalAccuracy = Math.min(baseAccuracy + (quantityBonus * qualityMultiplier), 95);
+    
+    return Math.round(finalAccuracy);
+  };
   const determineModelState = (annotatedCount: number, accuracy: number) => {
     if (annotatedCount < 5) return 'underfitting';
     if (annotatedCount > 15 && accuracy < 70) return 'overfitting';
