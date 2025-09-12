@@ -43,14 +43,23 @@ export const GameContainer: React.FC = () => {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (gameState.isTraining || isRecordingAnnotation) return;
     
+    e.preventDefault();
+    
     const point = getRelativeCoordinates(e);
     setStartPoint(point);
     setIsDrawing(true);
-    setCurrentBox(null);
+    setCurrentBox({
+      x: point.x,
+      y: point.y,
+      width: 0,
+      height: 0
+    });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDrawing || gameState.isTraining || isRecordingAnnotation) return;
+    
+    e.preventDefault();
     
     const currentPoint = getRelativeCoordinates(e);
     const box: BoundingBox = {
@@ -69,6 +78,7 @@ export const GameContainer: React.FC = () => {
     setIsDrawing(false);
     if (currentBox && currentBox.width > 2 && currentBox.height > 2) {
       handleAnnotate(gameState.images[currentImageIndex]?.id, currentBox);
+    } else {
       setCurrentBox(null);
     }
   };
@@ -309,47 +319,40 @@ export const GameContainer: React.FC = () => {
                   />
                   
                   {/* Bounding Box Display */}
-                  {gameState.images[currentImageIndex]?.userAnnotation && (
+                  {(gameState.images[currentImageIndex]?.userAnnotation || currentBox) && (
                     <div
-                      className="absolute border-4 border-red-500 bg-red-500 bg-opacity-30 shadow-lg pointer-events-none"
+                      className={`absolute shadow-lg pointer-events-none ${
+                        gameState.images[currentImageIndex]?.userAnnotation 
+                          ? 'border-4 border-red-500 bg-red-500 bg-opacity-30' 
+                          : 'border-3 border-dashed border-red-400 bg-red-400 bg-opacity-20'
+                      }`}
                       style={{
-                        left: `${gameState.images[currentImageIndex].userAnnotation.x}%`,
-                        top: `${gameState.images[currentImageIndex].userAnnotation.y}%`,
-                        width: `${gameState.images[currentImageIndex].userAnnotation.width}%`,
-                        height: `${gameState.images[currentImageIndex].userAnnotation.height}%`
+                        left: `${(gameState.images[currentImageIndex]?.userAnnotation || currentBox)?.x}%`,
+                        top: `${(gameState.images[currentImageIndex]?.userAnnotation || currentBox)?.y}%`,
+                        width: `${(gameState.images[currentImageIndex]?.userAnnotation || currentBox)?.width}%`,
+                        height: `${(gameState.images[currentImageIndex]?.userAnnotation || currentBox)?.height}%`
                       }}
                     >
-                      <div className="absolute -top-7 left-0 bg-red-600 text-white text-sm px-3 py-1 rounded font-bold shadow-md">
-                        {gameState.currentCategory}
-                      </div>
+                      {gameState.images[currentImageIndex]?.userAnnotation && (
+                        <div className="absolute -top-7 left-0 bg-red-600 text-white text-sm px-3 py-1 rounded font-bold shadow-md">
+                          {gameState.currentCategory}
+                        </div>
+                      )}
                     </div>
-                  )}
-                  
-                  {/* Current drawing box preview */}
-                  {currentBox && isDrawing && (
-                    <div
-                      className="absolute border-3 border-dashed border-red-400 bg-red-400 bg-opacity-20 pointer-events-none"
-                      style={{
-                        left: `${currentBox.x}%`,
-                        top: `${currentBox.y}%`,
-                        width: `${currentBox.width}%`,
-                        height: `${currentBox.height}%`
-                      }}
-                    />
                   )}
                   
                   {/* Mouse interaction overlay */}
                   <div 
+                    ref={imageRef}
                     className="absolute inset-0 cursor-crosshair z-10"
-                   ref={imageRef}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                     onMouseLeave={() => setIsDrawing(false)}
                   >
                     {/* Instruction overlay when no annotation exists */}
-                    {!gameState.images[currentImageIndex]?.userAnnotation && !isDrawing && (
-                      <div className="absolute top-3 left-3 bg-black bg-opacity-70 text-white text-sm px-3 py-2 rounded-lg font-medium">
+                    {!gameState.images[currentImageIndex]?.userAnnotation && !currentBox && (
+                      <div className="absolute top-3 left-3 bg-black bg-opacity-80 text-white text-sm px-3 py-2 rounded-lg font-bold">
                         Click & drag to mark {gameState.currentCategory}
                       </div>
                     )}
