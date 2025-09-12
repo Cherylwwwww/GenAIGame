@@ -168,5 +168,3 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
     </div>
   );
 };
-  )
-}
