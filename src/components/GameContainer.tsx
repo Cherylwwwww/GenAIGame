@@ -341,6 +341,7 @@ export const GameContainer: React.FC = () => {
                   {/* Mouse interaction overlay */}
                   <div 
                     className="absolute inset-0 cursor-crosshair"
+                   ref={imageRef}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
