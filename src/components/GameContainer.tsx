@@ -629,13 +629,6 @@ export const GameContainer: React.FC = () => {
                     </p>
                   </div>
                   
-                  {/* AI Accuracy Display */}
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-800 mb-1">
-                      {gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 85)}%
-                    </div>
-                    <div className="text-gray-600 text-xs">AI Confidence Level</div>
-                  </div>
                 </div>
               </div>
             )}
