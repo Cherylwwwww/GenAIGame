@@ -590,6 +590,13 @@ export const GameContainer: React.FC = () => {
                                Math.min(75 + gameState.annotatedCount, 85)}%` 
                       }}
                     >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
