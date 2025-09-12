@@ -484,6 +484,11 @@ export const GameContainer: React.FC = () => {
               <div className="absolute -right-10 top-1/2 transform -translate-y-1/2">
                 <div className="text-4xl text-blue-600 animate-pulse">→</div>
               </div>
+              
+              {/* Second Flow Direction Arrow */}
+              <div className="absolute -right-20 top-1/2 transform -translate-y-1/2">
+                <div className="text-4xl text-blue-600 animate-pulse" style={{ animationDelay: '0.5s' }}>→</div>
+              </div>
             </div>
           </div>
           
