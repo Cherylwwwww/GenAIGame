@@ -40,10 +40,12 @@ export const calculateAccuracy = (images: GameImage[]): number => {
 };
 
 export const determineModelState = (annotatedCount: number, accuracy: number) => {
-  // 5 images is the optimal point
-  if (annotatedCount < 5) return 'underfitting';
-  if (annotatedCount > 5) return 'overfitting';
-  // Exactly 5 images is correct
+  // 更智能的模型状态判断
+  if (annotatedCount < 3) return 'underfitting';
+  if (annotatedCount > 10) return 'overfitting';
+  if (accuracy >= 85 && accuracy <= 90 && annotatedCount >= 3 && annotatedCount <= 8) return 'correct';
+  if (accuracy < 60) return 'underfitting';
+  if (accuracy > 95) return 'overfitting';
   return 'correct';
 };
 

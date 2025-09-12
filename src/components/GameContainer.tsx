@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AnnotationPanel } from './AnnotationPanel';
 import { ModelPanel } from './ModelPanel';
+import { NextLevelButton } from './NextLevelButton';
 import { GameState, GameImage, BoundingBox } from '../types';
 import { categories } from '../utils/gameData';
 import { generateRandomImages, calculateAccuracy, simulateModelPrediction, generateTestImages } from '../utils/gameLogic';
@@ -83,6 +84,14 @@ export const GameContainer: React.FC = () => {
   const handleTrainModel = async () => {
     setGameState(prev => ({ ...prev, isTraining: true }));
     
+    // 模拟训练过程中的动态更新
+    const trainingSteps = 5;
+    for (let i = 0; i < trainingSteps; i++) {
+      await new Promise(resolve => setTimeout(resolve, 400));
+      const progress = ((i + 1) / trainingSteps) * 100;
+      // 这里可以添加训练进度的视觉反馈
+    }
+    
     try {
       if (isUsingRealTraining) {
         // Use real training service
@@ -107,7 +116,7 @@ export const GameContainer: React.FC = () => {
         setTestImages(updatedTestImages);
       } else {
         // Fallback to simulation mode
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         const calculatedAccuracy = calculateAccuracy(gameState.images);
         const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
@@ -156,6 +165,17 @@ export const GameContainer: React.FC = () => {
       setCurrentImageIndex(prev => prev - 1);
     }
   };
+  const handleNextLevel = () => {
+    setGameState(prev => ({
+      ...prev,
+      currentLevel: prev.currentLevel + 1,
+      hasTrainedModel: false,
+      modelAccuracy: 30,
+      annotatedCount: 0,
+      modelState: 'underfitting',
+      isTraining: false
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -193,6 +213,18 @@ export const GameContainer: React.FC = () => {
             canTrain={gameState.annotatedCount > 0}
             modelState={gameState.modelState}
             currentCategory={gameState.currentCategory}
+            annotatedCount={gameState.annotatedCount}
+          />
+        </div>
+        
+        {/* 下一关按钮 */}
+        <div className="mt-8">
+          <NextLevelButton
+            modelAccuracy={gameState.modelAccuracy}
+            modelState={gameState.modelState}
+            hasTrainedModel={gameState.hasTrainedModel}
+            onNextLevel={handleNextLevel}
+            currentLevel={gameState.currentLevel}
           />
         </div>
       </div>
