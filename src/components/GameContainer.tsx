@@ -34,9 +34,10 @@ export const GameContainer: React.FC = () => {
     if (!imageRef.current) return { x: 0, y: 0 };
     
     const rect = imageRef.current.getBoundingClientRect();
-    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-    return { x, y };
+    return {
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100
+    };
   }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -61,18 +62,11 @@ export const GameContainer: React.FC = () => {
     e.preventDefault();
     
     const currentPoint = getRelativeCoordinates(e);
-    
-    // Normalize bounding box to handle all drag directions
-    const left = Math.max(0, Math.min(startPoint.x, currentPoint.x));
-    const top = Math.max(0, Math.min(startPoint.y, currentPoint.y));
-    const right = Math.min(100, Math.max(startPoint.x, currentPoint.x));
-    const bottom = Math.min(100, Math.max(startPoint.y, currentPoint.y));
-    
     const box: BoundingBox = {
-      x: left,
-      y: top,
-      width: right - left,
-      height: bottom - top
+      x: Math.min(startPoint.x, currentPoint.x),
+      y: Math.min(startPoint.y, currentPoint.y),
+      width: Math.abs(currentPoint.x - startPoint.x),
+      height: Math.abs(currentPoint.y - startPoint.y)
     };
     
     setCurrentBox(box);
@@ -515,7 +509,7 @@ export const GameContainer: React.FC = () => {
                     {/* Existing Bounding Box Display */}
                     {gameState.hasTrainedModel && testImages[0].modelPrediction === true && (
                       <div
-                        className={`absolute shadow-lg pointer-events-none z-40 ${
+                        className="absolute border-4 border-green-500 bg-green-500 bg-opacity-30 shadow-lg pointer-events-none z-40"
                         style={{
                           left: '20%',
                           top: '15%', 
@@ -528,35 +522,6 @@ export const GameContainer: React.FC = () => {
                     {/* Prediction Result */}
                     {gameState.hasTrainedModel && testImages[0].modelPrediction !== undefined && (
                       <div className="absolute top-4 right-4">
-                    {/* Mouse interaction overlay with higher z-index */}
-                    {/* Mouse annotation overlay */}
-                    <div 
-                      className="absolute inset-0 cursor-crosshair z-30"
-                      onMouseDown={(e) => handleMouseDown(e)}
-                      onMouseMove={(e) => handleMouseMove(e)}
-                      onMouseUp={() => handleMouseUp()}
-                      onMouseLeave={() => setIsDrawing(false)}
-                    >
-                      {/* Drawing box preview - RED DASHED BOX with highest z-index */}
-                      {isDrawing && currentBox && (
-                        <div
-                          className="absolute border-4 border-dashed border-red-500 bg-red-500/20 pointer-events-none z-50"
-                          style={{
-                            left: `${currentBox.x}%`,
-                            top: `${currentBox.y}%`,
-                            width: `${currentBox.width}%`,
-                            height: `${currentBox.height}%`
-                          }}
-                        />
-                      )}
-                      
-                      {/* Instruction overlay */}
-                      {!gameState.images[currentImageIndex]?.userAnnotation && !isDrawing && (
-                        <div className="absolute top-3 left-3 bg-black bg-opacity-80 text-white text-sm px-3 py-2 rounded-lg font-bold z-40">
-                          Click & drag to draw box
-                        </div>
-                      )}
-                    </div>
                         <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                         }`}>
