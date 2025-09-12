@@ -114,7 +114,7 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
       
       <div className="flex flex-col items-center space-y-3">
         <p className="text-sm text-gray-600 text-center">
-          Can't find any {currentCategory}? Mark it as "not found"
+          Use your mouse to draw a box around the {currentCategory}. Can't find any {currentCategory}? Mark it as "not found"
         </p>
         <button
           onClick={handleClearAnnotation}
