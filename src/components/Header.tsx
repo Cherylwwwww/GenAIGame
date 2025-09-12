@@ -54,12 +54,6 @@ export const Header: React.FC<HeaderProps> = ({
               <Trophy className="w-5 h-5 text-yellow-600" />
               <span className="text-xl font-bold text-yellow-800">{score}</span>
             </div>
-            
-            {/* Model Accuracy */}
-            <div className="text-center bg-green-50 px-4 py-2 rounded-xl">
-              <div className="text-sm text-green-600 font-medium">AI Accuracy</div>
-              <div className="text-2xl font-bold text-green-800">{modelAccuracy}%</div>
-            </div>
           </div>
         </div>
       </div>
