@@ -80,7 +80,6 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
       {testImage && (
         <div className="space-y-4">
           <div className="text-center mb-2">
-            <h4 className="font-medium text-gray-700">Test Image</h4>
             <p className="text-xs text-gray-500">
               {hasTrainedModel ? 'Model prediction shown below' : 'Train the model to see predictions'}
             </p>
