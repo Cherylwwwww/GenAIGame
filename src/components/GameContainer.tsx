@@ -481,14 +481,6 @@ export const GameContainer: React.FC = () => {
         </div>
         
         {/* Bottom Bar - Tips */}
-        <div className="mt-12 text-center">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 inline-block shadow-lg">
-            <p className="text-gray-700 text-lg">
-              💡 <strong>Tip:</strong> Better annotations = better AI performance
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
