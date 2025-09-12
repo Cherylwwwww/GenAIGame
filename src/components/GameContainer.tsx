@@ -324,6 +324,35 @@ export const GameContainer: React.FC = () => {
                       </div>
                     </div>
                   )}
+                  
+                  {/* Current drawing box preview */}
+                  {currentBox && isDrawing && (
+                    <div
+                      className="absolute border-2 border-dashed border-red-500 bg-red-500 bg-opacity-10"
+                      style={{
+                        left: `${currentBox.x}%`,
+                        top: `${currentBox.y}%`,
+                        width: `${currentBox.width}%`,
+                        height: `${currentBox.height}%`
+                      }}
+                    />
+                  )}
+                  
+                  {/* Mouse interaction overlay */}
+                  <div 
+                    className="absolute inset-0 cursor-crosshair"
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={() => setIsDrawing(false)}
+                  >
+                    {/* Instruction overlay when no annotation exists */}
+                    {!gameState.images[currentImageIndex]?.userAnnotation && !isDrawing && (
+                      <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                        Click & drag to mark {gameState.currentCategory}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               
