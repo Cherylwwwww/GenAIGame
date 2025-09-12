@@ -256,6 +256,24 @@ export const GameContainer: React.FC = () => {
         <div className="space-y-8">
           {/* Annotation and Test Areas with Conveyor Belt */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+            {/* Left Panel - Annotation Zone */}
+            <div className="lg:col-span-1">
+              <AnnotationPanel
+                images={gameState.images}
+                onAnnotate={handleAnnotate}
+                currentCategory={gameState.currentCategory}
+                annotatedCount={gameState.annotatedCount}
+                disabled={gameState.isTraining}
+                currentImageIndex={currentImageIndex}
+                onNextImage={handleNextImage}
+                onPrevImage={handlePrevImage}
+                onNextLevel={handleNextLevel}
+                modelAccuracy={gameState.modelAccuracy}
+                hasTrainedModel={gameState.hasTrainedModel}
+                modelState={gameState.modelState}
+              />
+            </div>
+            
             {/* Center - Conveyor Belt */}
             <div className="lg:col-span-1 flex flex-col items-center justify-center py-8">
               {/* Conveyor Belt Design */}
