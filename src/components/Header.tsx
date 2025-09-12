@@ -1,56 +1,72 @@
 import React from 'react';
-import { Brain, Trophy } from 'lucide-react';
+import { Brain, Trophy, User } from 'lucide-react';
 
 interface HeaderProps {
   currentLevel: number;
   currentCategory: string;
   score: number;
   modelAccuracy: number;
+  playerName: string;
+  isUsingRealTraining: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentLevel,
   currentCategory,
   score,
-  modelAccuracy
+  modelAccuracy,
+  playerName,
+  isUsingRealTraining
 }) => {
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 shadow-lg">
-      <div className="max-w-7xl mx-auto">
+    <header className="bg-white shadow-lg border-b-4 border-blue-500">
+      <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
+          {/* Left - Logo */}
           <div className="flex items-center space-x-3">
-            <Brain className="w-8 h-8" />
-            <h1 className="text-2xl font-bold">AI Annotation Training Game</h1>
+            <div className="bg-blue-500 p-2 rounded-xl">
+              <Brain className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">AI Training Game</h1>
+              <p className="text-sm text-gray-600">Level {currentLevel}</p>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-6">
-            <div className="text-center">
-              <div className="text-sm opacity-90">Level</div>
-              <div className="text-xl font-bold">{currentLevel}</div>
-            </div>
-            
-            <div className="text-center">
-              <div className="text-sm opacity-90">Current Task</div>
-              <div className="text-lg font-semibold">Identify {currentCategory}</div>
-            </div>
-            
-            <div className="text-center">
-              <div className="text-sm opacity-90">Model Accuracy</div>
-              <div className="text-xl font-bold text-green-300">{modelAccuracy}%</div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Trophy className="w-5 h-5 text-yellow-300" />
-              <span className="text-lg font-bold">{score}</span>
+          {/* Center - Current Task */}
+          <div className="text-center">
+            <div className="bg-blue-50 px-6 py-3 rounded-2xl border-2 border-blue-200">
+              <h2 className="text-2xl font-bold text-blue-800">
+                Task: {currentCategory} 🎯
+              </h2>
+              {isUsingRealTraining && (
+                <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full mt-1 inline-block">
+                  🤖 Real AI Training
+                </span>
+              )}
             </div>
           </div>
-        </div>
-        
-        <div className="mt-4 bg-white/20 rounded-full h-2">
-          <div 
-            className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-1000"
-            style={{ width: `${Math.min(modelAccuracy, 100)}%` }}
-          />
+          
+          {/* Right - Player Info */}
+          <div className="flex items-center space-x-6">
+            {/* Player Name */}
+            <div className="flex items-center space-x-2 bg-gray-50 px-4 py-2 rounded-xl">
+              <User className="w-5 h-5 text-gray-600" />
+              <span className="font-medium text-gray-800">{playerName}</span>
+            </div>
+            
+            {/* Score */}
+            <div className="flex items-center space-x-2 bg-yellow-50 px-4 py-2 rounded-xl">
+              <Trophy className="w-5 h-5 text-yellow-600" />
+              <span className="text-xl font-bold text-yellow-800">{score}</span>
+            </div>
+            
+            {/* Model Accuracy */}
+            <div className="text-center bg-green-50 px-4 py-2 rounded-xl">
+              <div className="text-sm text-green-600 font-medium">AI Accuracy</div>
+              <div className="text-2xl font-bold text-green-800">{modelAccuracy}%</div>
+            </div>
+          </div>
         </div>
       </div>
     </header>

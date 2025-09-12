@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AnnotationPanel } from './AnnotationPanel';
 import { ModelPanel } from './ModelPanel';
-import { NextLevelButton } from './NextLevelButton';
+import { Header } from './Header';
 import { GameState, GameImage, BoundingBox } from '../types';
 import { categories } from '../utils/gameData';
 import { generateRandomImages, calculateAccuracy, simulateModelPrediction, generateTestImages } from '../utils/gameLogic';
@@ -23,6 +23,7 @@ export const GameContainer: React.FC = () => {
   const [testImages, setTestImages] = useState<GameImage[]>([]);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [isUsingRealTraining, setIsUsingRealTraining] = useState(false);
+  const [playerName] = useState('Player'); // Could be made dynamic later
 
   // Initialize game images
   useEffect(() => {
@@ -178,21 +179,29 @@ export const GameContainer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Top Bar */}
+      <Header
+        currentLevel={gameState.currentLevel}
+        currentCategory={gameState.currentCategory}
+        score={gameState.score}
+        modelAccuracy={gameState.modelAccuracy}
+        playerName={playerName}
+        isUsingRealTraining={isUsingRealTraining}
+      />
+      
+      <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Main Task Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 border-2 border-blue-500 rounded-lg px-8 py-4 inline-block bg-white">
-            Task: {gameState.currentCategory}
-            {isUsingRealTraining && (
-              <span className="ml-3 text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                🤖 Real AI Training
-              </span>
-            )}
+        <div className="text-center mb-12">
+          <h1 className="text-6xl font-bold text-gray-800 mb-2">
+            Find {gameState.currentCategory} 🎯
           </h1>
+          <p className="text-xl text-gray-600">Annotate images to train your AI model</p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Main Area - Two Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Left Panel - Annotation Zone */}
           <AnnotationPanel
             images={gameState.images}
             onAnnotate={handleAnnotate}
@@ -202,8 +211,13 @@ export const GameContainer: React.FC = () => {
             currentImageIndex={currentImageIndex}
             onNextImage={handleNextImage}
             onPrevImage={handlePrevImage}
+            onNextLevel={handleNextLevel}
+            modelAccuracy={gameState.modelAccuracy}
+            hasTrainedModel={gameState.hasTrainedModel}
+            modelState={gameState.modelState}
           />
           
+          {/* Right Panel - Model Feedback Zone */}
           <ModelPanel
             images={testImages}
             modelAccuracy={gameState.modelAccuracy}
@@ -217,15 +231,13 @@ export const GameContainer: React.FC = () => {
           />
         </div>
         
-        {/* 下一关按钮 */}
-        <div className="mt-8">
-          <NextLevelButton
-            modelAccuracy={gameState.modelAccuracy}
-            modelState={gameState.modelState}
-            hasTrainedModel={gameState.hasTrainedModel}
-            onNextLevel={handleNextLevel}
-            currentLevel={gameState.currentLevel}
-          />
+        {/* Bottom Bar - Tips */}
+        <div className="mt-12 text-center">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 inline-block shadow-lg">
+            <p className="text-gray-700 text-lg">
+              💡 <strong>Tip:</strong> Better annotations = better AI performance
+            </p>
+          </div>
         </div>
       </div>
     </div>

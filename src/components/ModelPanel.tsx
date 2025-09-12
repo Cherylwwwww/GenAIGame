@@ -1,5 +1,6 @@
 import React from 'react';
-import { GameImage, BoundingBox } from '../types';
+import { GameImage } from '../types';
+import { Brain, Zap, Target } from 'lucide-react';
 
 interface ModelPanelProps {
   images: GameImage[];
@@ -30,131 +31,146 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
     switch (modelState) {
       case 'underfitting':
         return { 
-          text: 'Underfitting', 
-          color: 'text-gray-600', 
-          bg: 'bg-gray-50',
-          barColor: 'from-gray-400 to-gray-500',
-          description: 'Model needs more training data'
+          text: 'Too Little Data', 
+          color: 'text-yellow-600', 
+          bg: 'bg-yellow-50',
+          barColor: 'from-yellow-400 to-orange-400',
+          icon: '🤔',
+          description: 'Need more training examples'
         };
       case 'correct':
         return { 
-          text: 'Good Fit', 
+          text: 'Perfect Balance', 
           color: 'text-green-600', 
           bg: 'bg-green-50',
-          barColor: 'from-blue-500 to-green-500',
-          description: '✅ Model learned the right patterns'
+          barColor: 'from-green-400 to-blue-400',
+          icon: '🎯',
+          description: 'AI learned correctly!'
         };
       case 'overfitting':
         return { 
-          text: 'Overfitting', 
+          text: 'Memorized Only', 
           color: 'text-red-600', 
           bg: 'bg-red-50',
-          barColor: 'from-red-500 to-orange-500',
-          description: '⚠️ Model memorized data, poor generalization'
+          barColor: 'from-red-400 to-pink-400',
+          icon: '😅',
+          description: 'Too much training data'
         };
     }
   };
 
   const stateDisplay = getModelStateDisplay();
-
-  // Dynamic accuracy range calculation
-  const getAccuracyRange = () => {
-    switch (modelState) {
-      case 'underfitting':
-        return { min: 30, max: 50 };
-      case 'correct':
-        return { min: 85, max: 90 };
-      case 'overfitting':
-        return { min: 60, max: 70 };
-    }
-  };
-
-  const accuracyRange = getAccuracyRange();
   const displayAccuracy = hasTrainedModel ? modelAccuracy : Math.min(30 + annotatedCount * 3, 50);
 
   return (
-    <div className="bg-white rounded-lg border-2 border-blue-500 p-6">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">🤖 AI Model Training</h3>
+    <div className="space-y-6">
+      {/* Train Model Section */}
+      <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">AI Model Training 🤖</h2>
+          <p className="text-gray-600">Train your AI to recognize {currentCategory}</p>
+        </div>
         
-        {!hasTrainedModel && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-            <p className="text-sm text-blue-800">
-              💡 <strong>Tip:</strong> Annotate a few images to start training!
-              Better annotation quality leads to better model performance.
+        {/* Large Train Button */}
+        <div className="text-center mb-8">
+          <button
+            onClick={onTrainModel}
+            disabled={isTraining || !canTrain}
+            className={`w-full px-8 py-6 rounded-2xl font-bold text-2xl transition-all duration-300 ${
+              isTraining || !canTrain
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-3">
+              {isTraining ? (
+                <>
+                  <div className="animate-spin">🔄</div>
+                  <span>Training AI...</span>
+                </>
+              ) : (
+                <>
+                  <Brain className="w-8 h-8" />
+                  <span>Train AI Model</span>
+                  <Zap className="w-8 h-8" />
+                </>
+              )}
+            </div>
+          </button>
+          
+          {!canTrain && (
+            <p className="mt-3 text-gray-500">
+              📝 Annotate at least 1 image to start training
             </p>
-          </div>
-        )}
-      </div>
-      
-      {/* Training Button */}
-      <div className="text-center mb-6">
-        <button
-          onClick={onTrainModel}
-          disabled={isTraining || !canTrain}
-          className={`px-8 py-3 rounded-lg font-medium transition-all duration-200 text-lg ${
-            isTraining || !canTrain
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:scale-105'
-          }`}
-        >
-          {isTraining ? '🔄 Training Model...' : '🚀 Start Training Model'}
-        </button>
-        
-        {!canTrain && (
-          <p className="mt-2 text-sm text-gray-500">
-            Please annotate at least 1 image to start training
-          </p>
-        )}
-        
+          )}
+        </div>
+
+        {/* Training Progress Animation */}
         {isTraining && (
-          <div className="mt-3">
-            <div className="animate-pulse text-sm text-gray-600">
-              Analyzing your annotations and building AI model...
+          <div className="mb-8">
+            <div className="bg-blue-50 rounded-xl p-4">
+              <div className="flex items-center justify-center space-x-2 text-blue-700 mb-3">
+                <Brain className="w-5 h-5 animate-pulse" />
+                <span className="font-medium">AI is learning from your annotations...</span>
+              </div>
+              <div className="bg-blue-200 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full animate-pulse" style={{ width: '60%' }} />
+              </div>
             </div>
           </div>
         )}
       </div>
-      
-      {/* Test Image Area */}
+
+      {/* Test Image Section */}
       {testImage && (
-        <div className="space-y-4">
-          <div className="text-center mb-2">
-            <h4 className="text-md font-semibold text-gray-700">📸 Test Image</h4>
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Test Image 📸</h3>
+            <p className="text-gray-600">See how your AI performs</p>
           </div>
           
           <div className="relative">
             <img
               src={testImage.url}
               alt="Test image"
-              className="w-full h-64 object-cover rounded-lg border-2 border-gray-300"
+              className="w-full h-64 object-cover rounded-xl border-4 border-gray-200"
             />
             
-            {/* Model Prediction Box */}
+            {/* Model Prediction Overlay */}
             {hasTrainedModel && testImage.modelPrediction === true && (
               <div
-                className="absolute border-3 border-green-500 bg-green-500 bg-opacity-20 animate-pulse"
+                className="absolute border-4 border-green-400 bg-green-400 bg-opacity-20 animate-pulse rounded-lg"
                 style={{
-                  left: '25%',
-                  top: '20%', 
-                  width: '50%',
-                  height: '60%'
+                  left: '20%',
+                  top: '15%', 
+                  width: '60%',
+                  height: '70%'
                 }}
               />
             )}
             
-            {/* Prediction Result Label */}
+            {/* Prediction Result */}
             {hasTrainedModel && testImage.modelPrediction !== undefined && (
-              <div className="absolute top-2 right-2">
-                <div className={`px-3 py-1 rounded-lg text-sm font-medium animate-fadeIn ${
+              <div className="absolute top-4 right-4">
+                <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
                   testImage.modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                 }`}>
-                  {testImage.modelPrediction ? `✓ Found ${currentCategory}` : `✗ No ${currentCategory} found`}
+                  {testImage.modelPrediction ? `✓ Found ${currentCategory}!` : `✗ No ${currentCategory}`}
                   {testImage.confidence && (
-                    <div className="text-xs opacity-90">
-                      Confidence: {Math.round(testImage.confidence * 100)}%
+                    <div className="text-sm opacity-90 mt-1">
+                      {Math.round(testImage.confidence * 100)}% confident
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Placeholder when no model */}
+            {!hasTrainedModel && (
+              <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
+                <div className="text-white text-center">
+                  <Target className="w-12 h-12 mx-auto mb-2 opacity-70" />
+                  <p className="text-lg font-medium">Train AI to see predictions</p>
                 </div>
               </div>
             )}
@@ -162,76 +178,69 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
         </div>
       )}
       
-      {/* Dynamic Accuracy Progress Bar */}
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
-        <h4 className="font-semibold text-gray-800 mb-3 text-center">📊 Model Performance Analysis</h4>
+      {/* Model Performance Section */}
+      <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-2">AI Performance 📊</h3>
+        </div>
         
-        {/* Real-time Accuracy Display */}
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Current Accuracy:</span>
-            <span className={`font-bold text-lg ${stateDisplay.color}`}>
-              {displayAccuracy}%
+        {/* Large Accuracy Display */}
+        <div className="text-center mb-6">
+          <div className="text-6xl font-bold text-gray-800 mb-2">
+            {displayAccuracy}%
+          </div>
+          <div className="text-gray-600">Accuracy Score</div>
+        </div>
+        
+        {/* Animated Progress Bar */}
+        <div className="mb-6">
+          <div className="bg-gray-200 rounded-full h-6 overflow-hidden">
+            <div 
+              className={`bg-gradient-to-r ${stateDisplay.barColor} h-6 rounded-full transition-all duration-1000 ease-out ${
+                modelState === 'overfitting' ? 'animate-pulse' : ''
+              }`}
+              style={{ width: `${Math.min(displayAccuracy, 100)}%` }}
+            />
+          </div>
+          
+          {/* Accuracy Markers */}
+          <div className="flex justify-between text-xs text-gray-500 mt-2">
+            <span>0%</span>
+            <span className="text-yellow-600">50%</span>
+            <span className="text-green-600">85%</span>
+            <span>100%</span>
+          </div>
+        </div>
+        
+        {/* Model State Display */}
+        <div className={`text-center py-4 px-6 rounded-xl border-2 ${stateDisplay.bg} ${
+          stateDisplay.color === 'text-green-600' ? 'border-green-200' : 
+          stateDisplay.color === 'text-red-600' ? 'border-red-200' : 'border-yellow-200'
+        }`}>
+          <div className="flex items-center justify-center space-x-3 mb-2">
+            <span className="text-3xl">{stateDisplay.icon}</span>
+            <span className={`text-xl font-bold ${stateDisplay.color}`}>
+              {stateDisplay.text}
             </span>
           </div>
-          
-          {/* Dynamic Progress Bar */}
-          <div className="relative">
-            <div className="bg-gray-200 rounded-full h-3">
-              <div 
-                className={`bg-gradient-to-r ${stateDisplay.barColor} h-3 rounded-full transition-all duration-1000 ease-out ${
-                  modelState === 'overfitting' ? 'animate-pulse' : ''
-                }`}
-                style={{ width: `${Math.min(displayAccuracy, 100)}%` }}
-              />
-            </div>
-            
-            {/* Accuracy Range Markers */}
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>0%</span>
-              <span className="text-yellow-600">50%</span>
-              <span className="text-green-600">85%</span>
-              <span>100%</span>
-            </div>
+          <div className="text-gray-700">
+            {stateDisplay.description}
           </div>
-          
-          {/* Model State Indicator */}
-          <div className={`text-center py-3 px-4 rounded-lg border ${stateDisplay.bg} ${
-            stateDisplay.color === 'text-green-600' ? 'border-green-200' : 
-            stateDisplay.color === 'text-red-600' ? 'border-red-200' : 'border-gray-200'
-          }`}>
-            <div className={`font-semibold ${stateDisplay.color} mb-1`}>
-              Model State: {stateDisplay.text}
-            </div>
-            <div className="text-sm text-gray-700">
-              {stateDisplay.description}
-            </div>
-          </div>
-          
-          {/* Training Suggestions */}
-          {!hasTrainedModel && annotatedCount > 0 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <div className="text-sm text-blue-800">
-                <strong>Training Suggestion:</strong>
-                {annotatedCount < 3 && " Continue annotating more images to improve accuracy"}
-                {annotatedCount >= 3 && annotatedCount < 7 && " Current data amount is good, ready to train"}
-                {annotatedCount >= 7 && " Sufficient data, watch out for overfitting"}
-              </div>
-            </div>
-          )}
-          
-          {/* Real-time Feedback */}
-          {annotatedCount > 0 && !hasTrainedModel && (
-            <div className="text-center">
-              <div className="text-sm text-gray-600">
-                Annotated: {annotatedCount} images
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                Estimated accuracy: {Math.min(30 + annotatedCount * 5, 85)}%
-              </div>
-            </div>
-          )}
         </div>
+        
+        {/* Training Tips */}
+        {!hasTrainedModel && annotatedCount > 0 && (
+          <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+            <div className="text-center text-blue-800">
+              <div className="text-lg font-bold mb-1">💡 Training Tip</div>
+              <div className="text-sm">
+                {annotatedCount < 3 && "Keep annotating for better accuracy!"}
+                {annotatedCount >= 3 && annotatedCount < 7 && "Good amount of data - ready to train!"}
+                {annotatedCount >= 7 && "Lots of data - watch for overfitting!"}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

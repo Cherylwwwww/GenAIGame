@@ -126,45 +126,18 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
       </div>
       
       {/* Instructions and Controls */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="text-center space-y-3">
-          <div className="flex items-center justify-center gap-2 text-blue-800 font-medium">
-            <span className="text-lg">🎯</span>
-            <span>How to annotate:</span>
-          </div>
-          
-          <p className="text-sm text-blue-700 leading-relaxed">
-            <strong>Found {currentCategory}?</strong> Click and drag to draw a box around it.<br/>
-            <strong>No {currentCategory} visible?</strong> Click the button below.
-          </p>
-        </div>
-      </div>
-      
-      <div className="text-center">
+      <div className="text-center mt-6">
         <button
           onClick={handleClearAnnotation}
           disabled={disabled}
-          className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-semibold hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
+          className="w-full px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold text-lg hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
+          title={`Mark this image as having no ${currentCategory}`}
         >
           <div className="flex items-center gap-2">
-            <span>❌</span>
-            <span>No {currentCategory} Found</span>
+            <span className="text-xl">🚫</span>
+            <span>No {currentCategory}</span>
           </div>
         </button>
-      </div>
-      
-      {/* Quick Tips */}
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-        <div className="text-xs text-gray-600 space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-            <span>Tip: Draw tight boxes around the object for better accuracy</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-            <span>Auto-advance: Annotation automatically moves to next image</span>
-          </div>
-        </div>
       </div>
     </div>
   );
