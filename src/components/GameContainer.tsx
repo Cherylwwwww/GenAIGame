@@ -311,7 +311,7 @@ export const GameContainer: React.FC = () => {
                   {/* Bounding Box Display */}
                   {gameState.images[currentImageIndex]?.userAnnotation && (
                     <div
-                      className="absolute border-3 border-red-400 bg-red-400 bg-opacity-25 shadow-lg"
+                      className="absolute border-4 border-red-500 bg-red-500 bg-opacity-30 shadow-lg pointer-events-none"
                       style={{
                         left: `${gameState.images[currentImageIndex].userAnnotation.x}%`,
                         top: `${gameState.images[currentImageIndex].userAnnotation.y}%`,
@@ -319,7 +319,7 @@ export const GameContainer: React.FC = () => {
                         height: `${gameState.images[currentImageIndex].userAnnotation.height}%`
                       }}
                     >
-                      <div className="absolute -top-6 left-0 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                      <div className="absolute -top-7 left-0 bg-red-600 text-white text-sm px-3 py-1 rounded font-bold shadow-md">
                         {gameState.currentCategory}
                       </div>
                     </div>
@@ -328,7 +328,7 @@ export const GameContainer: React.FC = () => {
                   {/* Current drawing box preview */}
                   {currentBox && isDrawing && (
                     <div
-                      className="absolute border-2 border-dashed border-red-500 bg-red-500 bg-opacity-10"
+                      className="absolute border-3 border-dashed border-red-400 bg-red-400 bg-opacity-20 pointer-events-none"
                       style={{
                         left: `${currentBox.x}%`,
                         top: `${currentBox.y}%`,
@@ -340,7 +340,7 @@ export const GameContainer: React.FC = () => {
                   
                   {/* Mouse interaction overlay */}
                   <div 
-                    className="absolute inset-0 cursor-crosshair"
+                    className="absolute inset-0 cursor-crosshair z-10"
                    ref={imageRef}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
@@ -349,7 +349,7 @@ export const GameContainer: React.FC = () => {
                   >
                     {/* Instruction overlay when no annotation exists */}
                     {!gameState.images[currentImageIndex]?.userAnnotation && !isDrawing && (
-                      <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                      <div className="absolute top-3 left-3 bg-black bg-opacity-70 text-white text-sm px-3 py-2 rounded-lg font-medium">
                         Click & drag to mark {gameState.currentCategory}
                       </div>
                     )}
