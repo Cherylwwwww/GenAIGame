@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Zap } from 'lucide-react';
 import { AnnotationPanel } from './AnnotationPanel';
 import { ModelPanel } from './ModelPanel';
 import { Header } from './Header';
