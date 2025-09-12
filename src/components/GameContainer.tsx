@@ -34,10 +34,9 @@ export const GameContainer: React.FC = () => {
     if (!imageRef.current) return { x: 0, y: 0 };
     
     const rect = imageRef.current.getBoundingClientRect();
-    return {
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100
-    };
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    return { x, y };
   }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -62,11 +61,18 @@ export const GameContainer: React.FC = () => {
     e.preventDefault();
     
     const currentPoint = getRelativeCoordinates(e);
+    
+    // Normalize bounding box to handle all drag directions
+    const left = Math.max(0, Math.min(startPoint.x, currentPoint.x));
+    const top = Math.max(0, Math.min(startPoint.y, currentPoint.y));
+    const right = Math.min(100, Math.max(startPoint.x, currentPoint.x));
+    const bottom = Math.min(100, Math.max(startPoint.y, currentPoint.y));
+    
     const box: BoundingBox = {
-      x: Math.min(startPoint.x, currentPoint.x),
-      y: Math.min(startPoint.y, currentPoint.y),
-      width: Math.abs(currentPoint.x - startPoint.x),
-      height: Math.abs(currentPoint.y - startPoint.y)
+      x: left,
+      y: top,
+      width: right - left,
+      height: bottom - top
     };
     
     setCurrentBox(box);
