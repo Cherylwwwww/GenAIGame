@@ -61,6 +61,9 @@ export const ModelPanel: React.FC<ModelPanelProps> = ({
 
   const stateDisplay = getModelStateDisplay();
   const displayAccuracy = hasTrainedModel ? modelAccuracy : Math.min(30 + annotatedCount * 3, 50);
+
+  return (
+    <div className="space-y-8">
       {/* Test Image Section */}
       {testImage && (
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
