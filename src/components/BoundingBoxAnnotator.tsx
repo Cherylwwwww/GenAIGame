@@ -67,6 +67,10 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
     setIsDrawing(false);
     if (currentBox && currentBox.width > 2 && currentBox.height > 2) {
       onAnnotate(currentBox);
+      // Automatically advance to next image after drawing a box
+      if (onNextImage) {
+        setTimeout(() => onNextImage(), 500); // Small delay for visual feedback
+      }
     }
   };
 
