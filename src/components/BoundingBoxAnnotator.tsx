@@ -164,7 +164,6 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
             <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
             <span>Auto-advance: Annotation automatically moves to next image</span>
           </div>
-        </p>
       </div>
     </div>
   );
