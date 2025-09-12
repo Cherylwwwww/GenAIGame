@@ -42,9 +42,6 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
   return (
     <div className="bg-white rounded-lg border-2 border-blue-500 p-6">
       <div className="mb-4">
-        <div className="bg-blue-50 border border-blue-200 rounded px-3 py-2 mb-4">
-          <span className="text-blue-800 font-medium">Task: {currentCategory}</span>
-        </div>
       <BoundingBoxAnnotator
         imageUrl={currentImage.url}
         onAnnotate={handleAnnotation}
