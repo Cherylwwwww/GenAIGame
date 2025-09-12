@@ -244,108 +244,168 @@ export const GameContainer: React.FC = () => {
       />
       
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Main Task Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold text-gray-800 mb-2">
-            Find {gameState.currentCategory} 🎯
-          </h1>
-          <p className="text-xl text-gray-600">Annotate images to train your AI model</p>
-        </div>
-        
-        {/* Main Area - Two Columns */}
-        <div className="space-y-8">
-          {/* Annotation and Test Areas with Conveyor Belt */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-            {/* Left Panel - Annotation Zone */}
-            <div className="lg:col-span-1">
-              <AnnotationPanel
-                images={gameState.images}
-                onAnnotate={handleAnnotate}
-                currentCategory={gameState.currentCategory}
-                annotatedCount={gameState.annotatedCount}
-                disabled={gameState.isTraining}
-                currentImageIndex={currentImageIndex}
-                onNextImage={handleNextImage}
-                onPrevImage={handlePrevImage}
-                onNextLevel={handleNextLevel}
-                modelAccuracy={gameState.modelAccuracy}
-                hasTrainedModel={gameState.hasTrainedModel}
-                modelState={gameState.modelState}
-              />
-            </div>
-            
-            {/* Center - Conveyor Belt */}
-            <div className="lg:col-span-1 flex flex-col items-center justify-center py-8">
-              {/* Conveyor Belt Design */}
-              <div className="relative w-full max-w-xs">
-                {/* Belt Track */}
-                <div className="bg-gray-800 rounded-full h-16 relative overflow-hidden shadow-inner">
-                  {/* Moving Belt Animation */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-pulse">
-                    <div className="absolute inset-0 bg-repeating-linear bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-30 animate-pulse"></div>
-                  </div>
+        {/* Main Game Layout */}
+        <div className="flex items-center justify-center min-h-[600px] gap-8">
+          {/* Left Side - Annotation Image */}
+          <div className="flex-1 max-w-md">
+            <div className="bg-white rounded-2xl shadow-xl p-6 h-full">
+              {/* Annotation Image */}
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                  Annotation Image 🖼️
+                </h3>
+                <div className="relative">
+                  <img
+                    src={gameState.images[currentImageIndex]?.url}
+                    alt="Annotation target"
+                    className="w-full h-64 object-cover rounded-xl border-4 border-gray-200"
+                  />
                   
-                  {/* Belt Segments */}
-                  <div className="absolute inset-y-0 left-0 w-full flex items-center">
-                    <div className="flex space-x-4 animate-pulse">
-                      <div className="w-2 h-8 bg-gray-400 rounded-full opacity-60"></div>
-                      <div className="w-2 h-8 bg-gray-400 rounded-full opacity-40"></div>
-                      <div className="w-2 h-8 bg-gray-400 rounded-full opacity-60"></div>
-                      <div className="w-2 h-8 bg-gray-400 rounded-full opacity-40"></div>
+                  {/* Bounding Box Display */}
+                  {gameState.images[currentImageIndex]?.userAnnotation && (
+                    <div
+                      className="absolute border-3 border-red-400 bg-red-400 bg-opacity-25 shadow-lg"
+                      style={{
+                        left: `${gameState.images[currentImageIndex].userAnnotation.x}%`,
+                        top: `${gameState.images[currentImageIndex].userAnnotation.y}%`,
+                        width: `${gameState.images[currentImageIndex].userAnnotation.width}%`,
+                        height: `${gameState.images[currentImageIndex].userAnnotation.height}%`
+                      }}
+                    >
+                      <div className="absolute -top-6 left-0 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                        {gameState.currentCategory}
+                      </div>
                     </div>
-                  </div>
-                </div>
-                
-                {/* Arrow Direction */}
-                <div className="absolute -right-8 top-1/2 transform -translate-y-1/2">
-                  <div className="text-3xl text-blue-600 animate-bounce">→</div>
+                  )}
                 </div>
               </div>
               
-              {/* Train Button */}
-              <div className="mt-8 w-full max-w-xs">
+              {/* Annotation Tools */}
+              <div className="space-y-4">
                 <button
-                  onClick={handleTrainModel}
-                  disabled={gameState.isTraining || gameState.annotatedCount === 0}
-                  className={`w-full px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${
-                    gameState.isTraining || gameState.annotatedCount === 0
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
+                  onClick={() => handleAnnotate(gameState.images[currentImageIndex]?.id, null)}
+                  disabled={gameState.isTraining || isRecordingAnnotation}
+                  className={`w-full px-6 py-3 rounded-xl font-bold text-lg transition-all duration-200 ${
+                    gameState.isTraining || isRecordingAnnotation
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105'
                   }`}
                 >
-                  <div className="flex items-center justify-center space-x-2">
-                    {gameState.isTraining ? (
+                  <div className="flex items-center justify-center gap-2">
+                    {isRecordingAnnotation ? (
                       <>
-                        <div className="animate-spin">🔄</div>
-                        <span>Training...</span>
+                        <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                        <span>Recording...</span>
                       </>
                     ) : (
                       <>
-                        <span>🤖</span>
-                        <span>Train AI</span>
-                        <span>⚡</span>
+                        <span className="text-xl">🚫</span>
+                        <span>No {gameState.currentCategory}</span>
                       </>
                     )}
                   </div>
                 </button>
                 
-                {gameState.annotatedCount === 0 && (
-                  <p className="mt-2 text-center text-gray-500 text-sm">
-                    📝 Annotate images first
-                  </p>
-                )}
+                {/* Navigation */}
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={handlePrevImage}
+                    disabled={currentImageIndex === 0}
+                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                      currentImageIndex === 0
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                    }`}
+                  >
+                    ← Previous
+                  </button>
+                  
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-gray-800">
+                      {currentImageIndex + 1} / {gameState.images.length}
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={handleNextImage}
+                    disabled={currentImageIndex === gameState.images.length - 1}
+                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                      currentImageIndex === gameState.images.length - 1
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                    }`}
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Center - Animated Conveyor Belt */}
+          <div className="flex flex-col items-center justify-center px-8">
+            {/* Flowing Data Animation */}
+            <div className="relative w-32 h-16 mb-6">
+              {/* Conveyor Belt Track */}
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800 rounded-full shadow-inner">
+                {/* Moving Belt Segments */}
+                <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
+                  <div className="flex space-x-2 animate-pulse">
+                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-80 animate-bounce" style={{ animationDelay: '0s' }}></div>
+                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-60 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-80 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-60 animate-bounce" style={{ animationDelay: '0.6s' }}></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Flow Direction Arrow */}
+              <div className="absolute -right-10 top-1/2 transform -translate-y-1/2">
+                <div className="text-4xl text-blue-600 animate-pulse">→</div>
               </div>
             </div>
             
-            {/* Right Panel - Test Image */}
-            <div className="lg:col-span-1">
-              {testImages[0] && (
-                <div className="bg-white rounded-2xl shadow-xl p-8 h-full">
-                  <div className="text-center mb-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">Test Image 📸</h3>
-                    <p className="text-gray-600">See how your AI performs</p>
-                  </div>
-                  
+            {/* Train AI Button */}
+            <button
+              onClick={handleTrainModel}
+              disabled={gameState.isTraining || gameState.annotatedCount === 0}
+              className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${
+                gameState.isTraining || gameState.annotatedCount === 0
+                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-xl hover:shadow-2xl transform hover:scale-105'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                {gameState.isTraining ? (
+                  <>
+                    <div className="animate-spin">🔄</div>
+                    <span>Training...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>🤖</span>
+                    <span>Train AI</span>
+                    <span>⚡</span>
+                  </>
+                )}
+              </div>
+            </button>
+            
+            {gameState.annotatedCount === 0 && (
+              <p className="mt-3 text-center text-gray-500 text-sm">
+                📝 Annotate images first
+              </p>
+            )}
+          </div>
+          
+          {/* Right Side - Test Image */}
+          <div className="flex-1 max-w-md">
+            {testImages[0] && (
+              <div className="bg-white rounded-2xl shadow-xl p-6 h-full">
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                    Test Image 📸
+                  </h3>
                   <div className="relative">
                     <img
                       src={testImages[0].url}
@@ -393,86 +453,31 @@ export const GameContainer: React.FC = () => {
                     )}
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Model Performance Section - Full Width Below */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">AI Performance 📊</h3>
-            </div>
-            
-            {/* Large Accuracy Display */}
-            <div className="text-center mb-6">
-              <div className="text-6xl font-bold text-gray-800 mb-2 transition-all duration-1000">
-                {gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 50)}%
-              </div>
-              <div className="text-gray-600">
-                AI Confidence
-                {gameState.annotatedCount > 0 && (
-                  <div className="text-sm text-blue-600 mt-1">
-                    📈 +{Math.min(gameState.annotatedCount * 3, 50)}% from {gameState.annotatedCount} annotations
+                
+                {/* AI Performance Display */}
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-gray-800 mb-1">
+                      {gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 50)}%
+                    </div>
+                    <div className="text-gray-600 text-sm">AI Accuracy</div>
                   </div>
-                )}
+                  
+                  {/* Progress Bar */}
+                  <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className={`bg-gradient-to-r ${
+                        gameState.modelState === 'underfitting' ? 'from-yellow-400 to-orange-400' :
+                        gameState.modelState === 'correct' ? 'from-green-400 to-blue-400' :
+                        'from-red-400 to-pink-400'
+                      } h-3 rounded-full transition-all duration-1000 ease-out`}
+                      style={{ width: `${Math.min(gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 50), 100)}%` }}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            {/* Animated Progress Bar */}
-            <div className="mb-6">
-              <div className="bg-gray-200 rounded-full h-6 overflow-hidden">
-                <div 
-                  className={`bg-gradient-to-r ${
-                    gameState.modelState === 'underfitting' ? 'from-yellow-400 to-orange-400' :
-                    gameState.modelState === 'correct' ? 'from-green-400 to-blue-400' :
-                    'from-red-400 to-pink-400'
-                  } h-6 rounded-full transition-all duration-1000 ease-out ${
-                    gameState.modelState === 'overfitting' ? 'animate-pulse' : ''
-                  }`}
-                  style={{ width: `${Math.min(gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 50), 100)}%` }}
-                />
-              </div>
-              
-              {/* Accuracy Markers */}
-              <div className="flex justify-between text-xs text-gray-500 mt-2">
-                <span>0%</span>
-                <span className="text-yellow-600">50%</span>
-                <span className="text-green-600">85%</span>
-                <span>100%</span>
-              </div>
-            </div>
+            )}
           </div>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Panel - Annotation Zone */}
-          <AnnotationPanel
-            images={gameState.images}
-            onAnnotate={handleAnnotate}
-            currentCategory={gameState.currentCategory}
-            annotatedCount={gameState.annotatedCount}
-            disabled={gameState.isTraining}
-            currentImageIndex={currentImageIndex}
-            onNextImage={handleNextImage}
-            onPrevImage={handlePrevImage}
-            onNextLevel={handleNextLevel}
-            modelAccuracy={gameState.modelAccuracy}
-            hasTrainedModel={gameState.hasTrainedModel}
-            modelState={gameState.modelState}
-          />
-          
-          {/* Right Panel - Model Feedback Zone */}
-          <ModelPanel
-            images={testImages}
-            modelAccuracy={gameState.modelAccuracy}
-            isTraining={gameState.isTraining}
-            hasTrainedModel={gameState.hasTrainedModel}
-            onTrainModel={handleTrainModel}
-            canTrain={gameState.annotatedCount > 0}
-            modelState={gameState.modelState}
-            currentCategory={gameState.currentCategory}
-            annotatedCount={gameState.annotatedCount}
-          />
         </div>
         
         {/* Bottom Bar - Tips */}
