@@ -34,10 +34,9 @@ export const GameContainer: React.FC = () => {
     if (!imageRef.current) return { x: 0, y: 0 };
     
     const rect = imageRef.current.getBoundingClientRect();
-    return {
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100
-    };
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    return { x, y };
   }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -62,11 +61,18 @@ export const GameContainer: React.FC = () => {
     e.preventDefault();
     
     const currentPoint = getRelativeCoordinates(e);
+    
+    // Normalize bounding box to handle all drag directions
+    const left = Math.max(0, Math.min(startPoint.x, currentPoint.x));
+    const top = Math.max(0, Math.min(startPoint.y, currentPoint.y));
+    const right = Math.min(100, Math.max(startPoint.x, currentPoint.x));
+    const bottom = Math.min(100, Math.max(startPoint.y, currentPoint.y));
+    
     const box: BoundingBox = {
-      x: Math.min(startPoint.x, currentPoint.x),
-      y: Math.min(startPoint.y, currentPoint.y),
-      width: Math.abs(currentPoint.x - startPoint.x),
-      height: Math.abs(currentPoint.y - startPoint.y)
+      x: left,
+      y: top,
+      width: right - left,
+      height: bottom - top
     };
     
     setCurrentBox(box);
@@ -499,17 +505,17 @@ export const GameContainer: React.FC = () => {
                   <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
                     Test Image 📸
                   </h3>
-                  <div className="relative" ref={imageRef}>
+                  <div className="relative w-full">
                     <img
                       src={testImages[0].url}
                       alt="Test image"
-                      className="w-full h-64 object-cover rounded-xl border-4 border-gray-200"
+                      className="w-full h-64 object-cover rounded-xl border-4 border-gray-200 pointer-events-none"
                     />
                     
-                    {/* Model Prediction Overlay */}
+                    {/* Existing Bounding Box Display */}
                     {gameState.hasTrainedModel && testImages[0].modelPrediction === true && (
                       <div
-                        className="absolute border-4 border-green-400 bg-green-400 bg-opacity-20 animate-pulse rounded-lg"
+                        className={`absolute shadow-lg pointer-events-none z-40 ${
                         style={{
                           left: '20%',
                           top: '15%', 
@@ -522,19 +528,19 @@ export const GameContainer: React.FC = () => {
                     {/* Prediction Result */}
                     {gameState.hasTrainedModel && testImages[0].modelPrediction !== undefined && (
                       <div className="absolute top-4 right-4">
-                    
+                    {/* Mouse interaction overlay with higher z-index */}
                     {/* Mouse annotation overlay */}
                     <div 
-                      className="absolute inset-0 cursor-crosshair"
+                      className="absolute inset-0 cursor-crosshair z-30"
                       onMouseDown={(e) => handleMouseDown(e)}
                       onMouseMove={(e) => handleMouseMove(e)}
                       onMouseUp={() => handleMouseUp()}
                       onMouseLeave={() => setIsDrawing(false)}
                     >
-                      {/* Drawing box preview */}
+                      {/* Drawing box preview - RED DASHED BOX with highest z-index */}
                       {isDrawing && currentBox && (
                         <div
-                          className="absolute border-2 border-dashed border-red-500 bg-red-500 bg-opacity-10"
+                          className="absolute border-4 border-dashed border-red-500 bg-red-500/20 pointer-events-none z-50"
                           style={{
                             left: `${currentBox.x}%`,
                             top: `${currentBox.y}%`,
@@ -546,7 +552,7 @@ export const GameContainer: React.FC = () => {
                       
                       {/* Instruction overlay */}
                       {!gameState.images[currentImageIndex]?.userAnnotation && !isDrawing && (
-                        <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                        <div className="absolute top-3 left-3 bg-black bg-opacity-80 text-white text-sm px-3 py-2 rounded-lg font-bold z-40">
                           Click & drag to draw box
                         </div>
                       )}
