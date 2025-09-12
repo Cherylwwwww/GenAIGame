@@ -540,7 +540,6 @@ export const GameContainer: React.FC = () => {
                     {!gameState.hasTrainedModel && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
                         <div className="text-white text-center">
-                          <div className="w-12 h-12 mx-auto mb-2 opacity-70">🎯</div>
                           <p className="text-lg font-medium">Train AI to see predictions</p>
                         </div>
                       </div>
