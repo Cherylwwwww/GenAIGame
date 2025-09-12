@@ -553,26 +553,33 @@ export const GameContainer: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Dynamic Confidence Progress Bar */}
+                {/* AI Performance Display */}
                 <div className="space-y-4">
-                  {/* Confidence Bar Labels */}
-                  <div className="flex justify-between items-center text-sm font-medium">
-                    <span className="text-red-600">Not {gameState.currentCategory}</span>
-                    <span className="text-green-600">{gameState.currentCategory}</span>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-gray-800 mb-1">
+                      {gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 50)}%
+                    </div>
+                    <div className="text-gray-600 text-sm">AI Accuracy</div>
                   </div>
                   
-                  {/* Progress Bar with Arrow */}
-                  <div className="relative">
-                    {/* Background Bar */}
-                    <div className="bg-gradient-to-r from-red-200 via-gray-200 to-green-200 rounded-full h-4 shadow-inner">
-                      {/* Confidence Fill */}
-                    </div>
+                  {/* Progress Bar */}
+                  <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className={`bg-gradient-to-r ${
+                        gameState.modelState === 'underfitting' ? 'from-yellow-400 to-orange-400' :
+                        gameState.modelState === 'correct' ? 'from-green-400 to-blue-400' :
+                        'from-red-400 to-pink-400'
+                      } h-3 rounded-full transition-all duration-1000 ease-out`}
+                      style={{ width: `${Math.min(gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 50), 100)}%` }}
+                    />
                   </div>
                 </div>
               </div>
             )}
           </div>
         </div>
+        
+        {/* Bottom Bar - Tips */}
       </div>
     </div>
   );
