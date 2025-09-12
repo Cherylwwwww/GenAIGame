@@ -350,6 +350,19 @@ export const GameContainer: React.FC = () => {
                     onMouseUp={handleMouseUp}
                     onMouseLeave={() => setIsDrawing(false)}
                   >
+                    {/* Drawing box preview - RED DASHED BOX */}
+                    {isDrawing && currentBox && (
+                      <div
+                        className="absolute border-4 border-dashed border-red-600 bg-red-600 bg-opacity-20 pointer-events-none"
+                        style={{
+                          left: `${currentBox.x}%`,
+                          top: `${currentBox.y}%`,
+                          width: `${currentBox.width}%`,
+                          height: `${currentBox.height}%`
+                        }}
+                      />
+                    )}
+                    
                     {/* Instruction overlay when no annotation exists */}
                     {!gameState.images[currentImageIndex]?.userAnnotation && !currentBox && (
                       <div className="absolute top-3 left-3 bg-black bg-opacity-80 text-white text-sm px-3 py-2 rounded-lg font-bold">
