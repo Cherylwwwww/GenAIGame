@@ -129,29 +129,6 @@ export const AnnotationPanel: React.FC<AnnotationPanelProps> = ({
         </div>
       </div>
       
-      {/* Progress Section */}
-      <div className="bg-white rounded-2xl shadow-xl p-6">
-        <div className="text-center mb-4">
-          <h3 className="text-xl font-bold text-gray-800 mb-2">Progress 📈</h3>
-          <div className="text-3xl font-bold text-blue-600 mb-2">{annotatedCount} / 20</div>
-          <div className="text-gray-600">Images Annotated</div>
-        </div>
-        
-        {/* Animated Progress Bar */}
-        <div className="relative">
-          <div className="bg-gray-200 rounded-full h-4 overflow-hidden">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-green-500 h-4 rounded-full transition-all duration-1000 ease-out"
-              style={{ width: `${Math.min((annotatedCount / 20) * 100, 100)}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-gray-500 mt-2">
-            <span>Start</span>
-            <span>Complete</span>
-          </div>
-        </div>
-      </div>
-
       {/* Next Level Button */}
       <div className="bg-white rounded-2xl shadow-xl p-6">
         <div className="text-center">
