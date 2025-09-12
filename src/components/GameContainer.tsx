@@ -566,37 +566,6 @@ export const GameContainer: React.FC = () => {
                     {/* Background Bar */}
                     <div className="bg-gradient-to-r from-red-200 via-gray-200 to-green-200 rounded-full h-4 shadow-inner">
                       {/* Confidence Fill */}
-                      <div 
-                        className={`bg-gradient-to-r ${
-                          gameState.annotatedCount === 0 ? 'from-gray-400 to-gray-400' :
-                          gameState.annotatedCount < 5 ? 'from-yellow-400 to-orange-400' :
-                          gameState.annotatedCount < 15 ? 'from-orange-400 to-green-400' :
-                          'from-green-400 to-green-500'
-                        } h-4 rounded-full transition-all duration-1000 ease-out`}
-                        style={{ 
-                          width: `${Math.min(gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 85), 100)}%` 
-                        }}
-                      />
-                    </div>
-                    
-                    {/* Dynamic Arrow Indicator */}
-                    <div 
-                      className="absolute top-0 transform -translate-x-1/2 transition-all duration-1000 ease-out"
-                      style={{ 
-                        left: `${gameState.annotatedCount === 0 ? 50 : 
-                               gameState.annotatedCount < 3 ? 45 + Math.random() * 10 :
-                               gameState.annotatedCount < 8 ? 55 + Math.random() * 15 :
-                               gameState.annotatedCount < 15 ? 65 + Math.random() * 10 :
-                               Math.min(75 + gameState.annotatedCount, 85)}%` 
-                      }}
-                    >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );
