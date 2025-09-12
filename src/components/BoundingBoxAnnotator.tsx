@@ -113,24 +113,5 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
       </div>
       
       <div className="flex space-x-3">
-        {!displayBox && (
-          <button
-            onClick={handleClearAnnotation}
-            disabled={disabled}
-            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-              disabled
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-red-100 text-red-700 hover:bg-red-200'
-            }`}
-          >
-            No {currentCategory} Found
-          </button>
-        )}
-        
-        <div className="flex-1 text-center text-sm text-gray-600 py-2">
-          {displayBox ? `✓ ${currentCategory} marked with box` : `🖱️ Click and drag to draw a box around any ${currentCategory.toLowerCase()}`}
-        </div>
-      </div>
-    </div>
   );
 };
