@@ -115,3 +115,5 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
       <div className="flex space-x-3">
   );
 };
+  )
+}
