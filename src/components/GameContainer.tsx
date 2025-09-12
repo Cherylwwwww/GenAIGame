@@ -4,6 +4,7 @@ import { ModelPanel } from './ModelPanel';
 import { GameState, GameImage, BoundingBox } from '../types';
 import { categories } from '../utils/gameData';
 import { generateRandomImages, calculateAccuracy, simulateModelPrediction, generateTestImages } from '../utils/gameLogic';
+import { trainingService } from '../services/trainingService';
 
 export const GameContainer: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -19,6 +20,8 @@ export const GameContainer: React.FC = () => {
   });
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [testImages, setTestImages] = useState<GameImage[]>([]);
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
+  const [isUsingRealTraining, setIsUsingRealTraining] = useState(false);
 
   // Initialize game images
   useEffect(() => {
@@ -38,7 +41,20 @@ export const GameContainer: React.FC = () => {
     }));
     setTestImages(newTestImages);
     setCurrentImageIndex(0);
+    
+    // Create new training session
+    initializeTrainingSession(category.targetObject);
   }, [gameState.currentLevel]);
+
+  const initializeTrainingSession = async (category: string) => {
+    try {
+      await trainingService.createSession(category, gameState.currentLevel);
+      setIsUsingRealTraining(true);
+    } catch (error) {
+      console.warn('Failed to create training session, using simulation mode:', error);
+      setIsUsingRealTraining(false);
+    }
+  };
 
   const handleAnnotate = (imageId: string, annotation: BoundingBox | null) => {
     setGameState(prev => {
@@ -67,26 +83,66 @@ export const GameContainer: React.FC = () => {
   const handleTrainModel = async () => {
     setGameState(prev => ({ ...prev, isTraining: true }));
     
-    // Simulate training delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Calculate values outside of setGameState callback
-    const calculatedAccuracy = calculateAccuracy(gameState.images);
-    const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
-    const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), calculatedAccuracy);
-    
-    setGameState(prev => {
-      return {
+    try {
+      if (isUsingRealTraining) {
+        // Use real training service
+        const result = await trainingService.trainModel(gameState.images);
+        setCurrentJobId(result.jobId);
+        
+        // Get predictions for test images
+        const updatedTestImages = await trainingService.getPredictions(
+          result.jobId, 
+          testImages.slice(0, 1)
+        );
+        
+        setGameState(prev => ({
+          ...prev,
+          modelAccuracy: result.accuracy,
+          isTraining: false,
+          hasTrainedModel: true,
+          modelState: result.modelState,
+          score: prev.score + Math.round(result.accuracy * 0.5)
+        }));
+        
+        setTestImages(updatedTestImages);
+      } else {
+        // Fallback to simulation mode
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const calculatedAccuracy = calculateAccuracy(gameState.images);
+        const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
+        const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), calculatedAccuracy);
+        
+        setGameState(prev => ({
+          ...prev,
+          modelAccuracy: calculatedAccuracy,
+          isTraining: false,
+          hasTrainedModel: true,
+          modelState: calculatedModelState,
+          score: prev.score + Math.round(calculatedAccuracy * 0.5)
+        }));
+        
+        setTestImages(updatedTestImages);
+      }
+    } catch (error) {
+      console.error('Training failed:', error);
+      
+      // Fallback to simulation if real training fails
+      const calculatedAccuracy = calculateAccuracy(gameState.images);
+      const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
+      const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), calculatedAccuracy);
+      
+      setGameState(prev => ({
         ...prev,
         modelAccuracy: calculatedAccuracy,
         isTraining: false,
         hasTrainedModel: true,
         modelState: calculatedModelState,
         score: prev.score + Math.round(calculatedAccuracy * 0.5)
-      };
-    });
-    
-    setTestImages(updatedTestImages);
+      }));
+      
+      setTestImages(updatedTestImages);
+    }
   };
 
   const handleNextImage = () => {
@@ -108,6 +164,11 @@ export const GameContainer: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 border-2 border-blue-500 rounded-lg px-8 py-4 inline-block bg-white">
             Task: {gameState.currentCategory}
+            {isUsingRealTraining && (
+              <span className="ml-3 text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                🤖 Real AI Training
+              </span>
+            )}
           </h1>
         </div>
         
