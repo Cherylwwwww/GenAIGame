@@ -169,13 +169,6 @@ export const GameContainer: React.FC = () => {
         hasTrainedModel: annotatedCount > 0 // Enable test predictions once annotation starts
       };
     });
-    
-    // Auto-advance to next image after annotation
-    setTimeout(() => {
-      if (currentImageIndex < gameState.images.length - 1) {
-        setCurrentImageIndex(prev => prev + 1);
-      }
-    }, 800); // Small delay for visual feedback
   };
 
   const recordAnnotation = async (imageId: string, annotation: BoundingBox | null) => {
