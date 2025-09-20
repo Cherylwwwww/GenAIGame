@@ -31,7 +31,6 @@ export const Header: React.FC<HeaderProps> = ({
               <h1 className="text-2xl font-bold">
                 <span className="text-blue-600">WHERE'S</span>{' '}
                 <span className="text-red-600">WALLY</span>
-                <span className="text-gray-600 text-lg ml-2">- AI Training</span>
               </h1>
               <p className="text-sm text-gray-600">Level {currentLevel}</p>
             </div>
