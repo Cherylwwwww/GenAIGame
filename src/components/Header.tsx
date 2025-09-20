@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div>
               <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
                 <div className="text-center leading-tight" style={{ 
-                  fontFamily: '"News of the World", "Impact", "Arial Black", sans-serif',
+                  fontFamily: '"Fenwick Font", "Impact", "Arial Black", sans-serif',
                   fontWeight: '900',
                   fontStyle: 'italic'
                 }}>
