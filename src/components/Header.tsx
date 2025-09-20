@@ -37,14 +37,14 @@ export const Header: React.FC<HeaderProps> = ({
                 letterSpacing: '0.1em'
               }}>
                 <span className="text-blue-600" style={{ 
-                  textShadow: '5px 5px 0px white, -3px -3px 0px white, 3px -3px 0px white, -3px 3px 0px white, 3px 3px 0px white, 0px 5px 0px white, 5px 0px 0px white, -5px 0px 0px white, 0px -5px 0px white',
-                  WebkitTextStroke: '4px white',
-                  fontWeight: 'bolder'
+                  textShadow: '6px 6px 0px white, -4px -4px 0px white, 4px -4px 0px white, -4px 4px 0px white, 4px 4px 0px white, 0px 6px 0px white, 6px 0px 0px white, -6px 0px 0px white, 0px -6px 0px white, 2px 2px 0px white, -2px -2px 0px white',
+                  WebkitTextStroke: '5px white',
+                  fontWeight: '900'
                 }}>WHERE'S</span>{' '}
                 <span className="text-red-600" style={{ 
-                  textShadow: '5px 5px 0px white, -3px -3px 0px white, 3px -3px 0px white, -3px 3px 0px white, 3px 3px 0px white, 0px 5px 0px white, 5px 0px 0px white, -5px 0px 0px white, 0px -5px 0px white',
-                  WebkitTextStroke: '4px white',
-                  fontWeight: 'bolder'
+                  textShadow: '6px 6px 0px white, -4px -4px 0px white, 4px -4px 0px white, -4px 4px 0px white, 4px 4px 0px white, 0px 6px 0px white, 6px 0px 0px white, -6px 0px 0px white, 0px -6px 0px white, 2px 2px 0px white, -2px -2px 0px white',
+                  WebkitTextStroke: '5px white',
+                  fontWeight: '900'
                 }}>WALLY</span>
               </h1>
               <div className="flex items-center justify-center mt-2">
