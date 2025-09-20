@@ -258,14 +258,14 @@ Please check your internet connection and try refreshing the page.`);
     }
     
     try {
-      console.log('🚀 Starting test image prediction process...');
+      console.log('🚀 Starting FAST test image prediction...');
       const testImage = testImages[0];
       console.log('🔍 Analyzing test image for Wally (red-white stripes, bobble hat, round glasses, blue jeans, brown shoes)...');
       
       // Add timeout to prevent infinite waiting
       const predictionPromise = aiModelService.predict(testImage.url);
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Prediction timeout after 15 seconds')), 15000);
+      const timeoutPromise = new Promise<null>((_, reject) => {
+        setTimeout(() => reject(new Error('Prediction timeout after 8 seconds')), 8000); // Reduced timeout
       });
       
       const prediction = await Promise.race([predictionPromise, timeoutPromise]);

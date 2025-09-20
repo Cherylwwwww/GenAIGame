@@ -80,6 +80,10 @@ export class AIModelService {
       img.crossOrigin = 'anonymous';
       
       await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Training image loading timeout'));
+        }, 3000); // Faster timeout for training
+        
         img.onload = resolve;
         img.onerror = reject;
         img.src = imageUrl;
@@ -99,12 +103,12 @@ export class AIModelService {
         const cropHeight = (boundingBox.height / 100) * img.height;
         
         // Ensure optimal size for Wally feature extraction
-        const targetSize = 224; // MobileNet's optimal input size
+        const targetSize = 128; // Smaller for speed
         canvas.width = targetSize;
         canvas.height = targetSize;
         
-        // Apply preprocessing for better Wally detection
-        ctx.fillStyle = '#f0f0f0'; // Neutral background
+        // Simplified preprocessing for speed
+        ctx.fillStyle = '#ffffff'; // White background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Draw cropped image centered and scaled
@@ -120,18 +124,15 @@ export class AIModelService {
           offsetX, offsetY, scaledWidth, scaledHeight
         );
         
-        // Apply contrast enhancement for red-white stripes
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        this.enhanceWallyFeatures(imageData);
-        ctx.putImageData(imageData, 0, 0);
+        // Skip heavy processing for faster training
         
         processedImg = canvas;
       } else {
         // For negative examples, use full image but resize to optimal size
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
-        canvas.width = 224;
-        canvas.height = 224;
+        canvas.width = 128;
+        canvas.height = 128;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         processedImg = canvas;
       }
@@ -165,7 +166,7 @@ export class AIModelService {
     }
 
     try {
-      console.log('🔍 Starting prediction for:', imageUrl);
+      console.log('🔍 Starting FAST prediction for:', imageUrl);
       console.log('📊 Available classes:', this.classifier.getNumClasses());
       console.log('📊 Total examples:', this.exampleCount);
       
@@ -173,35 +174,40 @@ export class AIModelService {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       
-      console.log('📥 Loading image...');
+      console.log('📥 Loading image (optimized)...');
       await new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
+          reject(new Error('Image loading timeout after 5 seconds'));
+        }, 5000); // Reduced timeout
+        
+        img.onload = () => {
           clearTimeout(timeout);
           console.log('✅ Image loaded successfully');
-          reject(new Error('Image loading timeout after 10 seconds'));
-        }, 10000);
-        
+          resolve(undefined);
+        };
+        img.onerror = (error) => {
           clearTimeout(timeout);
           console.error('❌ Image loading failed:', error);
-        img.onload = resolve;
-        img.onerror = reject;
+          reject(error);
+        };
         img.src = imageUrl;
       });
 
-      console.log('🖼️ Processing image for prediction...');
+      console.log('🖼️ Processing image (fast mode)...');
       // Preprocess image for better Wally detection
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
-      canvas.width = 224;
-      canvas.height = 224;
+      // Use smaller size for faster processing
+      canvas.width = 128;
+      canvas.height = 128;
       
       // Draw and preprocess the full image
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       
-      // Apply the same preprocessing as training
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      this.enhanceWallyFeatures(imageData);
-      ctx.putImageData(imageData, 0, 0);
+      // Skip heavy preprocessing for faster prediction
+      // const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      // this.enhanceWallyFeatures(imageData);
+      // ctx.putImageData(imageData, 0, 0);
       
       console.log('🧠 Extracting features with MobileNet...');
       // Extract features from preprocessed image
@@ -209,7 +215,7 @@ export class AIModelService {
       
       console.log('🔮 Making prediction with KNN classifier...');
       // Make prediction with more neighbors for stability
-      const k = Math.min(Math.max(3, Math.floor(this.exampleCount / 2)), 7);
+      const k = Math.min(3, this.exampleCount); // Reduced k for speed
       console.log(`📊 Using k=${k} neighbors for prediction`);
       
       const result = await this.classifier.predictClass(activation, k);
