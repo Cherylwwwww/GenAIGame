@@ -468,8 +468,11 @@ export const GameContainer: React.FC = () => {
   const handleNextLevel = () => {
     // Check if annotated 7 or more images (85% confidence)
     console.log('🎯 Next Level clicked - Annotated count:', gameState.annotatedCount);
+    console.log('🎯 Red ball position:', Math.min(15 + (gameState.annotatedCount * 10), 90));
     
     if (gameState.annotatedCount >= 7) {
+      const redBallPosition = Math.min(15 + (gameState.annotatedCount * 10), 90);
+      console.log('🎉 Red ball at:', redBallPosition, '% - Should trigger popup!');
       console.log('🎉 Triggering confidence popup!');
       setShowConfidencePopup(true);
       return;
