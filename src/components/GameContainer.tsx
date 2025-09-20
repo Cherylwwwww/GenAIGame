@@ -176,9 +176,6 @@ Please check your internet connection and try refreshing the page.`);
       
       const annotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
       
-      // Update test predictions with real AI model
-      updateTestPredictions();
-      
       return {
         ...prev,
         images: updatedImages,
@@ -186,6 +183,11 @@ Please check your internet connection and try refreshing the page.`);
         hasTrainedModel: annotatedCount > 0
       };
     });
+    
+    // Update test predictions after state is updated
+    setTimeout(() => {
+      updateTestPredictions();
+    }, 100);
     
     // Auto-advance to next image after annotation
     setTimeout(() => {
@@ -219,6 +221,10 @@ Please check your internet connection and try refreshing the page.`);
   const updateTestPredictions = async () => {
     if (testImages.length === 0) return;
     
+    console.log('🔍 updateTestPredictions called');
+    console.log('📊 AI model loaded:', aiModelService.isLoaded());
+    console.log('📊 Example count:', aiModelService.getExampleCount());
+    
     if (!aiModelService.isLoaded()) {
       console.log('⚠️ AI model not loaded yet, skipping test predictions');
       return;
@@ -236,38 +242,34 @@ Please check your internet connection and try refreshing the page.`);
     const positiveExamples = annotatedImages.filter(img => img.userAnnotation !== null).length;
     const negativeExamples = annotatedImages.filter(img => img.userAnnotation === null).length;
     
-    if (positiveExamples === 0 || negativeExamples === 0) {
-      console.log('⚠️ Need both Wally examples and non-Wally examples for reliable predictions');
+    console.log(`📊 Training examples: ${positiveExamples} positive, ${negativeExamples} negative`);
+    
+    // Allow predictions with fewer examples for testing
+    if (positiveExamples === 0 && negativeExamples === 0) {
+      console.log('⚠️ Need at least some training examples');
       return;
     }
     
     try {
       const testImage = testImages[0];
+      console.log('🔮 Making prediction on test image:', testImage.url);
       const prediction = await aiModelService.predict(testImage.url);
+      
+      console.log('🔮 Prediction result:', prediction);
       
       if (prediction) {
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
         
-        // Lower confidence threshold since we start with fewer examples
-        if (confidence < 0.4) {
-          console.log(`🤔 Low confidence prediction (${Math.round(confidence * 100)}%), not showing result`);
-          return;
-        }
-        
-        // Additional check: if predicting "has Wally" but confidence isn't high enough, don't show
-        if (hasObject && confidence < 0.5) {
-          console.log(`🤔 Predicting Wally but confidence too low (${Math.round(confidence * 100)}%), not showing`);
-          return;
-        }
+        console.log(`🎯 Showing prediction: ${hasObject ? 'Wally found' : 'No Wally'} (${Math.round(confidence * 100)}% confidence)`);
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
             ? { ...img, modelPrediction: hasObject, confidence }
             : img
         ));
-        
-        console.log(`🔮 Wally Detection: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
+      } else {
+        console.log('❌ No prediction returned from AI model');
       }
       
     } catch (error) {
@@ -643,18 +645,25 @@ Please check your internet connection and try refreshing the page.`);
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                         }`}>
                           {testImages[0].modelPrediction ? `✓ Wally spotted!` : `✗ Wally not found`}
+                          {testImages[0].confidence && (
+                            <div className="text-sm font-normal mt-1">
+                              {Math.round(testImages[0].confidence * 100)}% confident
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
 
                     {/* Placeholder when no model */}
-                    {(!gameState.hasTrainedModel || aiModelService.getExampleCount() < 3) && (
+                    {(testImages[0].modelPrediction === undefined) && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
                         <div className="text-white text-center">
                           <p className="text-lg font-medium">
-                            {aiModelService.getExampleCount() < 3 
-                              ? `Need ${3 - aiModelService.getExampleCount()} more Wally examples!`
-                              : "Train AI to recognize Wally's stripes!"
+                            {!gameState.hasTrainedModel
+                              ? "Start annotating to train AI!"
+                              : aiModelService.getExampleCount() < 3 
+                                ? `Need ${3 - aiModelService.getExampleCount()} more examples!`
+                                : "AI is analyzing..."
                             }
                           </p>
                         </div>
