@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="w-16 h-16 rounded-xl shadow-lg"
             />
             <div>
-              <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg">
+              <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
                 <span className="text-blue-600">WHERE'S</span>{' '}
                 <span className="text-red-600">WALLY</span>
               </h1>
