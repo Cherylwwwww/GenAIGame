@@ -463,7 +463,7 @@ Please check your internet connection and try refreshing the page.`);
                     {/* Instruction overlay when no annotation exists */}
                     {!gameState.images[currentImageIndex]?.userAnnotation && !currentBox && (
                       <div className="absolute top-3 left-3 bg-black bg-opacity-80 text-white text-sm px-3 py-2 rounded-lg font-bold">
-                        Click & drag to mark {gameState.currentCategory}
+                        Click & drag to mark Wally
                       </div>
                     )}
                   </div>
@@ -490,7 +490,7 @@ Please check your internet connection and try refreshing the page.`);
                     ) : (
                       <>
                         <span className="text-xl">🚫</span>
-                        <span>No {gameState.currentCategory}</span>
+                        <span>No Wally</span>
                       </>
                     )}
                   </div>
@@ -595,7 +595,7 @@ Please check your internet connection and try refreshing the page.`);
                         <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                         }`}>
-                          {testImages[0].modelPrediction ? `✓ ${gameState.currentCategory} found!` : `✗ No ${gameState.currentCategory}`}
+                          {testImages[0].modelPrediction ? `✓ Wally found!` : `✗ No Wally here`}
                         </div>
                       </div>
                     )}
