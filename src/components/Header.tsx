@@ -69,12 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
           </div>
-          <div className="bg-white px-8 py-4 rounded-2xl border-4 border-red-500 shadow-xl -mt-4">
-          {/* Right - Player Info */}
-          <div className="flex items-center space-x-6">
-          </div>
-          </div>
-        </div>
+          <div className="px-8 py-4">
       </div>
     </header>
   );
