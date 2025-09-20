@@ -497,6 +497,77 @@ export const GameContainer: React.FC = () => {
         <div className="absolute top-16 right-1/3 w-6 h-8 bg-red-600 rounded-t-full"></div>
         <div className="absolute bottom-28 left-1/3 w-5 h-7 bg-blue-600 rounded-t-full"></div>
         <div className="absolute top-1/2 right-1/5 w-6 h-8 bg-red-600 rounded-t-full"></div>
+        
+        {/* Wally's Iconic Accessories */}
+        {/* Round Black Glasses - more scattered around */}
+        <div className="absolute top-1/4 left-1/6 w-10 h-10 border-4 border-black rounded-full"></div>
+        <div className="absolute top-3/4 right-1/6 w-8 h-8 border-3 border-black rounded-full"></div>
+        <div className="absolute top-1/3 left-3/4 w-9 h-9 border-4 border-black rounded-full"></div>
+        <div className="absolute bottom-1/4 left-2/3 w-7 h-7 border-3 border-black rounded-full"></div>
+        
+        {/* Red-and-White Bobble Hats with pom-poms */}
+        <div className="absolute top-12 left-1/4">
+          <div className="w-8 h-10 bg-red-600 rounded-t-full relative">
+            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-red-500 rounded-full"></div>
+            <div className="absolute top-2 left-0 w-full h-2 bg-white"></div>
+          </div>
+        </div>
+        <div className="absolute bottom-16 right-1/4">
+          <div className="w-7 h-9 bg-red-600 rounded-t-full relative">
+            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-red-500 rounded-full"></div>
+            <div className="absolute top-2 left-0 w-full h-1 bg-white"></div>
+          </div>
+        </div>
+        <div className="absolute top-2/3 left-1/8">
+          <div className="w-6 h-8 bg-red-600 rounded-t-full relative">
+            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-red-500 rounded-full"></div>
+            <div className="absolute top-1 left-0 w-full h-1 bg-white"></div>
+          </div>
+        </div>
+        
+        {/* Walking Sticks / Canes */}
+        <div className="absolute top-1/5 right-1/5 w-1 h-16 bg-amber-800 transform rotate-12 rounded-full"></div>
+        <div className="absolute bottom-1/3 left-1/8 w-1 h-14 bg-amber-700 transform -rotate-25 rounded-full"></div>
+        <div className="absolute top-1/2 right-2/3 w-1 h-12 bg-amber-800 transform rotate-45 rounded-full"></div>
+        
+        {/* Backpacks / Rucksacks */}
+        <div className="absolute top-1/6 left-3/4 w-8 h-10 bg-green-700 rounded-lg transform rotate-12"></div>
+        <div className="absolute bottom-1/5 right-1/8 w-7 h-9 bg-brown-600 rounded-lg transform -rotate-15"></div>
+        <div className="absolute top-3/5 left-1/12 w-6 h-8 bg-green-600 rounded-lg transform rotate-30"></div>
+        
+        {/* Odlaw's Yellow-Black Stripes (nemesis colors) */}
+        <div className="absolute top-1/8 right-1/2 w-16 h-3 bg-yellow-500 transform rotate-25 rounded-full"></div>
+        <div className="absolute bottom-1/6 left-1/2 w-14 h-3 bg-black transform -rotate-35 rounded-full"></div>
+        <div className="absolute top-2/5 right-1/6 w-18 h-3 bg-yellow-600 transform rotate-60 rounded-full"></div>
+        <div className="absolute bottom-2/5 left-1/3 w-12 h-2 bg-black transform -rotate-20 rounded-full"></div>
+        
+        {/* Wenda's Elements (female friend with stripes) */}
+        <div className="absolute top-1/7 left-1/2 w-12 h-2 bg-pink-500 transform rotate-15 rounded-full"></div>
+        <div className="absolute bottom-1/7 right-1/3 w-10 h-2 bg-pink-400 transform -rotate-40 rounded-full"></div>
+        
+        {/* Wizard Whitebeard Elements (magical vibe) */}
+        <div className="absolute top-1/4 right-1/8">
+          <div className="w-4 h-12 bg-purple-700 transform rotate-20" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
+        </div>
+        <div className="absolute bottom-1/4 left-1/6">
+          <div className="w-3 h-10 bg-purple-600 transform -rotate-30" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
+        </div>
+        
+        {/* Woof the Dog Elements (tail shapes) */}
+        <div className="absolute top-1/3 left-1/10 w-8 h-3 bg-brown-500 rounded-full transform rotate-45"></div>
+        <div className="absolute bottom-1/3 right-1/10 w-6 h-2 bg-brown-400 rounded-full transform -rotate-25"></div>
+        
+        {/* Additional Wally Watchers Stripes (crowd elements) */}
+        <div className="absolute top-1/12 left-2/3 w-8 h-2 bg-red-400 transform rotate-10 rounded-full"></div>
+        <div className="absolute top-1/12 left-2/3 w-8 h-2 bg-white transform rotate-10 rounded-full mt-1"></div>
+        <div className="absolute bottom-1/12 right-2/3 w-10 h-2 bg-red-500 transform -rotate-20 rounded-full"></div>
+        <div className="absolute bottom-1/12 right-2/3 w-10 h-2 bg-white transform -rotate-20 rounded-full mt-1"></div>
+        
+        {/* More scattered accessories for richness */}
+        <div className="absolute top-1/8 left-1/3 w-5 h-5 border-2 border-black rounded-full"></div>
+        <div className="absolute bottom-1/8 right-1/2 w-4 h-6 bg-red-500 rounded-t-full"></div>
+        <div className="absolute top-5/6 left-1/5 w-1 h-8 bg-amber-700 transform rotate-75 rounded-full"></div>
+        <div className="absolute top-1/10 right-3/4 w-5 h-6 bg-green-600 rounded transform rotate-45"></div>
       </div>
       
       {/* Subtle texture overlay */}
