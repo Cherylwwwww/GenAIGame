@@ -597,7 +597,7 @@ export const GameContainer: React.FC = () => {
                   <img
                     src={gameState.images[currentImageIndex]?.url}
                     alt="Find Wally training image"
-                    className="w-full h-full object-cover rounded-xl border-4 border-blue-400"
+                    className="w-full h-80 object-cover rounded-xl border-4 border-blue-400"
                   />
                   
                   {/* Bounding Box Display */}
