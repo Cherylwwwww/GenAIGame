@@ -31,14 +31,20 @@ export const Header: React.FC<HeaderProps> = ({
               className="w-16 h-16 rounded-xl shadow-lg"
             />
             <div>
-              <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
+              <h1 className="text-6xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
                 <div className="text-center leading-tight" style={{ 
                   fontFamily: '"Optima Extra Black", "Optima", "Arial Black", sans-serif',
                   fontWeight: '900',
                   fontStyle: 'italic'
                 }}>
-                  <div className="text-blue-700 mb-2">Where's</div>
-                  <div className="text-red-700">Waldo</div>
+                  <div className="text-blue-700 mb-2" style={{ 
+                    fontWeight: '950',
+                    fontStyle: 'italic'
+                  }}>Where's</div>
+                  <div className="text-red-700" style={{ 
+                    fontWeight: '950',
+                    fontStyle: 'italic'
+                  }}>Waldo</div>
                 </div>
               </h1>
               <div className="flex items-center justify-center mt-2">
