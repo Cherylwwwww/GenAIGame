@@ -705,11 +705,13 @@ export const GameContainer: React.FC = () => {
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
                         <div className="text-white text-center">
                           <p className="text-lg font-medium">
-                            {!gameState.hasTrainedModel
-                              ? "Start annotating to train AI!"
-                              : aiModelService.getExampleCount() < 3 
-                                ? `Need ${3 - aiModelService.getExampleCount()} more examples!`
-                                : "AI is analyzing..."
+                            {gameState.annotatedCount === 0
+                              ? "Give 3 annotating images to train AI!"
+                              : gameState.annotatedCount === 1
+                                ? "Give 2 more annotating images to train AI!"
+                                : gameState.annotatedCount === 2
+                                  ? "Give 1 more annotating image to train AI!"
+                                  : "AI is analyzing..."
                             }
                           </p>
                         </div>
