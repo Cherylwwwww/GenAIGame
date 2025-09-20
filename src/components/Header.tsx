@@ -73,6 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Right - Player Info */}
           <div className="flex items-center space-x-6">
           </div>
+          </div>
         </div>
       </div>
     </header>
