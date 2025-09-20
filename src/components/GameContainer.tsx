@@ -191,10 +191,10 @@ export const GameContainer: React.FC = () => {
     
     // Update test predictions after state is updated
     setTimeout(() => {
-      if (currentAnnotatedCount >= 3) {
+      if (newAnnotatedCount >= 3) {
         updateTestPredictions();
       }
-    }, 50);
+    }, 100);
     
     // Auto-advance to next image after annotation
     setTimeout(() => {
