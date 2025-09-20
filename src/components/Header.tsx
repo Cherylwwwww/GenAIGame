@@ -31,14 +31,20 @@ export const Header: React.FC<HeaderProps> = ({
               className="w-16 h-16 rounded-xl shadow-lg"
             />
             <div>
-              <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
-                <span className="text-blue-900" style={{ 
-                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
-                  WebkitTextStroke: '2px white'
+              <h1 className="text-7xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg uppercase" style={{ 
+                fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif',
+                fontWeight: '900',
+                letterSpacing: '0.1em'
+              }}>
+                <span className="text-blue-800" style={{ 
+                  textShadow: '6px 6px 0px white, -4px -4px 0px white, 4px -4px 0px white, -4px 4px 0px white, 4px 4px 0px white, 0px 6px 0px white, 6px 0px 0px white, -6px 0px 0px white, 0px -6px 0px white, 2px 2px 0px white, -2px -2px 0px white',
+                  WebkitTextStroke: '6px white',
+                  fontWeight: '900'
                 }}>WHERE'S</span>{' '}
-                <span className="text-red-900" style={{ 
-                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
-                  WebkitTextStroke: '2px white'
+                <span className="text-red-800" style={{ 
+                  textShadow: '6px 6px 0px white, -4px -4px 0px white, 4px -4px 0px white, -4px 4px 0px white, 4px 4px 0px white, 0px 6px 0px white, 6px 0px 0px white, -6px 0px 0px white, 0px -6px 0px white, 2px 2px 0px white, -2px -2px 0px white',
+                  WebkitTextStroke: '6px white',
+                  fontWeight: '900'
                 }}>WALLY</span>
               </h1>
               <div className="flex items-center justify-center mt-2">
