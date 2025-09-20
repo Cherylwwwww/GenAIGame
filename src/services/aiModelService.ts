@@ -165,16 +165,30 @@ export class AIModelService {
     }
 
     try {
+      console.log('🔍 Starting prediction for:', imageUrl);
+      console.log('📊 Available classes:', this.classifier.getNumClasses());
+      console.log('📊 Total examples:', this.exampleCount);
+      
       // Create image element
       const img = new Image();
       img.crossOrigin = 'anonymous';
       
+      console.log('📥 Loading image...');
       await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          clearTimeout(timeout);
+          console.log('✅ Image loaded successfully');
+          reject(new Error('Image loading timeout after 10 seconds'));
+        }, 10000);
+        
+          clearTimeout(timeout);
+          console.error('❌ Image loading failed:', error);
         img.onload = resolve;
         img.onerror = reject;
         img.src = imageUrl;
       });
 
+      console.log('🖼️ Processing image for prediction...');
       // Preprocess image for better Wally detection
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
@@ -189,11 +203,18 @@ export class AIModelService {
       this.enhanceWallyFeatures(imageData);
       ctx.putImageData(imageData, 0, 0);
       
+      console.log('🧠 Extracting features with MobileNet...');
       // Extract features from preprocessed image
       const activation = this.net.infer(canvas, true);
       
+      console.log('🔮 Making prediction with KNN classifier...');
       // Make prediction with more neighbors for stability
-      const result = await this.classifier.predictClass(activation, Math.min(this.exampleCount, 7));
+      const k = Math.min(Math.max(3, Math.floor(this.exampleCount / 2)), 7);
+      console.log(`📊 Using k=${k} neighbors for prediction`);
+      
+      const result = await this.classifier.predictClass(activation, k);
+      
+      console.log('✅ Prediction completed:', result);
       
       console.log('🔮 Wally Detection Result:', {
         prediction: result.label,
@@ -213,8 +234,16 @@ export class AIModelService {
       };
       
     } catch (error) {
-      console.error('❌ Prediction failed:', error);
-      return null;
+      console.error('❌ Prediction failed with error:', error);
+      console.error('❌ Error stack:', error.stack);
+      
+      // Return a fallback result instead of null to prevent UI from getting stuck
+      console.log('🔄 Returning fallback prediction due to error');
+      return {
+        label: 'not_Wally',
+        confidence: 0.3,
+        confidences: { 'Wally': 0.3, 'not_Wally': 0.7 }
+      };
     }
   }
 

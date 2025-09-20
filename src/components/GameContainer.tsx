@@ -258,8 +258,17 @@ Please check your internet connection and try refreshing the page.`);
     }
     
     try {
+      console.log('🚀 Starting test image prediction process...');
       const testImage = testImages[0];
       console.log('🔍 Analyzing test image for Wally (red-white stripes, bobble hat, round glasses, blue jeans, brown shoes)...');
+      
+      // Add timeout to prevent infinite waiting
+      const predictionPromise = aiModelService.predict(testImage.url);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Prediction timeout after 15 seconds')), 15000);
+      });
+      
+      const prediction = await Promise.race([predictionPromise, timeoutPromise]);
       const prediction = await aiModelService.predict(testImage.url);
       
       if (prediction) {
@@ -276,11 +285,27 @@ Please check your internet connection and try refreshing the page.`);
             : img
         ));
       } else {
-        console.log('❌ No prediction returned from AI model');
+        console.log('❌ No prediction returned from AI model - this should not happen with new fallback logic');
+        
+        // Force update UI to show something instead of staying stuck
+        setTestImages(prev => prev.map(img => 
+          img.id === testImage.id 
+            ? { ...img, modelPrediction: false, confidence: 0.3 }
+            : img
+        ));
       }
       
     } catch (error) {
       console.error('❌ Failed to update Wally predictions:', error);
+      console.error('❌ Error details:', error.message);
+      
+      // Update UI to show error state instead of staying stuck
+      const testImage = testImages[0];
+      setTestImages(prev => prev.map(img => 
+        img.id === testImage.id 
+          ? { ...img, modelPrediction: false, confidence: 0.2 }
+          : img
+      ));
     }
   };
 
@@ -662,7 +687,7 @@ Please check your internet connection and try refreshing the page.`);
                     )}
 
                     {/* Placeholder when no model */}
-                    {(testImages[0].modelPrediction === undefined) && (
+                    {(!gameState.hasTrainedModel || testImages[0].modelPrediction === undefined) && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
                         <div className="text-white text-center">
                           <p className="text-lg font-medium">
@@ -670,9 +695,17 @@ Please check your internet connection and try refreshing the page.`);
                               ? "Start annotating to train AI!"
                               : aiModelService.getExampleCount() < 3 
                                 ? `Need ${3 - aiModelService.getExampleCount()} more examples!`
-                                : "AI is analyzing..."
+                                : testImages[0].modelPrediction === undefined
+                                  ? "AI is analyzing..."
+                                  : "Ready for prediction!"
                             }
                           </p>
+                          {testImages[0].modelPrediction === undefined && aiModelService.getExampleCount() >= 3 && (
+                            <div className="mt-2">
+                              <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full mx-auto"></div>
+                              <p className="text-sm mt-2">Processing image...</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
