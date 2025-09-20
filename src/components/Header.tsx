@@ -52,11 +52,6 @@ export const Header: React.FC<HeaderProps> = ({
                   <p className="text-lg font-black tracking-wide">LEVEL {currentLevel}</p>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          {/* Center - Current Task */}
-          <div className="text-center">
             <div className="bg-white px-8 py-4 rounded-2xl border-4 border-red-500 shadow-xl">
               {isUsingRealTraining && (
                 <span className="text-base bg-yellow-200 text-blue-800 px-4 py-2 rounded-full mt-1 inline-block border-2 border-blue-400 font-bold">
@@ -71,6 +66,11 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Right - Player Info */}
           <div className="flex items-center space-x-6">
+            <div className="flex items-center justify-center mt-3">
+              <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-red-700 px-4 py-2 rounded-full border-3 border-red-500 shadow-lg transform -rotate-2">
+                <p className="text-lg font-black tracking-wide">LEVEL {currentLevel}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
