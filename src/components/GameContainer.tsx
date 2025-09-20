@@ -187,14 +187,14 @@ Please check your internet connection and try refreshing the page.`);
     // Update test predictions with real AI model after state update
     setTimeout(() => {
       updateTestPredictions();
-    }, 100);
+    }, 500); // Give more time for state to update
     
     // Auto-advance to next image after annotation
     setTimeout(() => {
       if (currentImageIndex < gameState.images.length - 1) {
         handleNextImage();
       }
-    }, 800);
+    }, 1200); // Give more time to see the prediction
   };
 
   const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {
@@ -631,7 +631,7 @@ Please check your internet connection and try refreshing the page.`);
                     )}
                     
                     {/* Prediction Result */}
-                    {gameState.hasTrainedModel && testImages[0].modelPrediction !== undefined && (
+                    {testImages[0].modelPrediction !== undefined && (
                       <div className="absolute top-4 right-4">
                         <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
@@ -640,17 +640,26 @@ Please check your internet connection and try refreshing the page.`);
                         </div>
                       </div>
                     )}
-
-                    {/* Placeholder when no model */}
-                    {(!gameState.hasTrainedModel || aiModelService.getExampleCount() < 3) && (
-                      <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
-                        <div className="text-white text-center">
-                          <p className="text-lg font-medium">
-                            {aiModelService.getExampleCount() < 3 
-                              ? `Need ${3 - aiModelService.getExampleCount()} more Wally examples!`
-                              : "Train AI to recognize Wally's stripes!"
-                            }
-                          </p>
+    // Need at least one annotation to make predictions
+                    {/* Show prediction status */}
+                    {testImages[0].modelPrediction === undefined && (
+      return;
+    }
+    
+    console.log(`🔮 Making prediction with ${exampleCount} examples (${positiveExamples} positive, ${negativeExamples} negative)`);
+                          {!aiModelService.isLoaded() ? (
+                            <p className="text-lg font-medium">🤖 Loading AI brain...</p>
+                          ) : aiModelService.getExampleCount() < 3 ? (
+                            <p className="text-lg font-medium">
+                              Need {3 - aiModelService.getExampleCount()} more Wally examples!
+                            </p>
+                          ) : gameState.annotatedCount < 3 ? (
+                            <p className="text-lg font-medium">
+                              Annotate {3 - gameState.annotatedCount} more images to start predictions!
+                            </p>
+                          ) : (
+                            <p className="text-lg font-medium">🔮 Analyzing for Wally...</p>
+                          )}
                         </div>
                       </div>
                     )}
@@ -701,6 +710,7 @@ Please check your internet connection and try refreshing the page.`);
             )}
           </div>
         </div>
+        console.log(`🔮 Has Wally: ${hasObject ? 'YES' : 'NO'}`);
         
         {/* Bottom Bar - Tips */}
       </div>
