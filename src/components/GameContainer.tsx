@@ -865,11 +865,6 @@ export const GameContainer: React.FC = () => {
                     </p>
                   </div>
                   
-                  {/* Debug info */}
-                  <div className="text-center text-xs text-gray-500 mt-2">
-                    Annotated: {gameState.annotatedCount}/7 for popup
-                  </div>
-                  
                 </div>
               </div>
             )}
