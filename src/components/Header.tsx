@@ -64,7 +64,9 @@ export const Header: React.FC<HeaderProps> = ({
               </p>
             </div>
             <div className="flex justify-center mt-3">
-          <div className="px-8 py-4">
+              <div className="px-8 py-4">
+              </div>
+            </div>
           </div>
         </div>
       </div>
