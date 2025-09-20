@@ -466,24 +466,18 @@ export const GameContainer: React.FC = () => {
     }
   };
   const handleNextLevel = () => {
-    // Check if red ball has reached "very confident" position (7+ annotations)
-    const ballPosition = Math.min(15 + (gameState.annotatedCount * 10), 85);
+    // Check if annotated 7 or more images (85% confidence)
+    console.log('🎯 Next Level clicked - Annotated count:', gameState.annotatedCount);
     
     if (gameState.annotatedCount >= 7) {
+      console.log('🎉 Triggering confidence popup!');
       setShowConfidencePopup(true);
       return;
     }
     
+    console.log('🔄 Going to next level directly');
     // Original next level logic
-    setGameState(prev => ({
-      ...prev,
-      currentLevel: prev.currentLevel + 1,
-      hasTrainedModel: false,
-      modelAccuracy: 30,
-      annotatedCount: 0,
-      modelState: 'underfitting',
-      isTraining: false
-    }));
+    handleActualNextLevel();
   };
 
   const handleConfidencePopupClose = () => {
@@ -868,6 +862,11 @@ export const GameContainer: React.FC = () => {
                         : aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
                       }
                     </p>
+                  </div>
+                  
+                  {/* Debug info */}
+                  <div className="text-center text-xs text-gray-500 mt-2">
+                    Annotated: {gameState.annotatedCount}/7 for popup
                   </div>
                   
                 </div>
