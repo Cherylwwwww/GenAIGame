@@ -174,19 +174,24 @@ export const GameContainer: React.FC = () => {
         img.id === imageId ? { ...img, userAnnotation: annotation } : img
       );
       
-      const annotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
+      const newAnnotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
       
       return {
         ...prev,
         images: updatedImages,
-        annotatedCount,
-        hasTrainedModel: annotatedCount > 0
+        annotatedCount: newAnnotatedCount,
+        hasTrainedModel: newAnnotatedCount > 0
       };
     });
     
+    // Calculate annotatedCount for use in setTimeout
+    const currentAnnotatedCount = gameState.images.filter(img => 
+      img.id === imageId ? annotation !== undefined : img.userAnnotation !== undefined
+    ).length;
+    
     // Update test predictions after state is updated
     setTimeout(() => {
-      if (annotatedCount >= 3) {
+      if (currentAnnotatedCount >= 3) {
         updateTestPredictions();
       }
     }, 100);
