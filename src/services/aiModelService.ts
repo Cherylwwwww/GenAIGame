@@ -193,17 +193,17 @@ export class AIModelService {
     const adjustedConfidence = Math.max(0, confidence - uncertainty);
     
     if (adjustedConfidence < 0.3) {
-      return "🤔 Where's Wally? I have no clue...";
+      return "🤔 I have no idea what this is...";
     } else if (adjustedConfidence < 0.5) {
-      return "🤷‍♂️ Hmm... is that Wally? Not sure...";
+      return "🤷‍♂️ Hmm... maybe it's a cat? Not sure...";
     } else if (adjustedConfidence < 0.7) {
-      return "🧐 Getting some clues... learning Wally's look!";
+      return "🧐 Getting some clues... building confidence!";
     } else if (adjustedConfidence < 0.8) {
-      return "😊 I'm getting better at spotting Wally!";
+      return "😊 I'm starting to understand cats better!";
     } else if (adjustedConfidence < 0.9) {
-      return "😎 Pretty confident about finding Wally now!";
+      return "😎 Pretty confident about cats now!";
     } else {
-      return "🎯 Found him! I can spot Wally anywhere!";
+      return "🎯 Very confident! I know cats when I see them!";
     }
   }
 }

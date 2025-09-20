@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
               <Brain className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">Where's Wally - AI Training</h1>
+              <h1 className="text-2xl font-bold text-gray-800">AI Training Game</h1>
               <p className="text-sm text-gray-600">Level {currentLevel}</p>
             </div>
           </div>
@@ -37,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="text-center">
             <div className="bg-blue-50 px-6 py-3 rounded-2xl border-2 border-blue-200">
               <h2 className="text-2xl font-bold text-blue-800">
-                Task: Find Wally! 🔍
+                Task: {currentCategory} 🎯
               </h2>
               {isUsingRealTraining && (
                 <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full mt-1 inline-block">
