@@ -14,6 +14,12 @@ export class AIModelService {
     
     try {
       console.log('🤖 Loading MobileNet model...');
+      
+      // Initialize TensorFlow.js backend
+      await tf.setBackend('webgl');
+      await tf.ready();
+      console.log('✅ TensorFlow.js backend initialized');
+      
       this.net = await mobilenet.load();
       this.isModelLoaded = true;
       console.log('✅ MobileNet loaded successfully!');
