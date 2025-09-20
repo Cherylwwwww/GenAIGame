@@ -35,7 +35,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="text-blue-600">WHERE'S</span>{' '}
                 <span className="text-red-600">WALLY</span>
               </h1>
-              <p className="text-sm text-gray-600">Level {currentLevel}</p>
+              <div className="flex items-center justify-center mt-2">
+                <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-red-700 px-4 py-2 rounded-full border-3 border-red-500 shadow-lg transform -rotate-2">
+                  <p className="text-lg font-black tracking-wide">LEVEL {currentLevel}</p>
+                </div>
+              </div>
             </div>
           </div>
           
