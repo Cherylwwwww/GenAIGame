@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               )}
               <p className="text-lg text-blue-700 mt-2 font-black bg-yellow-100 px-6 py-3 rounded-full inline-block border-2 border-blue-300 shadow-md">
-                Look for: RED-WHITE horizontal striped shirt, bobble hat, round glasses
+                Look for: Red-white horizontal striped shirt, bobble hat, round glasses
               </p>
             </div>
           </div>
