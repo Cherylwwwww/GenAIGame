@@ -70,6 +70,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
           <div className="px-8 py-4">
+          </div>
+        </div>
       </div>
     </header>
   );
