@@ -716,7 +716,7 @@ export const GameContainer: React.FC = () => {
                   {/* Confidence Meter Labels */}
                   <div className="flex justify-between items-center text-sm font-bold">
                     <span className="text-red-600">Not confident</span>
-                    <span className="text-green-600">Wally expert!</span>
+                    <span className="text-green-600">Very confident</span>
                   </div>
                   
                   {/* Confidence Meter with Moving Ball */}
@@ -730,8 +730,8 @@ export const GameContainer: React.FC = () => {
                       className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-out"
                       style={{ 
                         left: `${testImages[0]?.confidence 
-                          ? Math.min(20 + (testImages[0].confidence * 65), 85)
-                          : Math.min(20 + (gameState.annotatedCount * 6), 85)
+                          ? Math.min(10 + (testImages[0].confidence * 80), 90)
+                          : Math.min(10 + (gameState.annotatedCount * 8), 90)
                         }%`
                       }}
                     >
