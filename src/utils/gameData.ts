@@ -19,7 +19,7 @@ import wallyImage12 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c
 import wallyImage13 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c2_processed_by_imagy.png';
 import wallyImage14 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c3_processed_by_imagy.png';
 
-import crowdSceneImage from '../assets/ChatGPT Image Sep 20, 2025, 02_26_47 PM.png';
+import crowdSceneImage from '../assets/ChatGPT Image Sep 20, 2025, 02_44_14 PM.png';
 
 export const categories: Category[] = [
   {
