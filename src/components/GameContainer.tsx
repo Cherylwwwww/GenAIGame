@@ -876,11 +876,6 @@ export const GameContainer: React.FC = () => {
         
         {/* Status Message */}
         <div className="mt-4 text-center">
-          {!gameState.hasTrainedModel && (
-            <p className="text-lg font-bold text-red-700 bg-yellow-100 px-6 py-3 rounded-full border-2 border-red-300 inline-block">
-            </p>
-          )}
-          
           {gameState.hasTrainedModel && gameState.modelAccuracy < 70 && (
             <p className="text-lg font-bold text-orange-700 bg-yellow-100 px-6 py-3 rounded-full border-2 border-orange-300 inline-block">
               📈 Need {70 - gameState.modelAccuracy}% more accuracy (Current: {gameState.modelAccuracy}%)
