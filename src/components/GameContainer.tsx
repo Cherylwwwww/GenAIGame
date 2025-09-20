@@ -597,7 +597,7 @@ export const GameContainer: React.FC = () => {
                   <img
                     src={gameState.images[currentImageIndex]?.url}
                     alt="Find Wally training image"
-                    className="w-full h-80 object-cover rounded-xl border-4 border-red-400 pointer-events-none"
+                    className="w-full h-80 object-cover rounded-xl border-4 border-blue-500 pointer-events-none"
                   />
                   
                   {/* Bounding Box Display */}
@@ -758,7 +758,7 @@ export const GameContainer: React.FC = () => {
                     <img
                       src={testImages[0].url}
                       alt="Where's Wally test image"
-                      className="w-full h-full object-cover rounded-xl border-4 border-red-400 pointer-events-none"
+                      className="w-full h-80 object-cover rounded-xl border-4 border-red-500 pointer-events-none"
                     />
                     
                     {/* Existing Bounding Box Display */}
