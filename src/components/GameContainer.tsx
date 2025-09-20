@@ -6,6 +6,7 @@ import { GameState, GameImage, BoundingBox } from '../types';
 import { categories } from '../utils/gameData';
 import { generateRandomImages, calculateAccuracy, simulateModelPrediction, generateTestImages } from '../utils/gameLogic';
 import { trainingService } from '../services/trainingService';
+import { supabase } from '../lib/supabase';
 
 export const GameContainer: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -117,6 +118,14 @@ export const GameContainer: React.FC = () => {
       console.log('🔍 Checking Supabase connection...');
       console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
       console.log('Has Anon Key:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+      
+      // Check if user is authenticated
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        console.log('❌ User not authenticated, falling back to simulation mode');
+        setIsUsingRealTraining(false);
+        return;
+      }
       
       await trainingService.createSession(category, gameState.currentLevel);
       console.log('✅ Supabase training session created successfully');
