@@ -285,24 +285,23 @@ export class AIModelService {
       return "🤖 Learning to spot Wally's RED-WHITE horizontal striped shirt and bobble hat...";
     }
     
-    if (exampleCount < 5) {
+    if (exampleCount < 4) {
       return "🤔 Studying Wally's RED-WHITE stripes, round glasses, blue jeans, and brown shoes...";
     }
     
-    // Add more uncertainty when sample size is small  
-    const uncertainty = Math.max(0, (8 - exampleCount) * 0.06);
-    const adjustedConfidence = Math.max(0, confidence - uncertainty);
+    // Progressive confidence based on training examples
+    const adjustedConfidence = confidence;
     
-    if (adjustedConfidence < 0.4) {
+    if (exampleCount < 6) {
+      return "🧐 Getting better at recognizing RED-WHITE horizontal stripes and round glasses...";
+    } else if (exampleCount < 8) {
+      return "😊 I can spot Wally's RED-WHITE striped shirt, bobble hat, and round black glasses!";
+    } else if (exampleCount < 10) {
+      return "😎 Found the RED-WHITE horizontal stripes, blue jeans, and brown shoes!";
+    } else if (adjustedConfidence < 0.4) {
       return "❌ No Wally found - current image has black-yellow stripes, not RED-WHITE stripes!";
     } else if (adjustedConfidence < 0.6) {
       return "🤷‍♂️ Getting better at distinguishing RED-WHITE stripes from other patterns...";
-    } else if (adjustedConfidence < 0.75) {
-      return "🧐 Getting better at recognizing RED-WHITE horizontal stripes and round glasses...";
-    } else if (adjustedConfidence < 0.85) {
-      return "😊 I can spot Wally's RED-WHITE striped shirt, bobble hat, and round black glasses!";
-    } else if (adjustedConfidence < 0.92) {
-      return "😎 Found the RED-WHITE horizontal stripes, blue jeans, and brown shoes!";
     } else {
       return "🎯 Found Wally! RED-WHITE horizontal striped shirt, bobble hat, round glasses, and blue jeans - perfect match!";
     }

@@ -31,8 +31,8 @@ export const simulateModelPrediction = (
 ) => {
   if (testImages.length === 0 || annotatedCount < 3) return;
   
-  // Calculate confidence based on annotation count
-  const baseConfidence = Math.min(0.3 + (annotatedCount * 0.08), 0.95);
+  // Calculate confidence based on annotation count - starts at 60% and increases
+  const baseConfidence = Math.min(0.6 + (annotatedCount * 0.05), 0.95);
   
   // For the current test image, simulate Wally detection
   // Since current test image has black-yellow stripes (not red-white), it should be "not found"
