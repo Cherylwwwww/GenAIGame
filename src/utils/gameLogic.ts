@@ -22,3 +22,7 @@ export const generateRandomImages = (urls: string[], count?: number): GameImage[
     actualLabel: index < selected.length / 2, // First half are positive examples
   }));
 };
+
+export const simulateModelPrediction = () => {
+  // Simulation function for model predictions
+};
