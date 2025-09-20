@@ -29,7 +29,7 @@ export const simulateModelPrediction = (
   annotatedCount: number,
   currentCategory: string
 ) => {
-  if (testImages.length === 0) return;
+  if (testImages.length === 0 || annotatedCount < 3) return;
   
   // Calculate confidence based on annotation count
   const baseConfidence = Math.min(0.3 + (annotatedCount * 0.08), 0.95);
