@@ -33,6 +33,7 @@ export const GameContainer: React.FC = () => {
   const [isModelLoading, setIsModelLoading] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
   const [aiModeStatus, setAiModeStatus] = useState<'loading' | 'real' | 'simulation'>('loading');
+  const [showConfidencePopup, setShowConfidencePopup] = useState(false);
 
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
     if (!imageRef.current) return { x: 0, y: 0 };
@@ -465,6 +466,33 @@ export const GameContainer: React.FC = () => {
     }
   };
   const handleNextLevel = () => {
+    // Check if red ball has reached "very confident" position (85% or more)
+    const ballPosition = Math.min(15 + (gameState.annotatedCount * 7), 85);
+    
+    if (ballPosition >= 85) {
+      setShowConfidencePopup(true);
+      return;
+    }
+    
+    // Original next level logic
+    setGameState(prev => ({
+      ...prev,
+      currentLevel: prev.currentLevel + 1,
+      hasTrainedModel: false,
+      modelAccuracy: 30,
+      annotatedCount: 0,
+      modelState: 'underfitting',
+      isTraining: false
+    }));
+  };
+
+  const handleConfidencePopupClose = () => {
+    setShowConfidencePopup(false);
+    // Proceed to next level after closing popup
+    handleActualNextLevel();
+  };
+
+  const handleActualNextLevel = () => {
     setGameState(prev => ({
       ...prev,
       currentLevel: prev.currentLevel + 1,
@@ -889,6 +917,44 @@ export const GameContainer: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Confidence Achievement Popup */}
+      {showConfidencePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-br from-yellow-300 to-yellow-400 rounded-2xl shadow-2xl p-8 max-w-md mx-4 border-4 border-red-500 transform animate-bounce">
+            <div className="text-center">
+              <div className="text-6xl mb-4">🎉</div>
+              <h2 className="text-2xl font-black text-red-700 mb-4">
+                CONGRATULATIONS!
+              </h2>
+              <div className="bg-white rounded-xl p-6 mb-6 border-3 border-red-400">
+                <p className="text-lg font-bold text-blue-800 mb-2">
+                  🎯 Achievement Unlocked!
+                </p>
+                <p className="text-base text-gray-700 mb-3">
+                  You annotated <span className="font-black text-red-600">{gameState.annotatedCount}</span> photos and reached
+                </p>
+                <div className="text-3xl font-black text-green-600 mb-2">
+                  99% CONFIDENT! 🚀
+                </div>
+                <p className="text-sm text-gray-600">
+                  Your AI can now spot Wally's red-white stripes perfectly!
+                </p>
+              </div>
+              <button
+                onClick={handleConfidencePopupClose}
+                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-blue-600 hover:scale-105 transform transition-all duration-200 shadow-lg border-2 border-yellow-300"
+              >
+                <div className="flex items-center justify-center space-x-2">
+                  <span>🎮</span>
+                  <span>Continue to Level {gameState.currentLevel + 1}</span>
+                  <span>→</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
