@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="text-red-700 text-left" style={{ 
                     fontWeight: '950',
                     fontStyle: 'italic'
-                  }}>isHERE</div>
+                  }}>isHERE！</div>
                 </div>
               </h1>
               <div className="flex items-center justify-center mt-2">
