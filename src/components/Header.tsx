@@ -35,16 +35,16 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Center - Current Task */}
           <div className="text-center">
-            <div className="bg-blue-50 px-6 py-3 rounded-2xl border-2 border-blue-200">
-              <h2 className="text-2xl font-bold text-blue-800">
+            <div className="bg-red-50 px-6 py-3 rounded-2xl border-2 border-red-400">
+              <h2 className="text-2xl font-bold text-red-700">
                 Find Wally's RED-WHITE Stripes! 🔍
               </h2>
               {isUsingRealTraining && (
-                <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full mt-1 inline-block">
+                <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full mt-1 inline-block">
                   🤖 Real AI Training
                 </span>
               )}
-              <p className="text-xs text-blue-600 mt-1">
+              <p className="text-xs text-red-600 mt-1">
                 Look for: RED-WHITE horizontal striped shirt, bobble hat, round glasses
               </p>
             </div>

@@ -739,7 +739,7 @@ export const GameContainer: React.FC = () => {
                   
                   {/* Dynamic Confidence Messages */}
                   <div className="text-center min-h-[3rem] flex items-center justify-center">
-                    <p className="text-sm font-medium text-gray-700 italic animate-pulse">
+                    <p className="text-sm font-bold text-red-700 italic animate-pulse bg-red-50 px-3 py-2 rounded-lg border border-red-200">
                       {isModelLoading && "🤖 Loading AI brain..."}
                       {!isModelLoading && testImages[0]?.confidence !== undefined 
                         ? aiModelService.getConfidenceMessage(testImages[0].confidence, gameState.annotatedCount)
