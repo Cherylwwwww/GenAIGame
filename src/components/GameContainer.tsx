@@ -477,7 +477,30 @@ export const GameContainer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-yellow-100 to-orange-100 relative overflow-hidden">
+      {/* Wally-themed decorative elements */}
+      <div className="absolute inset-0 opacity-10">
+        {/* Scattered stripes pattern */}
+        <div className="absolute top-10 left-10 w-20 h-4 bg-red-500 transform rotate-12 rounded-full"></div>
+        <div className="absolute top-20 right-20 w-16 h-3 bg-blue-500 transform -rotate-45 rounded-full"></div>
+        <div className="absolute bottom-32 left-32 w-24 h-4 bg-red-500 transform rotate-45 rounded-full"></div>
+        <div className="absolute bottom-20 right-40 w-18 h-3 bg-blue-500 transform -rotate-12 rounded-full"></div>
+        <div className="absolute top-1/2 left-1/4 w-22 h-4 bg-red-500 transform rotate-75 rounded-full"></div>
+        <div className="absolute top-1/3 right-1/3 w-20 h-3 bg-blue-500 transform -rotate-30 rounded-full"></div>
+        
+        {/* Scattered circles (glasses) */}
+        <div className="absolute top-24 left-1/2 w-8 h-8 border-4 border-black rounded-full"></div>
+        <div className="absolute bottom-40 right-1/4 w-6 h-6 border-3 border-black rounded-full"></div>
+        <div className="absolute top-2/3 left-1/5 w-7 h-7 border-3 border-black rounded-full"></div>
+        
+        {/* Small bobble hat shapes */}
+        <div className="absolute top-16 right-1/3 w-6 h-8 bg-red-600 rounded-t-full"></div>
+        <div className="absolute bottom-28 left-1/3 w-5 h-7 bg-blue-600 rounded-t-full"></div>
+        <div className="absolute top-1/2 right-1/5 w-6 h-8 bg-red-600 rounded-t-full"></div>
+      </div>
+      
+      {/* Subtle texture overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50 to-transparent opacity-30"></div>
       {/* Top Bar */}
       <Header
         currentLevel={gameState.currentLevel}
