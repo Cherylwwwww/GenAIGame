@@ -849,6 +849,51 @@ export const GameContainer: React.FC = () => {
         </div>
         
         {/* Bottom Bar - Tips */}
+        
+        {/* Next Level Button */}
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={handleNextLevel}
+            disabled={!gameState.hasTrainedModel || gameState.modelAccuracy < 70}
+            className={`px-12 py-4 rounded-2xl font-bold text-xl transition-all duration-300 shadow-xl border-4 ${
+              gameState.hasTrainedModel && gameState.modelAccuracy >= 70
+                ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 hover:shadow-2xl hover:scale-105 border-yellow-400 transform hover:-translate-y-1'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400'
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-3">
+              <span className="text-2xl">🎯</span>
+              <span>Next Level</span>
+              <span className="text-2xl">→</span>
+            </div>
+            {gameState.hasTrainedModel && gameState.modelAccuracy >= 70 && (
+              <div className="text-sm mt-1 opacity-90">
+                Ready for Level {gameState.currentLevel + 1}!
+              </div>
+            )}
+          </button>
+        </div>
+        
+        {/* Status Message */}
+        <div className="mt-4 text-center">
+          {!gameState.hasTrainedModel && (
+            <p className="text-lg font-bold text-red-700 bg-yellow-100 px-6 py-3 rounded-full border-2 border-red-300 inline-block">
+              🤖 Train your AI model first!
+            </p>
+          )}
+          
+          {gameState.hasTrainedModel && gameState.modelAccuracy < 70 && (
+            <p className="text-lg font-bold text-orange-700 bg-yellow-100 px-6 py-3 rounded-full border-2 border-orange-300 inline-block">
+              📈 Need {70 - gameState.modelAccuracy}% more accuracy (Current: {gameState.modelAccuracy}%)
+            </p>
+          )}
+          
+          {gameState.hasTrainedModel && gameState.modelAccuracy >= 70 && (
+            <p className="text-lg font-bold text-green-700 bg-green-100 px-6 py-3 rounded-full border-2 border-green-300 inline-block animate-pulse">
+              ✅ Perfect! Ready for the next challenge?
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
