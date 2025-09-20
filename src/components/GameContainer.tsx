@@ -169,13 +169,14 @@ export const GameContainer: React.FC = () => {
       setIsRecordingAnnotation(false);
     });
     
+    // Calculate updated images and annotation count outside setGameState
+    const updatedImages = gameState.images.map(img =>
+      img.id === imageId ? { ...img, userAnnotation: annotation } : img
+    );
+    
+    const newAnnotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
+    
     setGameState(prev => {
-      const updatedImages = prev.images.map(img =>
-        img.id === imageId ? { ...img, userAnnotation: annotation } : img
-      );
-      
-      const newAnnotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
-      
       return {
         ...prev,
         images: updatedImages,
@@ -183,11 +184,6 @@ export const GameContainer: React.FC = () => {
         hasTrainedModel: newAnnotatedCount > 0
       };
     });
-    
-    // Calculate annotatedCount for use in setTimeout
-    const currentAnnotatedCount = gameState.images.filter(img => 
-      img.id === imageId ? annotation !== undefined : img.userAnnotation !== undefined
-    ).length;
     
     // Update test predictions after state is updated
     setTimeout(() => {
