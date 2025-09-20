@@ -466,10 +466,10 @@ export const GameContainer: React.FC = () => {
     }
   };
   const handleNextLevel = () => {
-    // Check if red ball has reached "very confident" position (85% or more)
-    const ballPosition = Math.min(15 + (gameState.annotatedCount * 7), 85);
+    // Check if red ball has reached "very confident" position (7+ annotations)
+    const ballPosition = Math.min(15 + (gameState.annotatedCount * 10), 85);
     
-    if (ballPosition >= 85) {
+    if (gameState.annotatedCount >= 7) {
       setShowConfidencePopup(true);
       return;
     }
@@ -904,12 +904,6 @@ export const GameContainer: React.FC = () => {
         
         {/* Status Message */}
         <div className="mt-4 text-center">
-          {gameState.hasTrainedModel && gameState.modelAccuracy < 70 && (
-            <p className="text-lg font-bold text-orange-700 bg-yellow-100 px-6 py-3 rounded-full border-2 border-orange-300 inline-block">
-              📈 Need {70 - gameState.modelAccuracy}% more accuracy (Current: {gameState.modelAccuracy}%)
-            </p>
-          )}
-          
           {gameState.hasTrainedModel && gameState.modelAccuracy >= 70 && (
             <p className="text-lg font-bold text-green-700 bg-green-100 px-6 py-3 rounded-full border-2 border-green-300 inline-block animate-pulse">
               ✅ Perfect! Ready for the next challenge?
