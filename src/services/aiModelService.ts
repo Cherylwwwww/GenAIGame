@@ -113,7 +113,7 @@ export class AIModelService {
         processedImg = canvas;
         
         console.log(`✂️ Cropped region: ${Math.round(cropWidth)}x${Math.round(cropHeight)} pixels`);
-        console.log(`🎯 Training on: ${label === gameState.currentCategory ? 'Wally close-up' : 'Non-Wally region'}`);
+        console.log(`🎯 Training on: ${label.startsWith('not_') ? 'Non-Wally region' : 'Wally close-up'}`);
       } else {
         // For negative examples (no Wally), use random crop from full image
         const canvas = document.createElement('canvas');
