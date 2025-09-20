@@ -58,10 +58,6 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Right - Player Info */}
           <div className="flex items-center space-x-6">
-            <div className="text-center">
-              <div className="text-2xl font-bold bg-white px-3 py-2 rounded-full border-3 border-red-500 shadow-md">🔴⚪</div>
-              <div className="text-xs text-red-700 font-bold mt-1 bg-yellow-100 px-2 py-1 rounded-full">Wally Hunter</div>
-            </div>
           </div>
         </div>
       </div>
