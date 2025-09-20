@@ -20,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   isUsingRealTraining
 }) => {
   return (
-    <header className="bg-white shadow-lg border-b-4 border-blue-500">
+    <header className="bg-gradient-to-r from-red-500 via-white to-blue-500 shadow-lg border-b-4 border-yellow-400">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Left - Logo */}
@@ -41,16 +41,16 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Center - Current Task */}
           <div className="text-center">
-            <div className="bg-red-50 px-6 py-3 rounded-2xl border-2 border-red-400">
-              <h2 className="text-2xl font-bold text-red-700">
+            <div className="bg-white px-6 py-3 rounded-2xl border-4 border-red-500 shadow-lg">
+              <h2 className="text-2xl font-bold text-red-700 drop-shadow-md">
                 Find Wally's RED-WHITE Stripes! 🔍
               </h2>
               {isUsingRealTraining && (
-                <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full mt-1 inline-block">
+                <span className="text-sm bg-yellow-200 text-blue-800 px-3 py-1 rounded-full mt-1 inline-block border-2 border-blue-400 font-bold">
                   🤖 Real AI Training
                 </span>
               )}
-              <p className="text-xs text-red-600 mt-1">
+              <p className="text-xs text-blue-700 mt-1 font-semibold bg-yellow-100 px-2 py-1 rounded-full inline-block">
                 Look for: RED-WHITE horizontal striped shirt, bobble hat, round glasses
               </p>
             </div>
@@ -59,8 +59,8 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Right - Player Info */}
           <div className="flex items-center space-x-6">
             <div className="text-center">
-              <div className="text-lg font-bold text-red-600">🔴⚪</div>
-              <div className="text-xs text-gray-600">Wally Hunter</div>
+              <div className="text-2xl font-bold bg-white px-3 py-2 rounded-full border-3 border-red-500 shadow-md">🔴⚪</div>
+              <div className="text-xs text-red-700 font-bold mt-1 bg-yellow-100 px-2 py-1 rounded-full">Wally Hunter</div>
             </div>
           </div>
         </div>

@@ -477,7 +477,7 @@ export const GameContainer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50">
       {/* Top Bar */}
       <Header
         currentLevel={gameState.currentLevel}
@@ -493,17 +493,17 @@ export const GameContainer: React.FC = () => {
         <div className="flex items-center justify-center min-h-[600px] gap-8">
           {/* Left Side - Annotation Image */}
           <div className="flex-1 max-w-md">
-            <div className="bg-white rounded-2xl shadow-xl p-6 h-full">
+            <div className="bg-white rounded-2xl shadow-xl border-4 border-red-500 p-6 h-full">
               {/* Annotation Image */}
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                <h3 className="text-xl font-bold text-red-700 mb-4 text-center bg-yellow-100 py-2 px-4 rounded-lg border-2 border-red-300">
                   Training Image 🔍
                 </h3>
                 <div className="relative">
                   <img
                     src={gameState.images[currentImageIndex]?.url}
                     alt="Find Wally training image"
-                    className="w-full h-64 object-cover rounded-xl border-4 border-gray-200"
+                    className="w-full h-64 object-cover rounded-xl border-4 border-blue-400"
                   />
                   
                   {/* Bounding Box Display */}
@@ -522,7 +522,7 @@ export const GameContainer: React.FC = () => {
                       }}
                     >
                       {gameState.images[currentImageIndex]?.userAnnotation && (
-                        <div className="absolute -top-7 left-0 bg-red-600 text-white text-sm px-3 py-1 rounded font-bold shadow-md">
+                        <div className="absolute -top-7 left-0 bg-red-700 text-white text-sm px-3 py-1 rounded-full font-bold shadow-md border-2 border-yellow-400">
                           {gameState.currentCategory}
                         </div>
                       )}
@@ -553,7 +553,7 @@ export const GameContainer: React.FC = () => {
                     
                     {/* Instruction overlay when no annotation exists */}
                     {!gameState.images[currentImageIndex]?.userAnnotation && !currentBox && (
-                      <div className="absolute top-3 left-3 bg-black bg-opacity-80 text-white text-sm px-3 py-2 rounded-lg font-bold">
+                      <div className="absolute top-3 left-3 bg-red-600 bg-opacity-90 text-white text-sm px-3 py-2 rounded-lg font-bold border-2 border-yellow-300">
                         Click & drag to find Wally!
                       </div>
                     )}
@@ -569,7 +569,7 @@ export const GameContainer: React.FC = () => {
                   className={`w-full px-6 py-3 rounded-xl font-bold text-lg transition-all duration-200 ${
                     gameState.isTraining || isRecordingAnnotation
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105'
+                      : 'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 hover:shadow-lg hover:scale-105 border-2 border-yellow-400'
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -595,14 +595,14 @@ export const GameContainer: React.FC = () => {
                     className={`px-4 py-2 rounded-lg transition-all duration-200 ${
                       currentImageIndex === 0
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
                     }`}
                   >
                     ← Previous
                   </button>
                   
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-800">
+                    <div className="text-lg font-bold text-red-700 bg-yellow-100 px-3 py-1 rounded-full border-2 border-red-300">
                       {currentImageIndex + 1} / {gameState.images.length}
                     </div>
                   </div>
@@ -613,7 +613,7 @@ export const GameContainer: React.FC = () => {
                     className={`px-4 py-2 rounded-lg transition-all duration-200 ${
                       currentImageIndex === gameState.images.length - 1
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
                     }`}
                   >
                     Next →
@@ -629,18 +629,18 @@ export const GameContainer: React.FC = () => {
             <div className="relative w-32 h-16 mb-6">
               {/* Left Flow Direction Arrow */}
               <div className="absolute -left-10 top-1/2 transform -translate-y-1/2">
-                <div className="text-4xl text-blue-600 animate-pulse">→</div>
+                <div className="text-4xl text-red-600 animate-pulse">→</div>
               </div>
               
               {/* Conveyor Belt Track */}
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800 rounded-full shadow-inner">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-blue-600 rounded-full shadow-inner border-4 border-yellow-400">
                 {/* Moving Belt Segments */}
                 <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
                   <div className="flex space-x-2 animate-pulse">
-                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-80 animate-bounce" style={{ animationDelay: '0s' }}></div>
-                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-60 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-80 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                    <div className="w-2 h-8 bg-blue-400 rounded-full opacity-60 animate-bounce" style={{ animationDelay: '0.6s' }}></div>
+                    <div className="w-2 h-8 bg-white rounded-full opacity-90 animate-bounce border border-yellow-300" style={{ animationDelay: '0s' }}></div>
+                    <div className="w-2 h-8 bg-yellow-300 rounded-full opacity-80 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-8 bg-white rounded-full opacity-90 animate-bounce border border-yellow-300" style={{ animationDelay: '0.4s' }}></div>
+                    <div className="w-2 h-8 bg-yellow-300 rounded-full opacity-80 animate-bounce" style={{ animationDelay: '0.6s' }}></div>
                   </div>
                 </div>
               </div>
@@ -655,22 +655,22 @@ export const GameContainer: React.FC = () => {
           {/* Right Side - Test Image */}
           <div className="flex-1 max-w-md">
             {testImages[0] && (
-              <div className="bg-white rounded-2xl shadow-xl p-6 h-full">
+              <div className="bg-white rounded-2xl shadow-xl border-4 border-blue-500 p-6 h-full">
                 <div className="mb-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                  <h3 className="text-xl font-bold text-blue-700 mb-4 text-center bg-yellow-100 py-2 px-4 rounded-lg border-2 border-blue-300">
                     Test Image 🧪
                   </h3>
                   <div className="relative w-full">
                     <img
                       src={testImages[0].url}
                       alt="Where's Wally test image"
-                      className="w-full h-64 object-cover rounded-xl border-4 border-gray-200 pointer-events-none"
+                      className="w-full h-64 object-cover rounded-xl border-4 border-red-400 pointer-events-none"
                     />
                     
                     {/* Existing Bounding Box Display */}
                     {gameState.hasTrainedModel && testImages[0].modelPrediction === true && (
                       <div
-                        className="absolute border-4 border-green-500 bg-green-500 bg-opacity-30 shadow-lg pointer-events-none z-40"
+                        className="absolute border-4 border-yellow-500 bg-yellow-500 bg-opacity-40 shadow-lg pointer-events-none z-40"
                         style={{
                           left: '20%',
                           top: '15%', 
@@ -684,7 +684,7 @@ export const GameContainer: React.FC = () => {
                     {gameState.hasTrainedModel && testImages[0].modelPrediction !== undefined && (
                       <div className="absolute top-4 right-4">
                         <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
-                          testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                          testImages[0].modelPrediction ? 'bg-yellow-500 text-red-700 border-2 border-red-500' : 'bg-red-600 text-white border-2 border-yellow-400'
                         }`}>
                           {testImages[0].modelPrediction ? `✓ Wally spotted!` : `✗ Wally not found`}
                         </div>
@@ -693,7 +693,7 @@ export const GameContainer: React.FC = () => {
 
                     {/* Placeholder when no model */}
                     {(testImages[0].modelPrediction === undefined) && (
-                      <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
+                      <div className="absolute inset-0 bg-red-600 bg-opacity-70 rounded-xl flex items-center justify-center border-4 border-yellow-400">
                         <div className="text-white text-center">
                           <p className="text-lg font-medium">
                             {gameState.annotatedCount === 0
@@ -715,14 +715,14 @@ export const GameContainer: React.FC = () => {
                 <div className="space-y-4">
                   {/* Confidence Meter Labels */}
                   <div className="flex justify-between items-center text-sm font-bold">
-                    <span className="text-red-600">Not confident</span>
-                    <span className="text-green-600">Very confident</span>
+                    <span className="text-red-700 bg-red-100 px-2 py-1 rounded-full border border-red-300">Not confident</span>
+                    <span className="text-blue-700 bg-blue-100 px-2 py-1 rounded-full border border-blue-300">Very confident</span>
                   </div>
                   
                   {/* Confidence Meter with Moving Ball */}
                   <div className="relative">
                     {/* Background Track */}
-                    <div className="bg-gradient-to-r from-red-200 via-yellow-200 to-green-200 rounded-full h-6 shadow-inner border-2 border-gray-300">
+                    <div className="bg-gradient-to-r from-red-300 via-yellow-300 to-blue-300 rounded-full h-6 shadow-inner border-4 border-white">
                     </div>
                     
                     {/* Moving Red Ball */}
@@ -733,13 +733,13 @@ export const GameContainer: React.FC = () => {
                         }%`
                       }}
                     >
-                      <div className="w-6 h-6 bg-red-500 rounded-full shadow-lg border-2 border-white animate-pulse"></div>
+                      <div className="w-6 h-6 bg-red-600 rounded-full shadow-lg border-3 border-yellow-400 animate-pulse"></div>
                     </div>
                   </div>
                   
                   {/* Dynamic Confidence Messages */}
                   <div className="text-center min-h-[3rem] flex items-center justify-center">
-                    <p className="text-sm font-bold text-red-700 italic animate-pulse bg-red-50 px-3 py-2 rounded-lg border border-red-200">
+                    <p className="text-sm font-bold text-red-800 italic animate-pulse bg-yellow-100 px-4 py-3 rounded-lg border-2 border-red-400 shadow-md">
                       {isModelLoading && "🤖 Loading AI brain..."}
                       {!isModelLoading && testImages[0]?.confidence !== undefined 
                         ? aiModelService.getConfidenceMessage(testImages[0].confidence, gameState.annotatedCount)
