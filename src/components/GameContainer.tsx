@@ -641,10 +641,6 @@ Please check your internet connection and try refreshing the page.`);
                       </div>
                     )}
     // Need at least one annotation to make predictions
-                    {/* Show prediction status */}
-                    {testImages[0].modelPrediction === undefined && (
-      return;
-    }
     
     console.log(`🔮 Making prediction with ${exampleCount} examples (${positiveExamples} positive, ${negativeExamples} negative)`);
                           {!aiModelService.isLoaded() ? (
@@ -710,9 +706,16 @@ Please check your internet connection and try refreshing the page.`);
             )}
           </div>
         </div>
-        console.log(`🔮 Has Wally: ${hasObject ? 'YES' : 'NO'}`);
+            )}
+          </div>
+        </div>
         
-        {/* Bottom Bar - Tips */}
+        {/* Bottom Panel - Model Training */}
+        <AnnotationPanel
+          gameState={gameState}
+          onTrainModel={handleTrainModel}
+          onNextLevel={handleNextLevel}
+        />
       </div>
     </div>
   );
