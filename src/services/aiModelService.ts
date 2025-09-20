@@ -20,13 +20,53 @@ export class AIModelService {
       await tf.ready();
       console.log('✅ TensorFlow.js backend initialized');
       
-      this.net = await mobilenet.load();
+      // Try to load MobileNet with retry logic
+      this.net = await this.loadMobileNetWithRetry();
       this.isModelLoaded = true;
       console.log('✅ MobileNet loaded successfully!');
     } catch (error) {
       console.error('❌ Failed to load MobileNet:', error);
       throw error;
     }
+  }
+
+  private async loadMobileNetWithRetry(maxRetries: number = 3): Promise<mobilenet.MobileNet> {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`🔄 Loading MobileNet (attempt ${attempt}/${maxRetries})...`);
+        
+        // Try loading with default settings first
+        const net = await mobilenet.load();
+        console.log('✅ MobileNet loaded successfully on attempt', attempt);
+        return net;
+        
+      } catch (error) {
+        console.warn(`⚠️ MobileNet load attempt ${attempt} failed:`, error);
+        
+        if (attempt === maxRetries) {
+          // On final attempt, try with alternative configuration
+          try {
+            console.log('🔄 Trying alternative MobileNet configuration...');
+            const net = await mobilenet.load({
+              version: 1,
+              alpha: 0.25 // Smaller model, faster download
+            });
+            console.log('✅ MobileNet loaded with alternative config');
+            return net;
+          } catch (altError) {
+            console.error('❌ All MobileNet load attempts failed');
+            throw new Error(`Failed to load MobileNet after ${maxRetries} attempts. Please check your internet connection and try again.`);
+          }
+        }
+        
+        // Wait before retry (exponential backoff)
+        const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+        console.log(`⏳ Waiting ${delay}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+    
+    throw new Error('Unexpected error in loadMobileNetWithRetry');
   }
 
   async addExample(imageUrl: string, boundingBox: BoundingBox | null, label: string): Promise<void> {

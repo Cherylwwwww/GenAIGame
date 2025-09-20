@@ -124,6 +124,11 @@ export const GameContainer: React.FC = () => {
       console.log('🤖 AI model initialized for new level');
     } catch (error) {
       console.error('❌ Failed to initialize AI model:', error);
+      
+      // Show user-friendly error message
+      alert(`Failed to load AI model: ${error instanceof Error ? error.message : 'Network error'}
+      
+Please check your internet connection and try refreshing the page.`);
     } finally {
       setIsModelLoading(false);
     }
