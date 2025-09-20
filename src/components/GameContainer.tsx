@@ -571,7 +571,7 @@ export const GameContainer: React.FC = () => {
       </div>
       
       {/* Subtle texture overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50 to-transparent opacity-30 -z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50 to-transparent opacity-30 -z-50"></div>
       {/* Top Bar */}
       <Header
         currentLevel={gameState.currentLevel}
