@@ -1,5 +1,5 @@
 import React from 'react';
-import { Brain, Trophy, User } from 'lucide-react';
+import { Search, Trophy, User } from 'lucide-react';
 
 interface HeaderProps {
   currentLevel: number;
@@ -24,8 +24,8 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center justify-between">
           {/* Left - Logo */}
           <div className="flex items-center space-x-3">
-            <div className="bg-blue-500 p-2 rounded-xl">
-              <Brain className="w-8 h-8 text-white" />
+            <div className="bg-red-500 p-2 rounded-xl border-2 border-white shadow-lg">
+              <Search className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg">
