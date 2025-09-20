@@ -614,12 +614,12 @@ Please check your internet connection and try refreshing the page.`);
               <div className="bg-white rounded-2xl shadow-xl p-6 h-full">
                 <div className="mb-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                    Crowd Scene 👥
+                    Test Image 🧪
                   </h3>
                   <div className="relative w-full">
                     <img
                       src={testImages[0].url}
-                      alt="Where's Wally crowd scene"
+                      alt="Where's Wally test image"
                       className="w-full h-64 object-cover rounded-xl border-4 border-gray-200 pointer-events-none"
                     />
                     
