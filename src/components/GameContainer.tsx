@@ -269,7 +269,6 @@ Please check your internet connection and try refreshing the page.`);
       });
       
       const prediction = await Promise.race([predictionPromise, timeoutPromise]);
-      const prediction = await aiModelService.predict(testImage.url);
       
       if (prediction) {
         const hasObject = prediction.label === gameState.currentCategory;
