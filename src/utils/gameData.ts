@@ -1,33 +1,40 @@
 import { Category } from '../types';
 
+// Import local assets
+import wallyImage1 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c1_processed_by_imagy.png';
+import wallyImage2 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c2_processed_by_imagy.png';
+import wallyImage3 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c3_processed_by_imagy.png';
+import wallyImage4 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r2_c1_processed_by_imagy.png';
+import wallyImage5 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r2_c2_processed_by_imagy.png';
+
 export const categories: Category[] = [
   {
     name: "wally",
     targetObject: "Wally",
     description: "Find Wally in the crowd - look for his red and white striped shirt, bobble hat, and glasses!",
     images: [
-      // Training images with people in striped shirts (Wally-like characters)
-      "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg", // Person in striped shirt
-      "https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg", // Person with glasses
-      "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg", // Person in casual wear
-      "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg", // Person in striped clothing
-      "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg", // Person with hat
-      "https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg", // Person in red shirt
-      "https://images.pexels.com/photos/1043473/pexels-photo-1043473.jpeg", // Person in casual outfit
-      "https://images.pexels.com/photos/1239288/pexels-photo-1239288.jpeg", // Person with accessories
-      "https://images.pexels.com/photos/1681012/pexels-photo-1681012.jpeg", // Person in distinctive clothing
-      "https://images.pexels.com/photos/1222273/pexels-photo-1222273.jpeg", // Person in crowd-like setting
-      // Non-Wally images (people without Wally characteristics)
-      "https://images.pexels.com/photos/1040883/pexels-photo-1040883.jpeg", // Person in plain clothes
-      "https://images.pexels.com/photos/1239293/pexels-photo-1239293.jpeg", // Person in different style
-      "https://images.pexels.com/photos/1681014/pexels-photo-1681014.jpeg", // Person in business attire
-      "https://images.pexels.com/photos/1222275/pexels-photo-1222275.jpeg", // Person in dark clothing
-      "https://images.pexels.com/photos/1043475/pexels-photo-1043475.jpeg", // Person in different outfit
-      "https://images.pexels.com/photos/1040885/pexels-photo-1040885.jpeg", // Person without distinctive features
-      "https://images.pexels.com/photos/1239295/pexels-photo-1239295.jpeg", // Person in regular clothes
-      "https://images.pexels.com/photos/1681016/pexels-photo-1681016.jpeg", // Person in different style
-      "https://images.pexels.com/photos/1222277/pexels-photo-1222277.jpeg", // Person in casual wear
-      "https://images.pexels.com/photos/1043477/pexels-photo-1043477.jpeg"  // Person in different outfit
+      // Local Wally training images
+      wallyImage1, // Where's Wally scene 1
+      wallyImage2, // Where's Wally scene 2
+      wallyImage3, // Where's Wally scene 3
+      wallyImage4, // Where's Wally scene 4
+      wallyImage5, // Where's Wally scene 5
+      // Duplicate images to have enough training data
+      wallyImage1,
+      wallyImage2,
+      wallyImage3,
+      wallyImage4,
+      wallyImage5,
+      wallyImage1,
+      wallyImage2,
+      wallyImage3,
+      wallyImage4,
+      wallyImage5,
+      wallyImage1,
+      wallyImage2,
+      wallyImage3,
+      wallyImage4,
+      wallyImage5
     ],
     testImages: [
       // Complex crowd scenes where Wally might be hiding
