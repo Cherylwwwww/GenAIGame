@@ -75,6 +75,10 @@ export class TrainingService {
       throw new Error('No active training session');
     }
 
+    console.log('🚀 Starting model training...');
+    console.log('Session ID:', this.sessionId);
+    console.log('Annotations count:', annotations.length);
+
     // Prepare annotations data
     const annotations = images
       .filter(img => img.userAnnotation !== undefined)
@@ -90,9 +94,12 @@ export class TrainingService {
       throw new Error('Please annotate at least 1 image before training');
     }
 
+    const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/train-model`;
+    console.log('📡 Calling edge function:', edgeFunctionUrl);
+
     // Call training edge function
     const response = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/train-model`,
+      edgeFunctionUrl,
       {
         method: 'POST',
         headers: {
@@ -106,12 +113,18 @@ export class TrainingService {
       }
     );
 
+    console.log('📊 Edge function response status:', response.status);
+    console.log('📊 Edge function response ok:', response.ok);
+
     if (!response.ok) {
       const error = await response.json();
+      console.error('❌ Edge function error:', error);
       throw new Error(error.details || 'Training failed');
     }
 
     const result = await response.json();
+    console.log('✅ Training completed:', result);
+    
     return {
       jobId: result.jobId,
       accuracy: result.accuracy,
@@ -120,8 +133,14 @@ export class TrainingService {
   }
 
   async getPredictions(jobId: string, testImages: GameImage[]): Promise<GameImage[]> {
+    console.log('🔮 Getting predictions for job:', jobId);
+    console.log('🔮 Test images count:', testImages.length);
+    
+    const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-predictions`;
+    console.log('📡 Calling predictions endpoint:', edgeFunctionUrl);
+
     const response = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-predictions`,
+      edgeFunctionUrl,
       {
         method: 'POST',
         headers: {
@@ -139,12 +158,17 @@ export class TrainingService {
       }
     );
 
+    console.log('📊 Predictions response status:', response.status);
+    console.log('📊 Predictions response ok:', response.ok);
+
     if (!response.ok) {
       const error = await response.json();
+      console.error('❌ Predictions error:', error);
       throw new Error(error.details || 'Prediction failed');
     }
 
     const result = await response.json();
+    console.log('✅ Predictions received:', result);
     
     // Update test images with predictions
     return testImages.map(img => {

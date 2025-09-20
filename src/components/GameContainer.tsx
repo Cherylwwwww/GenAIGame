@@ -114,10 +114,16 @@ export const GameContainer: React.FC = () => {
 
   const initializeTrainingSession = async (category: string) => {
     try {
+      console.log('🔍 Checking Supabase connection...');
+      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+      console.log('Has Anon Key:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+      
       await trainingService.createSession(category, gameState.currentLevel);
+      console.log('✅ Supabase training session created successfully');
       setIsUsingRealTraining(true);
     } catch (error) {
-      console.warn('Failed to create training session, using simulation mode:', error);
+      console.error('❌ Failed to create training session:', error);
+      console.log('🔄 Falling back to simulation mode');
       setIsUsingRealTraining(false);
     }
   };
