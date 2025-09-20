@@ -176,9 +176,6 @@ Please check your internet connection and try refreshing the page.`);
       
       const annotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
       
-      // Update test predictions with real AI model
-      updateTestPredictions();
-      
       return {
         ...prev,
         images: updatedImages,
@@ -186,6 +183,11 @@ Please check your internet connection and try refreshing the page.`);
         hasTrainedModel: annotatedCount > 0
       };
     });
+    
+    // Update test predictions with real AI model after state update
+    setTimeout(() => {
+      updateTestPredictions();
+    }, 100);
     
     // Auto-advance to next image after annotation
     setTimeout(() => {
@@ -236,38 +238,30 @@ Please check your internet connection and try refreshing the page.`);
     const positiveExamples = annotatedImages.filter(img => img.userAnnotation !== null).length;
     const negativeExamples = annotatedImages.filter(img => img.userAnnotation === null).length;
     
-    if (positiveExamples === 0 || negativeExamples === 0) {
-      console.log('⚠️ Need both Wally examples and non-Wally examples for reliable predictions');
+    // Allow predictions with just positive examples initially
+    if (positiveExamples === 0 && negativeExamples === 0) {
+      console.log('⚠️ Need at least one annotation for predictions');
       return;
     }
     
     try {
       const testImage = testImages[0];
+      console.log('🔮 Making prediction for test image:', testImage.url);
       const prediction = await aiModelService.predict(testImage.url);
       
       if (prediction) {
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
         
-        // Lower confidence threshold since we start with fewer examples
-        if (confidence < 0.4) {
-          console.log(`🤔 Low confidence prediction (${Math.round(confidence * 100)}%), not showing result`);
-          return;
-        }
-        
-        // Additional check: if predicting "has Wally" but confidence isn't high enough, don't show
-        if (hasObject && confidence < 0.5) {
-          console.log(`🤔 Predicting Wally but confidence too low (${Math.round(confidence * 100)}%), not showing`);
-          return;
-        }
+        console.log(`🔮 Wally Detection Result: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
             ? { ...img, modelPrediction: hasObject, confidence }
             : img
         ));
-        
-        console.log(`🔮 Wally Detection: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
+      } else {
+        console.log('⚠️ No prediction returned from AI model');
       }
       
     } catch (error) {
