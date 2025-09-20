@@ -98,8 +98,9 @@ export class AIModelService {
         const cropWidth = (boundingBox.width / 100) * img.width;
         const cropHeight = (boundingBox.height / 100) * img.height;
         
-        canvas.width = Math.max(cropWidth, 32); // Minimum size for MobileNet
-        canvas.height = Math.max(cropHeight, 32);
+        // Ensure minimum size for better feature extraction
+        canvas.width = Math.max(cropWidth, 64); // Larger minimum for better Wally detection
+        canvas.height = Math.max(cropHeight, 64);
         
         ctx.drawImage(
           img,
@@ -117,7 +118,7 @@ export class AIModelService {
       this.classifier.addExample(activation, label);
       this.exampleCount++;
       
-      console.log(`✅ Added example for label="${label}" (Total examples: ${this.exampleCount})`);
+      console.log(`✅ Added Wally training example: ${label === 'Wally' ? 'Found Wally with red stripes & bobble hat' : 'No Wally in this image'} (Total: ${this.exampleCount})`);
       
       // Clean up tensor
       activation.dispose();
@@ -153,9 +154,15 @@ export class AIModelService {
       const activation = this.net.infer(img, true);
       
       // Make prediction
-      const result = await this.classifier.predictClass(activation, 3);
+      const result = await this.classifier.predictClass(activation, 5); // Get more predictions for better analysis
       
-      console.log('🔮 Prediction result:', result);
+      console.log('🔮 Wally Detection Result:', {
+        prediction: result.label,
+        confidence: Math.round(result.confidences[result.label] * 100) + '%',
+        allConfidences: Object.entries(result.confidences).map(([label, conf]) => 
+          `${label}: ${Math.round(conf * 100)}%`
+        ).join(', ')
+      });
       
       // Clean up tensor
       activation.dispose();
@@ -194,11 +201,11 @@ export class AIModelService {
   getConfidenceMessage(confidence: number, exampleCount: number): string {
     // Don't show confident messages with too few examples
     if (exampleCount < 3) {
-      return "🤖 Learning Wally's red stripes and bobble hat...";
+      return "🤖 Learning to spot Wally's red-white striped shirt and bobble hat...";
     }
     
     if (exampleCount < 5) {
-      return "🤔 Getting familiar with Wally's glasses and walking stick...";
+      return "🤔 Studying Wally's round glasses, blue jeans, and brown shoes...";
     }
     
     // Add more uncertainty when sample size is small  
@@ -206,17 +213,17 @@ export class AIModelService {
     const adjustedConfidence = Math.max(0, confidence - uncertainty);
     
     if (adjustedConfidence < 0.4) {
-      return "🤔 Where's Wally? Can't spot those red stripes...";
+      return "🤔 Where's Wally? Having trouble spotting his distinctive red-white striped shirt...";
     } else if (adjustedConfidence < 0.6) {
-      return "🤷‍♂️ Hmm... is that his bobble hat? Not sure...";
+      return "🤷‍♂️ Hmm... maybe I see a bobble hat and glasses? Not quite sure...";
     } else if (adjustedConfidence < 0.75) {
-      return "🧐 Getting better at spotting those striped shirts...";
+      return "🧐 Getting better at recognizing horizontal red-white stripes and round glasses...";
     } else if (adjustedConfidence < 0.85) {
-      return "😊 I can recognize Wally's glasses and brown shoes!";
+      return "😊 I can spot Wally's striped shirt, bobble hat, and round black glasses!";
     } else if (adjustedConfidence < 0.92) {
-      return "😎 Those red-white stripes are easy to spot now!";
+      return "😎 Found the red-white horizontal stripes, blue jeans, and brown shoes!";
     } else {
-      return "🎯 Found Wally! Red stripes, bobble hat, and glasses - got it!";
+      return "🎯 Found Wally! Red-white striped shirt, bobble hat, round glasses, and blue jeans - perfect match!";
     }
   }
 }

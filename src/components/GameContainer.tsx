@@ -210,8 +210,9 @@ Please check your internet connection and try refreshing the page.`);
       // Determine label based on annotation
       const label = annotation !== null ? gameState.currentCategory : `not_${gameState.currentCategory}`;
       
+      console.log(`🎯 Training AI to recognize: ${annotation !== null ? 'Wally with red-white striped shirt, bobble hat, round glasses, blue jeans, brown shoes' : 'Scene without Wally'}`);
+      
       await aiModelService.addExample(currentImage.url, annotation, label);
-      console.log(`✅ Added training example: ${label}`);
       
     } catch (error) {
       console.error('❌ Failed to add example to AI model:', error);
@@ -252,16 +253,15 @@ Please check your internet connection and try refreshing the page.`);
     
     try {
       const testImage = testImages[0];
-      console.log('🔮 Making prediction on test image:', testImage.url);
+      console.log('🔍 Analyzing test image for Wally (red-white stripes, bobble hat, round glasses, blue jeans, brown shoes)...');
       const prediction = await aiModelService.predict(testImage.url);
-      
-      console.log('🔮 Prediction result:', prediction);
       
       if (prediction) {
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
         
-        console.log(`🎯 Showing prediction: ${hasObject ? 'Wally found' : 'No Wally'} (${Math.round(confidence * 100)}% confidence)`);
+        console.log(`🎯 AI Decision: ${hasObject ? '✅ WALLY SPOTTED!' : '❌ NO WALLY FOUND'} (${Math.round(confidence * 100)}% confidence)`);
+        console.log(`🔍 Looking for: Red-white horizontal stripes, bobble hat, round black glasses, blue jeans, brown shoes`);
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
