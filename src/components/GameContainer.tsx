@@ -904,7 +904,7 @@ export const GameContainer: React.FC = () => {
         
         {/* Status Message */}
         <div className="mt-4 text-center">
-          {gameState.hasTrainedModel && gameState.modelAccuracy >= 70 && (
+          {gameState.annotatedCount >= 7 && (
             <p className="text-lg font-bold text-green-700 bg-green-100 px-6 py-3 rounded-full border-2 border-green-300 inline-block animate-pulse">
               ✅ Perfect! Ready for the next challenge?
             </p>
