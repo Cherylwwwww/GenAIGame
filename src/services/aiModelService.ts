@@ -180,6 +180,10 @@ export class AIModelService {
     return this.classifier.getNumClasses();
   }
 
+  isLoaded(): boolean {
+    return this.isModelLoaded && this.net !== null;
+  }
+
   reset(): void {
     this.classifier.dispose();
     this.classifier = knnClassifier.create();

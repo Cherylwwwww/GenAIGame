@@ -196,6 +196,11 @@ Please check your internet connection and try refreshing the page.`);
   };
 
   const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {
+    if (!aiModelService.isLoaded()) {
+      console.log('⚠️ AI model not loaded yet, skipping example addition');
+      return;
+    }
+
     try {
       const currentImage = gameState.images.find(img => img.id === imageId);
       if (!currentImage) return;
@@ -214,6 +219,11 @@ Please check your internet connection and try refreshing the page.`);
   const updateTestPredictions = async () => {
     if (testImages.length === 0) return;
     
+    if (!aiModelService.isLoaded()) {
+      console.log('⚠️ AI model not loaded yet, skipping test predictions');
+      return;
+    }
+
     try {
       const testImage = testImages[0];
       const prediction = await aiModelService.predict(testImage.url);
@@ -258,6 +268,11 @@ Please check your internet connection and try refreshing the page.`);
   };
 
   const calculateRealModelAccuracy = async (): Promise<{ accuracy: number; modelState: 'underfitting' | 'correct' | 'overfitting' }> => {
+    if (!aiModelService.isLoaded()) {
+      console.log('⚠️ AI model not loaded yet, using fallback accuracy');
+      return { accuracy: 30, modelState: 'underfitting' };
+    }
+
     const exampleCount = aiModelService.getExampleCount();
     
     if (exampleCount === 0) {
@@ -320,7 +335,7 @@ Please check your internet connection and try refreshing the page.`);
       
       // Get real AI predictions for test images
       const testImage = testImages[0];
-      if (testImage) {
+      if (testImage && aiModelService.isLoaded()) {
         const prediction = await aiModelService.predict(testImage.url);
         if (prediction) {
           const hasObject = prediction.label === gameState.currentCategory;
