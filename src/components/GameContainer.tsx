@@ -272,7 +272,8 @@ Please check your internet connection and try refreshing the page.`);
         const confidence = prediction.confidence;
         
         console.log(`🎯 AI Decision: ${hasObject ? '✅ WALLY SPOTTED!' : '❌ NO WALLY FOUND'} (${Math.round(confidence * 100)}% confidence)`);
-        console.log(`🔍 Looking for: Red-white horizontal stripes, bobble hat, round black glasses, blue jeans, brown shoes`);
+        console.log(`🔍 Looking for: RED-WHITE horizontal stripes, bobble hat, round black glasses, blue jeans, brown shoes`);
+        console.log(`❌ NOT looking for: Black-yellow stripes or other color combinations`);
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
@@ -378,6 +379,7 @@ Please check your internet connection and try refreshing the page.`);
       // Get real AI predictions for test images
       const testImage = testImages[0];
       if (testImage && aiModelService.isLoaded() && aiModelService.getExampleCount() >= 3) {
+        console.log(`🔍 Analyzing test image for Wally (RED-WHITE horizontal stripes, bobble hat, round glasses, blue jeans, brown shoes)...`);
         const prediction = await aiModelService.predict(testImage.url);
         if (prediction) {
           const hasObject = prediction.label === gameState.currentCategory;

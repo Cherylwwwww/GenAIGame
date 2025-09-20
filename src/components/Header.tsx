@@ -37,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="text-center">
             <div className="bg-blue-50 px-6 py-3 rounded-2xl border-2 border-blue-200">
               <h2 className="text-2xl font-bold text-blue-800">
-                Find Wally's Red Stripes! 🔍
+                Find Wally's RED-WHITE Stripes! 🔍
               </h2>
               {isUsingRealTraining && (
                 <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full mt-1 inline-block">
@@ -45,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               )}
               <p className="text-xs text-blue-600 mt-1">
-                Look for: Red-white striped shirt, bobble hat, round glasses
+                Look for: RED-WHITE horizontal striped shirt, bobble hat, round glasses
               </p>
             </div>
           </div>

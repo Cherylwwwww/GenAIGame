@@ -178,7 +178,7 @@ export class AIModelService {
       });
 
       // For prediction, scan the image in multiple regions to find Wally
-      console.log('🔍 Scanning test image for Wally in multiple regions...');
+      console.log('🔍 Scanning test image for Wally: RED-WHITE horizontal stripes, bobble hat, round glasses...');
       
       const scanResults = [];
       const scanSize = Math.min(img.width, img.height) * 0.15; // Scan in 15% chunks
@@ -228,7 +228,8 @@ export class AIModelService {
         console.log('🎯 Found Wally candidate!', {
           region: `${Math.round(bestResult.x)}%, ${Math.round(bestResult.y)}%`,
           confidence: Math.round(bestResult.confidence * 100) + '%',
-          totalRegionsScanned: scanResults.length
+          totalRegionsScanned: scanResults.length,
+          lookingFor: 'RED-WHITE horizontal striped shirt, bobble hat, round glasses'
         });
         
         return {
@@ -242,7 +243,8 @@ export class AIModelService {
         
         console.log('❌ No Wally found in any region', {
           regionsScanned: scanResults.length,
-          avgConfidence: Math.round(avgConfidence * 100) + '%'
+          avgConfidence: Math.round(avgConfidence * 100) + '%',
+          lookingFor: 'RED-WHITE horizontal striped shirt (not black/yellow)'
         });
         
         return {
@@ -280,11 +282,11 @@ export class AIModelService {
   getConfidenceMessage(confidence: number, exampleCount: number): string {
     // Don't show confident messages with too few examples
     if (exampleCount < 3) {
-      return "🤖 Learning to spot Wally's red-white striped shirt and bobble hat...";
+      return "🤖 Learning to spot Wally's RED-WHITE horizontal striped shirt and bobble hat...";
     }
     
     if (exampleCount < 5) {
-      return "🤔 Studying Wally's round glasses, blue jeans, and brown shoes...";
+      return "🤔 Studying Wally's RED-WHITE stripes, round glasses, blue jeans, and brown shoes...";
     }
     
     // Add more uncertainty when sample size is small  
@@ -292,17 +294,17 @@ export class AIModelService {
     const adjustedConfidence = Math.max(0, confidence - uncertainty);
     
     if (adjustedConfidence < 0.4) {
-      return "🤔 Where's Wally? Having trouble spotting his distinctive red-white striped shirt...";
+      return "🤔 Where's Wally? Having trouble spotting his distinctive RED-WHITE horizontal striped shirt...";
     } else if (adjustedConfidence < 0.6) {
-      return "🤷‍♂️ Hmm... maybe I see a bobble hat and glasses? Not quite sure...";
+      return "🤷‍♂️ Hmm... maybe I see RED-WHITE stripes and a bobble hat? Not quite sure...";
     } else if (adjustedConfidence < 0.75) {
-      return "🧐 Getting better at recognizing horizontal red-white stripes and round glasses...";
+      return "🧐 Getting better at recognizing RED-WHITE horizontal stripes and round glasses...";
     } else if (adjustedConfidence < 0.85) {
-      return "😊 I can spot Wally's striped shirt, bobble hat, and round black glasses!";
+      return "😊 I can spot Wally's RED-WHITE striped shirt, bobble hat, and round black glasses!";
     } else if (adjustedConfidence < 0.92) {
-      return "😎 Found the red-white horizontal stripes, blue jeans, and brown shoes!";
+      return "😎 Found the RED-WHITE horizontal stripes, blue jeans, and brown shoes!";
     } else {
-      return "🎯 Found Wally! Red-white striped shirt, bobble hat, round glasses, and blue jeans - perfect match!";
+      return "🎯 Found Wally! RED-WHITE horizontal striped shirt, bobble hat, round glasses, and blue jeans - perfect match!";
     }
   }
 }
