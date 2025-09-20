@@ -216,7 +216,12 @@ Please check your internet connection and try refreshing the page.`);
       // Determine label based on annotation
       const label = annotation !== null ? gameState.currentCategory : `not_${gameState.currentCategory}`;
       
-      console.log(`🎯 Training AI to recognize: ${annotation !== null ? 'Wally with red-white striped shirt, bobble hat, round glasses, blue jeans, brown shoes' : 'Scene without Wally'}`);
+      if (annotation !== null) {
+        console.log(`🎯 Training AI on cropped Wally region: red-white striped shirt, bobble hat, round glasses`);
+        console.log(`📏 Bounding box: ${Math.round(annotation.width)}% × ${Math.round(annotation.height)}% of image`);
+      } else {
+        console.log(`🚫 Training AI on random crop from non-Wally image`);
+      }
       
       await aiModelService.addExample(currentImage.url, annotation, label);
       

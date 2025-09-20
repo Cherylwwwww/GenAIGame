@@ -85,10 +85,11 @@ export class AIModelService {
         img.src = imageUrl;
       });
 
-      let processedImg: HTMLImageElement | HTMLCanvasElement = img;
+      let processedImg: HTMLImageElement | HTMLCanvasElement;
 
-      // If there's a bounding box, crop the image
+      // ALWAYS crop the image based on bounding box
       if (boundingBox) {
+        // Crop to the annotated region (where Wally is)
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
         
@@ -98,10 +99,11 @@ export class AIModelService {
         const cropWidth = (boundingBox.width / 100) * img.width;
         const cropHeight = (boundingBox.height / 100) * img.height;
         
-        // Ensure minimum size for better feature extraction
-        canvas.width = Math.max(cropWidth, 64); // Larger minimum for better Wally detection
+        // Set canvas to cropped region size (minimum 64x64 for good feature extraction)
+        canvas.width = Math.max(cropWidth, 64);
         canvas.height = Math.max(cropHeight, 64);
         
+        // Draw the cropped region
         ctx.drawImage(
           img,
           cropX, cropY, cropWidth, cropHeight,
@@ -109,6 +111,31 @@ export class AIModelService {
         );
         
         processedImg = canvas;
+        
+        console.log(`✂️ Cropped region: ${Math.round(cropWidth)}x${Math.round(cropHeight)} pixels`);
+        console.log(`🎯 Training on: ${label === gameState.currentCategory ? 'Wally close-up' : 'Non-Wally region'}`);
+      } else {
+        // For negative examples (no Wally), use random crop from full image
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d')!;
+        
+        // Create random crop from image to get negative examples
+        const cropSize = Math.min(img.width, img.height) * 0.2; // 20% of image
+        const cropX = Math.random() * (img.width - cropSize);
+        const cropY = Math.random() * (img.height - cropSize);
+        
+        canvas.width = Math.max(cropSize, 64);
+        canvas.height = Math.max(cropSize, 64);
+        
+        ctx.drawImage(
+          img,
+          cropX, cropY, cropSize, cropSize,
+          0, 0, canvas.width, canvas.height
+        );
+        
+        processedImg = canvas;
+        
+        console.log(`🚫 Random crop for negative example: ${Math.round(cropSize)}x${Math.round(cropSize)} pixels`);
       }
 
       // Extract features with MobileNet
@@ -118,7 +145,7 @@ export class AIModelService {
       this.classifier.addExample(activation, label);
       this.exampleCount++;
       
-      console.log(`✅ Added Wally training example: ${label === 'Wally' ? 'Found Wally with red stripes & bobble hat' : 'No Wally in this image'} (Total: ${this.exampleCount})`);
+      console.log(`✅ Added focused training example: ${label} (Total: ${this.exampleCount})`);
       
       // Clean up tensor
       activation.dispose();
@@ -150,28 +177,80 @@ export class AIModelService {
         img.src = imageUrl;
       });
 
-      // Extract features
-      const activation = this.net.infer(img, true);
+      // For prediction, scan the image in multiple regions to find Wally
+      console.log('🔍 Scanning test image for Wally in multiple regions...');
       
-      // Make prediction
-      const result = await this.classifier.predictClass(activation, 5); // Get more predictions for better analysis
+      const scanResults = [];
+      const scanSize = Math.min(img.width, img.height) * 0.15; // Scan in 15% chunks
+      const step = scanSize * 0.5; // 50% overlap
       
-      console.log('🔮 Wally Detection Result:', {
-        prediction: result.label,
-        confidence: Math.round(result.confidences[result.label] * 100) + '%',
-        allConfidences: Object.entries(result.confidences).map(([label, conf]) => 
-          `${label}: ${Math.round(conf * 100)}%`
-        ).join(', ')
-      });
+      // Scan image in grid pattern
+      for (let x = 0; x <= img.width - scanSize; x += step) {
+        for (let y = 0; y <= img.height - scanSize; y += step) {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d')!;
+          
+          canvas.width = Math.max(scanSize, 64);
+          canvas.height = Math.max(scanSize, 64);
+          
+          // Extract region
+          ctx.drawImage(
+            img,
+            x, y, scanSize, scanSize,
+            0, 0, canvas.width, canvas.height
+          );
+          
+          // Get features for this region
+          const activation = this.net.infer(canvas, true);
+          const result = await this.classifier.predictClass(activation, 3);
+          
+          scanResults.push({
+            x: x / img.width * 100,
+            y: y / img.height * 100,
+            width: scanSize / img.width * 100,
+            height: scanSize / img.height * 100,
+            label: result.label,
+            confidence: result.confidences[result.label]
+          });
+          
+          activation.dispose();
+        }
+      }
       
-      // Clean up tensor
-      activation.dispose();
+      // Find the region with highest confidence for positive detection
+      const positiveResults = scanResults.filter(r => r.label !== `not_${r.label.replace('not_', '')}`);
       
-      return {
-        label: result.label,
-        confidence: result.confidences[result.label],
-        confidences: result.confidences
-      };
+      if (positiveResults.length > 0) {
+        const bestResult = positiveResults.reduce((best, current) => 
+          current.confidence > best.confidence ? current : best
+        );
+        
+        console.log('🎯 Found Wally candidate!', {
+          region: `${Math.round(bestResult.x)}%, ${Math.round(bestResult.y)}%`,
+          confidence: Math.round(bestResult.confidence * 100) + '%',
+          totalRegionsScanned: scanResults.length
+        });
+        
+        return {
+          label: bestResult.label,
+          confidence: bestResult.confidence,
+          confidences: { [bestResult.label]: bestResult.confidence }
+        };
+      } else {
+        // No positive detections found
+        const avgConfidence = scanResults.reduce((sum, r) => sum + r.confidence, 0) / scanResults.length;
+        
+        console.log('❌ No Wally found in any region', {
+          regionsScanned: scanResults.length,
+          avgConfidence: Math.round(avgConfidence * 100) + '%'
+        });
+        
+        return {
+          label: `not_Wally`,
+          confidence: 1 - avgConfidence,
+          confidences: { 'not_Wally': 1 - avgConfidence }
+        };
+      }
       
     } catch (error) {
       console.error('❌ Prediction failed:', error);
