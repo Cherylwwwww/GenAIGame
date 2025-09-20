@@ -192,28 +192,28 @@ export class AIModelService {
   }
 
   getConfidenceMessage(confidence: number, exampleCount: number): string {
-    // Don't show confident messages with too few examples
-    if (exampleCount < 3) {
+    // Don't show confident messages with too few examples or no variety
+    if (exampleCount < 5) {
       return "🤖 Need more training examples to make predictions...";
     }
     
-    if (exampleCount < 5) {
+    if (exampleCount < 8) {
       return "🤔 Still learning... need more examples!";
     }
     
-    // Add uncertainty when sample size is small
-    const uncertainty = Math.max(0, (8 - exampleCount) * 0.05);
+    // Add more uncertainty when sample size is small
+    const uncertainty = Math.max(0, (12 - exampleCount) * 0.08);
     const adjustedConfidence = Math.max(0, confidence - uncertainty);
     
-    if (adjustedConfidence < 0.3) {
+    if (adjustedConfidence < 0.4) {
       return "🤔 Where's Wally? I have no clue...";
-    } else if (adjustedConfidence < 0.5) {
+    } else if (adjustedConfidence < 0.6) {
       return "🤷‍♂️ Hmm... is that Wally? Not sure...";
-    } else if (adjustedConfidence < 0.7) {
+    } else if (adjustedConfidence < 0.75) {
       return "🧐 Getting better at spotting Wally...";
-    } else if (adjustedConfidence < 0.8) {
+    } else if (adjustedConfidence < 0.85) {
       return "😊 I'm learning Wally's hiding spots!";
-    } else if (adjustedConfidence < 0.9) {
+    } else if (adjustedConfidence < 0.92) {
       return "😎 Getting good at finding Wally!";
     } else {
       return "🎯 Found him! I can spot Wally anywhere!";

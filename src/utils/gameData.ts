@@ -37,18 +37,18 @@ export const categories: Category[] = [
       wallyImage5
     ],
     testImages: [
-      // Complex crowd scenes where Wally might be hiding
-      "https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg", // Crowd scene
-      "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg", // Busy street scene
-      "https://images.pexels.com/photos/1190299/pexels-photo-1190299.jpeg", // Festival crowd
-      "https://images.pexels.com/photos/1190300/pexels-photo-1190300.jpeg", // Market scene
-      "https://images.pexels.com/photos/1190301/pexels-photo-1190301.jpeg", // Beach crowd
-      // Complex scenes without Wally
-      "https://images.pexels.com/photos/1190302/pexels-photo-1190302.jpeg", // Empty landscape
-      "https://images.pexels.com/photos/1190303/pexels-photo-1190303.jpeg", // Building scene
-      "https://images.pexels.com/photos/1190304/pexels-photo-1190304.jpeg", // Nature scene
-      "https://images.pexels.com/photos/1190305/pexels-photo-1190305.jpeg", // Indoor scene
-      "https://images.pexels.com/photos/1190306/pexels-photo-1190306.jpeg"  // Abstract scene
+      // Crowd scenes that might contain people (but no Wally)
+      "https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=800", // Crowd scene
+      "https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg?auto=compress&cs=tinysrgb&w=800", // Festival crowd
+      "https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg?auto=compress&cs=tinysrgb&w=800", // Street crowd
+      "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800", // Market scene
+      "https://images.pexels.com/photos/2263436/pexels-photo-2263436.jpeg?auto=compress&cs=tinysrgb&w=800", // Beach crowd
+      // Scenes definitely without people/Wally
+      "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=800", // Empty landscape
+      "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=800", // Building scene
+      "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=800", // Nature scene
+      "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800", // Indoor scene
+      "https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?auto=compress&cs=tinysrgb&w=800"  // Abstract scene
     ]
   },
   {
