@@ -230,7 +230,7 @@ export const GameContainer: React.FC = () => {
     // In simulation mode, use annotation count for predictions
     if (aiModeStatus !== 'real') {
       console.log('🔍 Simulation mode: Analyzing test image for Wally features...');
-      simulateWallyPrediction();
+      simulateModelPrediction();
       return;
     }
 
@@ -419,7 +419,7 @@ export const GameContainer: React.FC = () => {
         }
         
         // Update test predictions in simulation mode
-        simulateWallyPrediction();
+        simulateModelPrediction();
       }
       
       setGameState(prev => ({
