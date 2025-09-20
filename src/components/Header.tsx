@@ -40,11 +40,11 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="text-blue-700 mb-2" style={{ 
                     fontWeight: '950',
                     fontStyle: 'italic'
-                  }}>Where's</div>
+                  }}>WALLY！</div>
                   <div className="text-red-700" style={{ 
                     fontWeight: '950',
                     fontStyle: 'italic'
-                  }}>Waldo</div>
+                  }}>isHERE</div>
                 </div>
               </h1>
               <div className="flex items-center justify-center mt-2">
