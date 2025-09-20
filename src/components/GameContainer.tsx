@@ -217,22 +217,11 @@ export const GameContainer: React.FC = () => {
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
         
-        // Calculate model accuracy based on confidence and example count
-        const exampleCount = aiModelService.getExampleCount();
-        const baseAccuracy = Math.min(30 + (exampleCount * 5), 95);
-        const confidenceBonus = confidence * 20;
-        const modelAccuracy = Math.min(baseAccuracy + confidenceBonus, 95);
-        
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
             ? { ...img, modelPrediction: hasObject, confidence }
             : img
         ));
-        
-        setGameState(prev => ({
-          ...prev,
-          modelAccuracy: Math.round(modelAccuracy)
-        }));
         
         console.log(`🔮 AI Prediction: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
       }
@@ -263,104 +252,106 @@ export const GameContainer: React.FC = () => {
     }
   };
 
-  const calculateProgressiveAccuracy = (annotatedCount: number, images: GameImage[]): number => {
-    if (annotatedCount === 0) return 30; // Base accuracy
+  const calculateRealModelAccuracy = async (): Promise<{ accuracy: number; modelState: 'underfitting' | 'correct' | 'overfitting' }> => {
+    const exampleCount = aiModelService.getExampleCount();
     
-    // Calculate quality of annotations
-    const annotatedImages = images.filter(img => img.userAnnotation !== undefined);
-    const correctAnnotations = annotatedImages.filter(
-      img => (img.userAnnotation !== null) === img.actualLabel
-    ).length;
+    if (exampleCount === 0) {
+      return { accuracy: 30, modelState: 'underfitting' };
+    }
     
-    const qualityScore = annotatedImages.length > 0 ? (correctAnnotations / annotatedImages.length) : 0;
+    // Test the model on a subset of training images to calculate real accuracy
+    const annotatedImages = gameState.images.filter(img => img.userAnnotation !== undefined);
+    let correctPredictions = 0;
+    let totalPredictions = 0;
     
-    // Progressive improvement formula
-    const baseAccuracy = 30;
-    const quantityBonus = Math.min(annotatedCount * 3, 50); // Up to 50% bonus for quantity
-    const qualityMultiplier = 0.3 + (qualityScore * 0.7); // Quality affects 70% of the bonus
+    for (const image of annotatedImages.slice(0, Math.min(5, annotatedImages.length))) {
+      try {
+        const prediction = await aiModelService.predict(image.url);
+        if (prediction) {
+          const predictedHasObject = prediction.label === gameState.currentCategory;
+          const actualHasObject = image.actualLabel;
+          
+          if (predictedHasObject === actualHasObject) {
+            correctPredictions++;
+          }
+          totalPredictions++;
+        }
+      } catch (error) {
+        console.warn('Failed to test prediction on training image:', error);
+      }
+    }
     
-    const finalAccuracy = Math.min(baseAccuracy + (quantityBonus * qualityMultiplier), 95);
+    const accuracy = totalPredictions > 0 ? Math.round((correctPredictions / totalPredictions) * 100) : 30;
     
-    return Math.round(finalAccuracy);
-  };
-  const determineModelState = (annotatedCount: number, accuracy: number) => {
-    if (annotatedCount < 5) return 'underfitting';
-    if (annotatedCount > 15 && accuracy < 70) return 'overfitting';
-    if (accuracy >= 70 && accuracy <= 90) return 'correct';
-    if (accuracy < 60) return 'underfitting';
-    return 'overfitting';
+    // Determine model state based on example count and accuracy
+    let modelState: 'underfitting' | 'correct' | 'overfitting';
+    if (exampleCount < 3) {
+      modelState = 'underfitting';
+    } else if (exampleCount > 12) {
+      modelState = 'overfitting';
+    } else if (accuracy >= 70 && accuracy <= 95) {
+      modelState = 'correct';
+    } else if (accuracy < 60) {
+      modelState = 'underfitting';
+    } else {
+      modelState = 'overfitting';
+    }
+    
+    return { accuracy, modelState };
   };
 
   const handleTrainModel = async () => {
     setGameState(prev => ({ ...prev, isTraining: true }));
     
-    // 模拟训练过程中的动态更新
+    // Show training progress
     const trainingSteps = 5;
     for (let i = 0; i < trainingSteps; i++) {
       await new Promise(resolve => setTimeout(resolve, 400));
-      const progress = ((i + 1) / trainingSteps) * 100;
-      // 这里可以添加训练进度的视觉反馈
     }
     
     try {
-      if (isUsingRealTraining) {
-        // Use real training service
-        const result = await trainingService.trainModel(gameState.images);
-        setCurrentJobId(result.jobId);
-        
-        // Get predictions for test images
-        const updatedTestImages = await trainingService.getPredictions(
-          result.jobId, 
-          testImages.slice(0, 1)
-        );
-        
-        setGameState(prev => ({
-          ...prev,
-          modelAccuracy: result.accuracy,
-          isTraining: false,
-          hasTrainedModel: true,
-          modelState: result.modelState,
-          score: prev.score + Math.round(result.accuracy * 0.5)
-        }));
-        
-        setTestImages(updatedTestImages);
-      } else {
-        // Fallback to simulation mode
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const calculatedAccuracy = calculateAccuracy(gameState.images);
-        const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
-        const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), calculatedAccuracy);
-        
-        setGameState(prev => ({
-          ...prev,
-          modelAccuracy: calculatedAccuracy,
-          isTraining: false,
-          hasTrainedModel: true,
-          modelState: calculatedModelState,
-          score: prev.score + Math.round(calculatedAccuracy * 0.5)
-        }));
-        
-        setTestImages(updatedTestImages);
-      }
-    } catch (error) {
-      console.error('Training failed:', error);
+      // Calculate real model accuracy by testing on training data
+      const { accuracy, modelState } = await calculateRealModelAccuracy();
       
-      // Fallback to simulation if real training fails
-      const calculatedAccuracy = calculateAccuracy(gameState.images);
-      const calculatedModelState = determineModelState(gameState.annotatedCount, calculatedAccuracy);
-      const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), calculatedAccuracy);
+      // Get real AI predictions for test images
+      const testImage = testImages[0];
+      if (testImage) {
+        const prediction = await aiModelService.predict(testImage.url);
+        if (prediction) {
+          const hasObject = prediction.label === gameState.currentCategory;
+          const confidence = prediction.confidence;
+          
+          setTestImages(prev => prev.map(img => 
+            img.id === testImage.id 
+              ? { ...img, modelPrediction: hasObject, confidence }
+              : img
+          ));
+        }
+      }
       
       setGameState(prev => ({
         ...prev,
-        modelAccuracy: calculatedAccuracy,
+        modelAccuracy: accuracy,
         isTraining: false,
         hasTrainedModel: true,
-        modelState: calculatedModelState,
-        score: prev.score + Math.round(calculatedAccuracy * 0.5)
+        modelState: modelState,
+        score: prev.score + Math.round(accuracy * 0.5)
       }));
       
-      setTestImages(updatedTestImages);
+    } catch (error) {
+      console.error('Training failed:', error);
+      
+      // Fallback values if AI training fails
+      const fallbackAccuracy = Math.max(30, gameState.annotatedCount * 5);
+      
+      setGameState(prev => ({
+        ...prev,
+        modelAccuracy: fallbackAccuracy,
+        isTraining: false,
+        hasTrainedModel: true,
+        modelState: 'underfitting',
+        score: prev.score + Math.round(fallbackAccuracy * 0.5)
+      }));
     }
   };
 
