@@ -586,18 +586,18 @@ export const GameContainer: React.FC = () => {
         {/* Main Game Layout */}
         <div className="flex items-center justify-center min-h-[600px] gap-8">
           {/* Left Side - Annotation Image */}
-          <div className="flex-1 max-w-md">
-            <div className="bg-white rounded-2xl shadow-xl border-4 border-red-500 p-6 h-full">
+          <div className="flex-1 max-w-md h-full">
+            <div className="bg-white rounded-2xl shadow-xl border-4 border-red-500 p-6 h-full flex flex-col">
               {/* Annotation Image */}
-              <div className="mb-6">
+              <div className="mb-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold text-red-700 mb-4 text-center bg-yellow-100 py-2 px-4 rounded-lg border-2 border-red-300">
                   Training Image 🔍
                 </h3>
-                <div className="relative">
+                <div className="relative flex-1">
                   <img
                     src={gameState.images[currentImageIndex]?.url}
                     alt="Find Wally training image"
-                    className="w-full h-64 object-cover rounded-xl border-4 border-blue-400"
+                    className="w-full h-full object-cover rounded-xl border-4 border-blue-400"
                   />
                   
                   {/* Bounding Box Display */}
@@ -656,7 +656,7 @@ export const GameContainer: React.FC = () => {
               </div>
               
               {/* Annotation Tools */}
-              <div className="space-y-4">
+              <div className="space-y-4 flex-shrink-0">
                 <button
                   onClick={() => handleAnnotate(gameState.images[currentImageIndex]?.id, null)}
                   disabled={gameState.isTraining || isRecordingAnnotation}
@@ -747,18 +747,18 @@ export const GameContainer: React.FC = () => {
           </div>
           
           {/* Right Side - Test Image */}
-          <div className="flex-1 max-w-md">
+          <div className="flex-1 max-w-md h-full">
             {testImages[0] && (
-              <div className="bg-white rounded-2xl shadow-xl border-4 border-blue-500 p-6 h-full">
-                <div className="mb-6">
+              <div className="bg-white rounded-2xl shadow-xl border-4 border-blue-500 p-6 h-full flex flex-col">
+                <div className="mb-6 flex-1 flex flex-col">
                   <h3 className="text-xl font-bold text-blue-700 mb-4 text-center bg-yellow-100 py-2 px-4 rounded-lg border-2 border-blue-300">
                     Test Image 🧪
                   </h3>
-                  <div className="relative w-full">
+                  <div className="relative w-full flex-1">
                     <img
                       src={testImages[0].url}
                       alt="Where's Wally test image"
-                      className="w-full h-64 object-cover rounded-xl border-4 border-red-400 pointer-events-none"
+                      className="w-full h-full object-cover rounded-xl border-4 border-red-400 pointer-events-none"
                     />
                     
                     {/* Existing Bounding Box Display */}
@@ -806,7 +806,7 @@ export const GameContainer: React.FC = () => {
                 </div>
                 
                 {/* Dynamic Confidence Progress Bar */}
-                <div className="space-y-4">
+                <div className="space-y-4 flex-shrink-0">
                   {/* Confidence Meter Labels */}
                   <div className="flex justify-between items-center text-sm font-bold">
                     <span className="text-red-700 bg-red-100 px-2 py-1 rounded-full border border-red-300">Not confident</span>
