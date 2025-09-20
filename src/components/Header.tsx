@@ -31,14 +31,20 @@ export const Header: React.FC<HeaderProps> = ({
               className="w-16 h-16 rounded-xl shadow-lg"
             />
             <div>
-              <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
+              <h1 className="text-7xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg uppercase" style={{ 
+                fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif',
+                fontWeight: '900',
+                letterSpacing: '0.1em'
+              }}>
                 <span className="text-blue-600" style={{ 
-                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
-                  WebkitTextStroke: '2px white'
+                  textShadow: '5px 5px 0px white, -3px -3px 0px white, 3px -3px 0px white, -3px 3px 0px white, 3px 3px 0px white, 0px 5px 0px white, 5px 0px 0px white, -5px 0px 0px white, 0px -5px 0px white',
+                  WebkitTextStroke: '4px white',
+                  fontWeight: 'bolder'
                 }}>WHERE'S</span>{' '}
                 <span className="text-red-600" style={{ 
-                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
-                  WebkitTextStroke: '2px white'
+                  textShadow: '5px 5px 0px white, -3px -3px 0px white, 3px -3px 0px white, -3px 3px 0px white, 3px 3px 0px white, 0px 5px 0px white, 5px 0px 0px white, -5px 0px 0px white, 0px -5px 0px white',
+                  WebkitTextStroke: '4px white',
+                  fontWeight: 'bolder'
                 }}>WALLY</span>
               </h1>
               <div className="flex items-center justify-center mt-2">
