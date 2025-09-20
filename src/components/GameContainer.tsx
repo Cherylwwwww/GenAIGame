@@ -296,12 +296,14 @@ export const GameContainer: React.FC = () => {
   const handleNextImage = () => {
     if (currentImageIndex < gameState.images.length - 1) {
       setCurrentImageIndex(prev => prev + 1);
+      setCurrentBox(null); // Clear any temporary bounding box
     }
   };
 
   const handlePrevImage = () => {
     if (currentImageIndex > 0) {
       setCurrentImageIndex(prev => prev - 1);
+      setCurrentBox(null); // Clear any temporary bounding box
     }
   };
   const handleNextLevel = () => {
