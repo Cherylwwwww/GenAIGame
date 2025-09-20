@@ -58,9 +58,6 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Center - Current Task */}
           <div className="text-center">
             <div className="bg-white px-6 py-3 rounded-2xl border-4 border-red-500 shadow-lg">
-              <h2 className="text-2xl font-bold text-red-700 drop-shadow-md">
-                Find Wally's RED-WHITE Stripes! 🔍
-              </h2>
               {isUsingRealTraining && (
                 <span className="text-sm bg-yellow-200 text-blue-800 px-3 py-1 rounded-full mt-1 inline-block border-2 border-blue-400 font-bold">
                   🤖 Real AI Training
