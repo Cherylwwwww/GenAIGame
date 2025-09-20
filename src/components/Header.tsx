@@ -49,11 +49,6 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Right - Player Info */}
           <div className="flex items-center space-x-6">
-            {/* Score */}
-            <div className="flex items-center space-x-2 bg-yellow-50 px-4 py-2 rounded-xl">
-              <Trophy className="w-5 h-5 text-yellow-600" />
-              <span className="text-xl font-bold text-yellow-800">{score}</span>
-            </div>
           </div>
         </div>
       </div>
