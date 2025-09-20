@@ -549,55 +549,38 @@ export const GameContainer: React.FC = () => {
                 
                 {/* Dynamic Confidence Progress Bar */}
                 <div className="space-y-4">
-                  {/* Confidence Bar Labels */}
-                  <div className="flex justify-between items-center text-sm font-medium">
-                    <span className="text-red-600">Not {gameState.currentCategory}</span>
-                    <span className="text-green-600">{gameState.currentCategory}</span>
+                  {/* Confidence Meter Labels */}
+                  <div className="flex justify-between items-center text-sm font-bold">
+                    <span className="text-red-600">Not confident</span>
+                    <span className="text-green-600">Very confident</span>
                   </div>
                   
-                  {/* Progress Bar with Arrow */}
+                  {/* Confidence Meter with Moving Ball */}
                   <div className="relative">
-                    {/* Background Bar */}
-                    <div className="bg-gradient-to-r from-red-200 via-gray-200 to-green-200 rounded-full h-4 shadow-inner">
-                      {/* Confidence Fill */}
-                      <div 
-                        className={`bg-gradient-to-r ${
-                          gameState.annotatedCount === 0 ? 'from-gray-400 to-gray-400' :
-                          gameState.annotatedCount < 5 ? 'from-yellow-400 to-orange-400' :
-                          gameState.annotatedCount < 15 ? 'from-orange-400 to-green-400' :
-                          'from-green-400 to-green-500'
-                        } h-4 rounded-full transition-all duration-1000 ease-out`}
-                        style={{ 
-                          width: `${Math.min(gameState.hasTrainedModel ? gameState.modelAccuracy : Math.min(30 + gameState.annotatedCount * 3, 85), 100)}%` 
-                        }}
-                      />
+                    {/* Background Track */}
+                    <div className="bg-gradient-to-r from-red-200 via-yellow-200 to-green-200 rounded-full h-6 shadow-inner border-2 border-gray-300">
                     </div>
                     
-                    {/* Dynamic Arrow Indicator */}
+                    {/* Moving Red Ball */}
                     <div 
-                      className="absolute top-0 transform -translate-x-1/2 transition-all duration-1000 ease-out"
+                      className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-out"
                       style={{ 
-                        left: `${gameState.annotatedCount === 0 ? 50 : 
-                               gameState.annotatedCount < 3 ? 45 + Math.random() * 10 :
-                               gameState.annotatedCount < 8 ? 55 + Math.random() * 15 :
-                               gameState.annotatedCount < 15 ? 65 + Math.random() * 10 :
-                               Math.min(75 + gameState.annotatedCount, 85)}%` 
+                        left: `${Math.min(20 + (gameState.annotatedCount * 6), 85)}%`
                       }}
                     >
-                      <div className="text-2xl animate-bounce">🔴</div>
+                      <div className="w-6 h-6 bg-red-500 rounded-full shadow-lg border-2 border-white animate-pulse"></div>
                     </div>
                   </div>
                   
-                  {/* Humorous Captions */}
+                  {/* Dynamic Confidence Messages */}
                   <div className="text-center min-h-[3rem] flex items-center justify-center">
                     <p className="text-sm font-medium text-gray-700 italic animate-pulse">
-                      {gameState.annotatedCount === 0 && "🤔 Oh no... is it a cat?"}
-                      {gameState.annotatedCount > 0 && gameState.annotatedCount < 3 && "🤷‍♂️ Hmm... I think it's a cat... or maybe not?"}
-                      {gameState.annotatedCount >= 3 && gameState.annotatedCount < 8 && "🧐 Wait, let me think... swinging back and forth here!"}
-                      {gameState.annotatedCount >= 8 && gameState.annotatedCount < 15 && "😊 It's starting to look more like a cat!"}
-                      {gameState.annotatedCount >= 15 && !gameState.hasTrainedModel && "🎯 Getting confident... almost there!"}
-                      {gameState.hasTrainedModel && gameState.modelAccuracy >= 70 && "✅ Definitely a cat! I'm confident now!"}
-                      {gameState.hasTrainedModel && gameState.modelAccuracy < 70 && "😅 Still learning... need more examples!"}
+                      {gameState.annotatedCount === 0 && "🤔 I have no idea what this is..."}
+                      {gameState.annotatedCount > 0 && gameState.annotatedCount < 3 && "🤷‍♂️ Hmm... maybe it's a cat? Not sure..."}
+                      {gameState.annotatedCount >= 3 && gameState.annotatedCount < 6 && "🧐 Getting some clues... building confidence!"}
+                      {gameState.annotatedCount >= 6 && gameState.annotatedCount < 10 && "😊 I'm starting to understand cats better!"}
+                      {gameState.annotatedCount >= 10 && gameState.annotatedCount < 15 && "😎 Pretty confident about cats now!"}
+                      {gameState.annotatedCount >= 15 && "🎯 Very confident! I know cats when I see them!"}
                     </p>
                   </div>
                   
