@@ -6,6 +6,7 @@ import { GameState, GameImage, BoundingBox } from '../types';
 import { categories } from '../utils/gameData';
 import { generateRandomImages, calculateAccuracy, simulateModelPrediction, generateTestImages } from '../utils/gameLogic';
 import { trainingService } from '../services/trainingService';
+import { aiModelService } from '../services/aiModelService';
 import { supabase } from '../lib/supabase';
 
 export const GameContainer: React.FC = () => {
@@ -29,6 +30,7 @@ export const GameContainer: React.FC = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
   const [currentBox, setCurrentBox] = useState<BoundingBox | null>(null);
+  const [isModelLoading, setIsModelLoading] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
 
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
@@ -92,6 +94,7 @@ export const GameContainer: React.FC = () => {
 
   // Initialize game images
   useEffect(() => {
+    initializeAIModel();
     const categoryIndex = (gameState.currentLevel - 1) % categories.length;
     const category = categories[categoryIndex];
     const newImages = generateRandomImages(category.images);
@@ -112,6 +115,19 @@ export const GameContainer: React.FC = () => {
     // Create new training session
     initializeTrainingSession(category.targetObject);
   }, [gameState.currentLevel]);
+
+  const initializeAIModel = async () => {
+    try {
+      setIsModelLoading(true);
+      await aiModelService.loadModel();
+      aiModelService.reset(); // Reset for new level
+      console.log('🤖 AI model initialized for new level');
+    } catch (error) {
+      console.error('❌ Failed to initialize AI model:', error);
+    } finally {
+      setIsModelLoading(false);
+    }
+  };
 
   const initializeTrainingSession = async (category: string) => {
     try {
@@ -140,6 +156,9 @@ export const GameContainer: React.FC = () => {
   const handleAnnotate = (imageId: string, annotation: BoundingBox | null) => {
     setIsRecordingAnnotation(true);
     
+    // Add example to AI model
+    addExampleToAIModel(imageId, annotation);
+    
     // Record annotation to Supabase
     recordAnnotation(imageId, annotation).finally(() => {
       setIsRecordingAnnotation(false);
@@ -152,36 +171,14 @@ export const GameContainer: React.FC = () => {
       
       const annotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
       
-      // Calculate progressive accuracy based on annotation count
-      const progressiveAccuracy = calculateProgressiveAccuracy(annotatedCount, updatedImages);
-      
-      // Auto-generate test predictions when first annotation is made
-      if (annotatedCount === 1 && !prev.hasTrainedModel) {
-        // Simulate initial model predictions for test images
-        const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), progressiveAccuracy);
-        setTestImages(updatedTestImages);
-        
-        return {
-          ...prev,
-          images: updatedImages,
-          annotatedCount,
-          modelAccuracy: progressiveAccuracy,
-          hasTrainedModel: true // Enable test predictions
-        };
-      }
-      
-      // Update test predictions as more annotations are added
-      if (annotatedCount > 0) {
-        const updatedTestImages = simulateModelPrediction(testImages.slice(0, 1), progressiveAccuracy);
-        setTestImages(updatedTestImages);
-      }
+      // Update test predictions with real AI model
+      updateTestPredictions();
       
       return {
         ...prev,
         images: updatedImages,
         annotatedCount,
-        modelAccuracy: progressiveAccuracy,
-        hasTrainedModel: annotatedCount > 0 // Enable test predictions once annotation starts
+        hasTrainedModel: annotatedCount > 0
       };
     });
     
@@ -191,6 +188,58 @@ export const GameContainer: React.FC = () => {
         handleNextImage();
       }
     }, 800);
+  };
+
+  const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {
+    try {
+      const currentImage = gameState.images.find(img => img.id === imageId);
+      if (!currentImage) return;
+
+      // Determine label based on annotation
+      const label = annotation !== null ? gameState.currentCategory : `not_${gameState.currentCategory}`;
+      
+      await aiModelService.addExample(currentImage.url, annotation, label);
+      console.log(`✅ Added training example: ${label}`);
+      
+    } catch (error) {
+      console.error('❌ Failed to add example to AI model:', error);
+    }
+  };
+
+  const updateTestPredictions = async () => {
+    if (testImages.length === 0) return;
+    
+    try {
+      const testImage = testImages[0];
+      const prediction = await aiModelService.predict(testImage.url);
+      
+      if (prediction) {
+        const hasObject = prediction.label === gameState.currentCategory;
+        const confidence = prediction.confidence;
+        
+        // Calculate model accuracy based on confidence and example count
+        const exampleCount = aiModelService.getExampleCount();
+        const baseAccuracy = Math.min(30 + (exampleCount * 5), 95);
+        const confidenceBonus = confidence * 20;
+        const modelAccuracy = Math.min(baseAccuracy + confidenceBonus, 95);
+        
+        setTestImages(prev => prev.map(img => 
+          img.id === testImage.id 
+            ? { ...img, modelPrediction: hasObject, confidence }
+            : img
+        ));
+        
+        setGameState(prev => ({
+          ...prev,
+          modelAccuracy: Math.round(modelAccuracy)
+        }));
+        
+        console.log(`🔮 AI Prediction: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
+      }
+      
+    } catch (error) {
+      console.error('❌ Failed to update test predictions:', error);
+    }
   };
 
   const recordAnnotation = async (imageId: string, annotation: BoundingBox | null) => {
@@ -584,7 +633,10 @@ export const GameContainer: React.FC = () => {
                     <div 
                       className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-out"
                       style={{ 
-                        left: `${Math.min(20 + (gameState.annotatedCount * 6), 85)}%`
+                        left: `${testImages[0]?.confidence 
+                          ? Math.min(20 + (testImages[0].confidence * 65), 85)
+                          : Math.min(20 + (gameState.annotatedCount * 6), 85)
+                        }%`
                       }}
                     >
                       <div className="w-6 h-6 bg-red-500 rounded-full shadow-lg border-2 border-white animate-pulse"></div>
@@ -594,12 +646,11 @@ export const GameContainer: React.FC = () => {
                   {/* Dynamic Confidence Messages */}
                   <div className="text-center min-h-[3rem] flex items-center justify-center">
                     <p className="text-sm font-medium text-gray-700 italic animate-pulse">
-                      {gameState.annotatedCount === 0 && "🤔 I have no idea what this is..."}
-                      {gameState.annotatedCount > 0 && gameState.annotatedCount < 3 && "🤷‍♂️ Hmm... maybe it's a cat? Not sure..."}
-                      {gameState.annotatedCount >= 3 && gameState.annotatedCount < 6 && "🧐 Getting some clues... building confidence!"}
-                      {gameState.annotatedCount >= 6 && gameState.annotatedCount < 10 && "😊 I'm starting to understand cats better!"}
-                      {gameState.annotatedCount >= 10 && gameState.annotatedCount < 15 && "😎 Pretty confident about cats now!"}
-                      {gameState.annotatedCount >= 15 && "🎯 Very confident! I know cats when I see them!"}
+                      {isModelLoading && "🤖 Loading AI brain..."}
+                      {!isModelLoading && testImages[0]?.confidence !== undefined 
+                        ? aiModelService.getConfidenceMessage(testImages[0].confidence, gameState.annotatedCount)
+                        : aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
+                      }
                     </p>
                   </div>
                   
