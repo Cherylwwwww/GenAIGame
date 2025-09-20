@@ -1,11 +1,24 @@
 import { Category } from '../types';
 
 // Import local assets
+// First set of training images
 import wallyImage1 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c1_processed_by_imagy.png';
 import wallyImage2 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c2_processed_by_imagy.png';
 import wallyImage3 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c3_processed_by_imagy.png';
 import wallyImage4 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r2_c1_processed_by_imagy.png';
 import wallyImage5 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r2_c2_processed_by_imagy.png';
+
+// Second set of training images
+import wallyImage6 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r1_c1_processed_by_imagy.png';
+import wallyImage7 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r1_c2_processed_by_imagy.png';
+import wallyImage8 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r1_c3_processed_by_imagy.png';
+import wallyImage9 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r2_c1_processed_by_imagy.png';
+import wallyImage10 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r2_c2_processed_by_imagy.png';
+import wallyImage11 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r2_c3_processed_by_imagy.png';
+import wallyImage12 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c1_processed_by_imagy.png';
+import wallyImage13 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c2_processed_by_imagy.png';
+import wallyImage14 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c3_processed_by_imagy.png';
+
 import crowdSceneImage from '../assets/ChatGPT Image Sep 20, 2025, 02_26_47 PM.png';
 
 export const categories: Category[] = [
@@ -14,28 +27,28 @@ export const categories: Category[] = [
     targetObject: "Wally",
     description: "Find Wally in the crowd - look for his red and white striped shirt, bobble hat, and glasses!",
     images: [
-      // Local Wally training images
+      // All local Wally training images in random order
+      wallyImage8,  // r1_c3 from second set
+      wallyImage3,  // r1_c3 from first set
+      wallyImage12, // r3_c1 from second set
       wallyImage1, // Where's Wally scene 1
-      wallyImage2, // Where's Wally scene 2
-      wallyImage3, // Where's Wally scene 3
-      wallyImage4, // Where's Wally scene 4
+      wallyImage10, // r2_c2 from second set
+      wallyImage6,  // r1_c1 from second set
+      wallyImage4,  // r2_c1 from first set
+      wallyImage14, // r3_c3 from second set
       wallyImage5, // Where's Wally scene 5
-      // Duplicate images to have enough training data
-      wallyImage1,
+      wallyImage7,  // r1_c2 from second set
+      wallyImage11, // r2_c3 from second set
       wallyImage2,
-      wallyImage3,
-      wallyImage4,
+      wallyImage13, // r3_c2 from second set
+      wallyImage9,  // r2_c1 from second set
+      // Add some duplicates for more training variety
+      wallyImage6,
+      wallyImage8,
+      wallyImage1,
+      wallyImage12,
       wallyImage5,
-      wallyImage1,
-      wallyImage2,
-      wallyImage3,
-      wallyImage4,
-      wallyImage5,
-      wallyImage1,
-      wallyImage2,
-      wallyImage3,
-      wallyImage4,
-      wallyImage5
+      wallyImage14
     ],
     testImages: [
       // Your provided crowd scene image
