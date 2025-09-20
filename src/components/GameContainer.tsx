@@ -691,11 +691,6 @@ export const GameContainer: React.FC = () => {
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                         }`}>
                           {testImages[0].modelPrediction ? `✓ Wally spotted!` : `✗ Wally not found`}
-                          {testImages[0].confidence && (
-                            <div className="text-sm font-normal mt-1">
-                              {Math.round(testImages[0].confidence * 100)}% confident
-                            </div>
-                          )}
                         </div>
                       </div>
                     )}
