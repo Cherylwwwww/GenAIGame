@@ -37,11 +37,11 @@ export const Header: React.FC<HeaderProps> = ({
                   fontWeight: '900',
                   fontStyle: 'italic'
                 }}>
-                  <div className="text-blue-700 mb-2" style={{ 
+                  <div className="text-blue-700 mb-2 text-left" style={{ 
                     fontWeight: '950',
                     fontStyle: 'italic'
                   }}>WALLY！</div>
-                  <div className="text-red-700" style={{ 
+                  <div className="text-red-700 text-left" style={{ 
                     fontWeight: '950',
                     fontStyle: 'italic'
                   }}>isHERE</div>
