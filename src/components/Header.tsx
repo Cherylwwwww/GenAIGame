@@ -52,6 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <p className="text-lg font-black tracking-wide">LEVEL {currentLevel}</p>
                 </div>
               </div>
+            </div>
             <div className="bg-white px-8 py-4 rounded-2xl border-4 border-red-500 shadow-xl">
               {isUsingRealTraining && (
                 <span className="text-base bg-yellow-200 text-blue-800 px-4 py-2 rounded-full mt-1 inline-block border-2 border-blue-400 font-bold">
