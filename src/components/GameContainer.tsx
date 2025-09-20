@@ -878,7 +878,6 @@ export const GameContainer: React.FC = () => {
         <div className="mt-4 text-center">
           {!gameState.hasTrainedModel && (
             <p className="text-lg font-bold text-red-700 bg-yellow-100 px-6 py-3 rounded-full border-2 border-red-300 inline-block">
-              🤖 Train your AI model first!
             </p>
           )}
           
