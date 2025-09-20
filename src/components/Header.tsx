@@ -32,21 +32,12 @@ export const Header: React.FC<HeaderProps> = ({
             />
             <div>
               <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
-                <span className="text-blue-800" style={{ 
-                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
-                  WebkitTextStroke: '3px white',
-                  fontWeight: '900'
-                }}>AI</span>{' '}
-                <span className="text-red-800" style={{ 
-                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
-                  WebkitTextStroke: '3px white',
+                <span className="text-red-700" style={{ 
                   fontWeight: '900'
                 }}>WALLY</span>{' '}
-                <span className="text-green-800" style={{ 
-                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
-                  WebkitTextStroke: '3px white',
+                <span className="text-yellow-600" style={{ 
                   fontWeight: '900'
-                }}>SPOTTER</span>
+                }}>SPOTTED!</span>
               </h1>
               <div className="flex items-center justify-center mt-2">
                 <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-red-700 px-4 py-2 rounded-full border-3 border-red-500 shadow-lg transform -rotate-2">
