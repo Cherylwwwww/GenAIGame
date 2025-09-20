@@ -32,11 +32,11 @@ export const Header: React.FC<HeaderProps> = ({
             />
             <div>
               <h1 className="text-4xl font-black tracking-wider transform -skew-x-3 drop-shadow-lg" style={{ fontFamily: '"Luckiest Guy", "Bangers", "Comic Sans MS", cursive, sans-serif' }}>
-                <span className="text-blue-600" style={{ 
+                <span className="text-blue-900" style={{ 
                   textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
                   WebkitTextStroke: '2px white'
                 }}>WHERE'S</span>{' '}
-                <span className="text-red-600" style={{ 
+                <span className="text-red-900" style={{ 
                   textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
                   WebkitTextStroke: '2px white'
                 }}>WALLY</span>
