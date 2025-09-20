@@ -55,8 +55,8 @@ export const Header: React.FC<HeaderProps> = ({
               
               {/* Look for section moved below LEVEL */}
               <div className="flex items-center justify-center mt-3">
-                <div className="bg-white px-8 py-4 rounded-2xl border-4 border-red-500 shadow-xl">
-                  <p className="text-lg text-blue-700 font-black bg-yellow-100 px-6 py-3 rounded-full inline-block border-2 border-blue-300 shadow-md">
+                <div className="bg-yellow-100 px-6 py-3 rounded-full border-2 border-blue-300 shadow-md">
+                  <p className="text-lg text-blue-700 font-black">
                     Look for: Red-white horizontal striped shirt, bobble hat, round glasses
                   </p>
                 </div>
@@ -65,15 +65,15 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           
           {/* Center - Current Task */}
-          <div className="text-center">
-            {isUsingRealTraining && (
+          {isUsingRealTraining && (
+            <div className="text-center">
               <div className="bg-white px-8 py-4 rounded-2xl border-4 border-red-500 shadow-xl">
                 <span className="text-base bg-yellow-200 text-blue-800 px-4 py-2 rounded-full inline-block border-2 border-blue-400 font-bold">
                   🤖 Real AI Training
                 </span>
               </div>
-            )}
-          </div>
+            </div>
+          )}
           
           {/* Right - Player Info */}
           <div className="flex items-center space-x-6">
