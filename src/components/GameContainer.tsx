@@ -194,7 +194,7 @@ export const GameContainer: React.FC = () => {
       if (currentAnnotatedCount >= 3) {
         updateTestPredictions();
       }
-    }, 100);
+    }, 50);
     
     // Auto-advance to next image after annotation
     setTimeout(() => {
