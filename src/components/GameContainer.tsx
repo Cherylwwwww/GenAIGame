@@ -729,9 +729,7 @@ export const GameContainer: React.FC = () => {
                     <div 
                       className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-out"
                       style={{ 
-                        left: `${testImages[0]?.confidence 
-                          ? Math.min(10 + (testImages[0].confidence * 80), 90)
-                          : Math.min(10 + (gameState.annotatedCount * 8), 90)
+                        left: `${Math.min(15 + (gameState.annotatedCount * 7), 85)
                         }%`
                       }}
                     >
