@@ -237,10 +237,10 @@ Please check your internet connection and try refreshing the page.`);
       return;
     }
 
-    // Start making predictions after 2 training examples (more responsive)
+    // Start making predictions after 3 training examples
     const exampleCount = aiModelService.getExampleCount();
-    if (exampleCount < 2) {
-      console.log(`⚠️ Need at least 2 training examples for Wally predictions (have ${exampleCount})`);
+    if (exampleCount < 3) {
+      console.log(`⚠️ Need at least 3 training examples for Wally predictions (have ${exampleCount})`);
       return;
     }
     
@@ -251,9 +251,9 @@ Please check your internet connection and try refreshing the page.`);
     
     console.log(`📊 Training examples: ${positiveExamples} positive, ${negativeExamples} negative`);
     
-    // Require at least one example of each type for better accuracy
-    if (positiveExamples === 0 || negativeExamples === 0) {
-      console.log('⚠️ Need both positive (Wally found) and negative (No Wally) examples for accurate predictions');
+    // Allow predictions with fewer examples for testing
+    if (positiveExamples === 0 && negativeExamples === 0) {
+      console.log('⚠️ Need at least some training examples');
       return;
     }
     
@@ -268,7 +268,6 @@ Please check your internet connection and try refreshing the page.`);
         
         console.log(`🎯 AI Decision: ${hasObject ? '✅ WALLY SPOTTED!' : '❌ NO WALLY FOUND'} (${Math.round(confidence * 100)}% confidence)`);
         console.log(`🔍 Looking for: Red-white horizontal stripes, bobble hat, round black glasses, blue jeans, brown shoes`);
-        console.log(`📊 Training quality: ${positiveExamples} positive + ${negativeExamples} negative examples`);
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
