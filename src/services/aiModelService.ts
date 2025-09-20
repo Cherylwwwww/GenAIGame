@@ -192,8 +192,17 @@ export class AIModelService {
   }
 
   getConfidenceMessage(confidence: number, exampleCount: number): string {
+    // Don't show confident messages with too few examples
+    if (exampleCount < 3) {
+      return "🤖 Need more training examples to make predictions...";
+    }
+    
+    if (exampleCount < 5) {
+      return "🤔 Still learning... need more examples!";
+    }
+    
     // Add uncertainty when sample size is small
-    const uncertainty = Math.max(0, (10 - exampleCount) * 0.05);
+    const uncertainty = Math.max(0, (8 - exampleCount) * 0.05);
     const adjustedConfidence = Math.max(0, confidence - uncertainty);
     
     if (adjustedConfidence < 0.3) {

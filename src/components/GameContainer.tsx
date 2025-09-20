@@ -224,6 +224,11 @@ Please check your internet connection and try refreshing the page.`);
       return;
     }
 
+    // Don't make predictions until we have enough training examples
+    if (aiModelService.getExampleCount() < 3) {
+      console.log('⚠️ Not enough training examples for reliable predictions');
+      return;
+    }
     try {
       const testImage = testImages[0];
       const prediction = await aiModelService.predict(testImage.url);
@@ -231,6 +236,12 @@ Please check your internet connection and try refreshing the page.`);
       if (prediction) {
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
+        
+        // Only show prediction if confidence is reasonable
+        if (confidence < 0.4) {
+          console.log(`🤔 Low confidence prediction (${Math.round(confidence * 100)}%), not showing result`);
+          return;
+        }
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
@@ -335,17 +346,20 @@ Please check your internet connection and try refreshing the page.`);
       
       // Get real AI predictions for test images
       const testImage = testImages[0];
-      if (testImage && aiModelService.isLoaded()) {
+      if (testImage && aiModelService.isLoaded() && aiModelService.getExampleCount() >= 3) {
         const prediction = await aiModelService.predict(testImage.url);
         if (prediction) {
           const hasObject = prediction.label === gameState.currentCategory;
           const confidence = prediction.confidence;
           
-          setTestImages(prev => prev.map(img => 
-            img.id === testImage.id 
-              ? { ...img, modelPrediction: hasObject, confidence }
-              : img
-          ));
+          // Only update if confidence is reasonable
+          if (confidence >= 0.4) {
+            setTestImages(prev => prev.map(img => 
+              img.id === testImage.id 
+                ? { ...img, modelPrediction: hasObject, confidence }
+                : img
+            ));
+          }
         }
       }
       
@@ -616,10 +630,15 @@ Please check your internet connection and try refreshing the page.`);
                     )}
 
                     {/* Placeholder when no model */}
-                    {!gameState.hasTrainedModel && (
+                    {(!gameState.hasTrainedModel || aiModelService.getExampleCount() < 3) && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
                         <div className="text-white text-center">
-                          <p className="text-lg font-medium">Train AI to find Wally!</p>
+                          <p className="text-lg font-medium">
+                            {aiModelService.getExampleCount() < 3 
+                              ? `Need ${3 - aiModelService.getExampleCount()} more examples!`
+                              : "Train AI to find Wally!"
+                            }
+                          </p>
                         </div>
                       </div>
                     )}
