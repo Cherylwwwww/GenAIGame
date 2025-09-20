@@ -6,6 +6,7 @@ import wallyImage2 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c2
 import wallyImage3 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r1_c3_processed_by_imagy.png';
 import wallyImage4 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r2_c1_processed_by_imagy.png';
 import wallyImage5 from '../assets/ChatGPT Image Sep 20, 2025, 02_09_52 PM_r2_c2_processed_by_imagy.png';
+import crowdSceneImage from '../assets/ChatGPT Image Sep 20, 2025, 02_26_47 PM.png';
 
 export const categories: Category[] = [
   {
@@ -37,18 +38,13 @@ export const categories: Category[] = [
       wallyImage5
     ],
     testImages: [
-      // Crowd scenes that might contain people (but no Wally)
-      "https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=800", // Crowd scene
-      "https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg?auto=compress&cs=tinysrgb&w=800", // Festival crowd
-      "https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg?auto=compress&cs=tinysrgb&w=800", // Street crowd
-      "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800", // Market scene
-      "https://images.pexels.com/photos/2263436/pexels-photo-2263436.jpeg?auto=compress&cs=tinysrgb&w=800", // Beach crowd
-      // Scenes definitely without people/Wally
-      "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=800", // Empty landscape
-      "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=800", // Building scene
-      "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=800", // Nature scene
-      "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800", // Indoor scene
-      "https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?auto=compress&cs=tinysrgb&w=800"  // Abstract scene
+      // Your provided crowd scene image
+      crowdSceneImage,
+      // Additional test images for variety
+      "https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=800"
     ]
   },
   {
