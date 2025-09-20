@@ -97,7 +97,7 @@ export const GameContainer: React.FC = () => {
     initializeAIModel();
     const categoryIndex = (gameState.currentLevel - 1) % categories.length;
     const category = categories[categoryIndex];
-    const newImages = generateRandomImages(category.images);
+    const newImages = generateRandomImages(category.images); // Use all available images
     const newTestImages = generateTestImages(category.testImages);
     
     setGameState(prev => ({

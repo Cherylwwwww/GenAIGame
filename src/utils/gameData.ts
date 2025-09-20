@@ -27,28 +27,21 @@ export const categories: Category[] = [
     targetObject: "Wally",
     description: "Find Wally in the crowd - look for his red and white striped shirt, bobble hat, and glasses!",
     images: [
-      // All local Wally training images in random order
+      // All 14 unique local Wally training images in random order
       wallyImage8,  // r1_c3 from second set
       wallyImage3,  // r1_c3 from first set
       wallyImage12, // r3_c1 from second set
-      wallyImage1, // Where's Wally scene 1
+      wallyImage1,  // r1_c1 from first set
       wallyImage10, // r2_c2 from second set
       wallyImage6,  // r1_c1 from second set
       wallyImage4,  // r2_c1 from first set
       wallyImage14, // r3_c3 from second set
-      wallyImage5, // Where's Wally scene 5
+      wallyImage5,  // r2_c2 from first set
       wallyImage7,  // r1_c2 from second set
       wallyImage11, // r2_c3 from second set
-      wallyImage2,
+      wallyImage2,  // r1_c2 from first set
       wallyImage13, // r3_c2 from second set
-      wallyImage9,  // r2_c1 from second set
-      // Add some duplicates for more training variety
-      wallyImage6,
-      wallyImage8,
-      wallyImage1,
-      wallyImage12,
-      wallyImage5,
-      wallyImage14
+      wallyImage9   // r2_c1 from second set
     ],
     testImages: [
       // Your provided crowd scene image

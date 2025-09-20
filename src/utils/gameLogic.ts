@@ -10,13 +10,15 @@ export const generateTestImages = (testUrls: string[]): GameImage[] => {
   }));
 };
 
-export const generateRandomImages = (urls: string[], count: number = 20): GameImage[] => {
+export const generateRandomImages = (urls: string[], count?: number): GameImage[] => {
+  // Use all available images if count not specified
+  const imageCount = count || urls.length;
   const shuffled = [...urls].sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, count);
+  const selected = shuffled.slice(0, Math.min(imageCount, urls.length));
   
   return selected.map((url, index) => ({
     id: `image-${Date.now()}-${index}`,
     url,
-    actualLabel: index < count / 2, // First half are positive examples
+    actualLabel: index < selected.length / 2, // First half are positive examples
   }));
 };
