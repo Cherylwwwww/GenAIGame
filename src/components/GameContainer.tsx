@@ -851,7 +851,7 @@ export const GameContainer: React.FC = () => {
                     <div 
                       className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-out"
                       style={{ 
-                        left: `${Math.min(15 + (gameState.annotatedCount * 7), 85)
+                        left: `${Math.min(15 + (gameState.annotatedCount * 10), 85)
                         }%`
                       }}
                     >
