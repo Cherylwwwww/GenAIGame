@@ -121,20 +121,14 @@ export const GameContainer: React.FC = () => {
     try {
       setIsModelLoading(true);
       setAiModeStatus('loading');
-      await aiModelService.loadModel();
-      aiModelService.reset(); // Reset for new level
-      console.log('🤖 AI model initialized for new level');
-      setAiModeStatus('real');
-      console.log('✅ USING REAL AI MODE - TensorFlow.js + MobileNet');
+      // Force simulation mode for better control
+      setAiModeStatus('simulation');
+      console.log('🔄 USING SIMULATION MODE - Controlled Wally Detection');
+      console.log('🎯 Looking for: RED-WHITE horizontal striped shirt, bobble hat, round glasses');
     } catch (error) {
       console.error('❌ Failed to initialize AI model:', error);
       setAiModeStatus('simulation');
       console.log('🔄 FALLING BACK TO SIMULATION MODE');
-      
-      // Show user-friendly error message
-      alert(`Failed to load AI model: ${error instanceof Error ? error.message : 'Network error'}
-      
-Please check your internet connection and try refreshing the page.`);
     } finally {
       setIsModelLoading(false);
     }
@@ -233,19 +227,19 @@ Please check your internet connection and try refreshing the page.`);
   const updateTestPredictions = async () => {
     if (testImages.length === 0) return;
     
+    // In simulation mode, use annotation count for predictions
+    if (aiModeStatus !== 'real') {
+      console.log('🔍 Simulation mode: Analyzing test image for Wally features...');
+      simulateWallyPrediction();
+      return;
+    }
+
     console.log('🔍 updateTestPredictions called');
     console.log('📊 AI model loaded:', aiModelService.isLoaded());
     console.log('📊 Example count:', aiModelService.getExampleCount());
     
     if (!aiModelService.isLoaded()) {
       console.log('⚠️ AI model not loaded yet, skipping test predictions');
-      return;
-    }
-
-    // Start making predictions after 3 training examples
-    const exampleCount = aiModelService.getExampleCount();
-    if (exampleCount < 3) {
-      console.log(`⚠️ Need at least 3 training examples for Wally predictions (have ${exampleCount})`);
       return;
     }
     
@@ -373,27 +367,59 @@ Please check your internet connection and try refreshing the page.`);
     }
     
     try {
-      // Calculate real model accuracy by testing on training data
-      const { accuracy, modelState } = await calculateRealModelAccuracy();
+      let accuracy, modelState;
       
-      // Get real AI predictions for test images
-      const testImage = testImages[0];
-      if (testImage && aiModelService.isLoaded() && aiModelService.getExampleCount() >= 3) {
-        console.log(`🔍 Analyzing test image for Wally (RED-WHITE horizontal stripes, bobble hat, round glasses, blue jeans, brown shoes)...`);
-        const prediction = await aiModelService.predict(testImage.url);
-        if (prediction) {
-          const hasObject = prediction.label === gameState.currentCategory;
-          const confidence = prediction.confidence;
-          
-          // Only update if confidence is reasonable
-          if (confidence >= 0.4) {
-            setTestImages(prev => prev.map(img => 
-              img.id === testImage.id 
-                ? { ...img, modelPrediction: hasObject, confidence }
-                : img
-            ));
+      if (aiModeStatus === 'real') {
+        // Calculate real model accuracy by testing on training data
+        const result = await calculateRealModelAccuracy();
+        accuracy = result.accuracy;
+        modelState = result.modelState;
+        
+        // Get real AI predictions for test images
+        const testImage = testImages[0];
+        if (testImage && aiModelService.isLoaded() && aiModelService.getExampleCount() >= 3) {
+          console.log(`🔍 Analyzing test image for Wally (RED-WHITE horizontal stripes, bobble hat, round glasses, blue jeans, brown shoes)...`);
+          const prediction = await aiModelService.predict(testImage.url);
+          if (prediction) {
+            const hasObject = prediction.label === gameState.currentCategory;
+            const confidence = prediction.confidence;
+            
+            // Only update if confidence is reasonable
+            if (confidence >= 0.4) {
+              setTestImages(prev => prev.map(img => 
+                img.id === testImage.id 
+                  ? { ...img, modelPrediction: hasObject, confidence }
+                  : img
+              ));
+            }
           }
         }
+      } else {
+        // Simulation mode: Calculate accuracy based on annotation quality
+        const annotatedImages = gameState.images.filter(img => img.userAnnotation !== undefined);
+        const correctAnnotations = annotatedImages.filter(img => 
+          (img.userAnnotation !== null) === img.actualLabel
+        ).length;
+        
+        accuracy = annotatedImages.length > 0 
+          ? Math.round((correctAnnotations / annotatedImages.length) * 100)
+          : 30;
+        
+        // Determine model state
+        if (gameState.annotatedCount < 3) {
+          modelState = 'underfitting';
+        } else if (gameState.annotatedCount > 12) {
+          modelState = 'overfitting';
+        } else if (accuracy >= 70 && accuracy <= 95) {
+          modelState = 'correct';
+        } else if (accuracy < 60) {
+          modelState = 'underfitting';
+        } else {
+          modelState = 'overfitting';
+        }
+        
+        // Update test predictions in simulation mode
+        simulateWallyPrediction();
       }
       
       setGameState(prev => ({

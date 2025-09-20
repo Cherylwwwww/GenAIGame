@@ -294,9 +294,9 @@ export class AIModelService {
     const adjustedConfidence = Math.max(0, confidence - uncertainty);
     
     if (adjustedConfidence < 0.4) {
-      return "🤔 Where's Wally? Having trouble spotting his distinctive RED-WHITE horizontal striped shirt...";
+      return "❌ No Wally found - current image has black-yellow stripes, not RED-WHITE stripes!";
     } else if (adjustedConfidence < 0.6) {
-      return "🤷‍♂️ Hmm... maybe I see RED-WHITE stripes and a bobble hat? Not quite sure...";
+      return "🤷‍♂️ Getting better at distinguishing RED-WHITE stripes from other patterns...";
     } else if (adjustedConfidence < 0.75) {
       return "🧐 Getting better at recognizing RED-WHITE horizontal stripes and round glasses...";
     } else if (adjustedConfidence < 0.85) {
