@@ -32,6 +32,7 @@ export const GameContainer: React.FC = () => {
   const [currentBox, setCurrentBox] = useState<BoundingBox | null>(null);
   const [isModelLoading, setIsModelLoading] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
+  const [aiModeStatus, setAiModeStatus] = useState<'loading' | 'real' | 'simulation'>('loading');
 
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
     if (!imageRef.current) return { x: 0, y: 0 };
@@ -119,11 +120,16 @@ export const GameContainer: React.FC = () => {
   const initializeAIModel = async () => {
     try {
       setIsModelLoading(true);
+      setAiModeStatus('loading');
       await aiModelService.loadModel();
       aiModelService.reset(); // Reset for new level
       console.log('🤖 AI model initialized for new level');
+      setAiModeStatus('real');
+      console.log('✅ USING REAL AI MODE - TensorFlow.js + MobileNet');
     } catch (error) {
       console.error('❌ Failed to initialize AI model:', error);
+      setAiModeStatus('simulation');
+      console.log('🔄 FALLING BACK TO SIMULATION MODE');
       
       // Show user-friendly error message
       alert(`Failed to load AI model: ${error instanceof Error ? error.message : 'Network error'}
