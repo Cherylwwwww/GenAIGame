@@ -35,6 +35,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="text-blue-600" style={{ 
                   textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
                   WebkitTextStroke: '2px white'
+                }}>AI,</span>{' '}
+                <span className="text-green-600" style={{ 
+                  textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
+                  WebkitTextStroke: '2px white'
                 }}>WHERE'S</span>{' '}
                 <span className="text-red-600" style={{ 
                   textShadow: '3px 3px 0px white, -1px -1px 0px white, 1px -1px 0px white, -1px 1px 0px white, 1px 1px 0px white',
