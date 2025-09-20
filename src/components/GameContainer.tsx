@@ -664,6 +664,9 @@ Please check your internet connection and try refreshing the page.`);
                 
                 {/* Dynamic Confidence Progress Bar */}
                 <div className="space-y-4">
+                
+                {/* Dynamic Confidence Progress Bar */}
+                <div className="space-y-4">
                   {/* Confidence Meter Labels */}
                   <div className="flex justify-between items-center text-sm font-bold">
                     <span className="text-red-600">Not confident</span>
@@ -700,12 +703,8 @@ Please check your internet connection and try refreshing the page.`);
                       }
                     </p>
                   </div>
-                  
                 </div>
               </div>
-            )}
-          </div>
-        </div>
             )}
           </div>
         </div>
