@@ -123,7 +123,7 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
         
         {/* Crosshair cursor indicator */}
         <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-          Click & drag to draw box
+          Click & drag to find Wally
         </div>
       </div>
       
@@ -137,7 +137,7 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105 active:scale-95'
           }`}
-          title={`Mark this image as having no ${currentCategory}`}
+          title={`Mark this image as having no Wally`}
         >
           <div className="flex items-center gap-2">
             {isRecording ? (
@@ -148,7 +148,7 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
             ) : (
               <>
                 <span className="text-xl">🚫</span>
-                <span>No {currentCategory}</span>
+                <span>No Wally Here</span>
               </>
             )}
           </div>

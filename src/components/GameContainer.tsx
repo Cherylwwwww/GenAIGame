@@ -406,12 +406,12 @@ Please check your internet connection and try refreshing the page.`);
               {/* Annotation Image */}
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                  Annotation Image 🖼️
+                  Training Image 🔍
                 </h3>
                 <div className="relative">
                   <img
                     src={gameState.images[currentImageIndex]?.url}
-                    alt="Annotation target"
+                    alt="Find Wally training image"
                     className="w-full h-64 object-cover rounded-xl border-4 border-gray-200"
                   />
                   
@@ -463,7 +463,7 @@ Please check your internet connection and try refreshing the page.`);
                     {/* Instruction overlay when no annotation exists */}
                     {!gameState.images[currentImageIndex]?.userAnnotation && !currentBox && (
                       <div className="absolute top-3 left-3 bg-black bg-opacity-80 text-white text-sm px-3 py-2 rounded-lg font-bold">
-                        Click & drag to mark {gameState.currentCategory}
+                        Click & drag to find Wally!
                       </div>
                     )}
                   </div>
@@ -490,7 +490,7 @@ Please check your internet connection and try refreshing the page.`);
                     ) : (
                       <>
                         <span className="text-xl">🚫</span>
-                        <span>No {gameState.currentCategory}</span>
+                        <span>No Wally Here</span>
                       </>
                     )}
                   </div>
@@ -567,12 +567,12 @@ Please check your internet connection and try refreshing the page.`);
               <div className="bg-white rounded-2xl shadow-xl p-6 h-full">
                 <div className="mb-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                    Test Image 📸
+                    Crowd Scene 👥
                   </h3>
                   <div className="relative w-full">
                     <img
                       src={testImages[0].url}
-                      alt="Test image"
+                      alt="Where's Wally crowd scene"
                       className="w-full h-64 object-cover rounded-xl border-4 border-gray-200 pointer-events-none"
                     />
                     
@@ -595,7 +595,7 @@ Please check your internet connection and try refreshing the page.`);
                         <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                         }`}>
-                          {testImages[0].modelPrediction ? `✓ ${gameState.currentCategory} found!` : `✗ No ${gameState.currentCategory}`}
+                          {testImages[0].modelPrediction ? `✓ Wally spotted!` : `✗ Wally not found`}
                         </div>
                       </div>
                     )}
@@ -604,7 +604,7 @@ Please check your internet connection and try refreshing the page.`);
                     {!gameState.hasTrainedModel && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
                         <div className="text-white text-center">
-                          <p className="text-lg font-medium">Train AI to see predictions</p>
+                          <p className="text-lg font-medium">Train AI to find Wally!</p>
                         </div>
                       </div>
                     )}
@@ -616,7 +616,7 @@ Please check your internet connection and try refreshing the page.`);
                   {/* Confidence Meter Labels */}
                   <div className="flex justify-between items-center text-sm font-bold">
                     <span className="text-red-600">Not confident</span>
-                    <span className="text-green-600">Very confident</span>
+                    <span className="text-green-600">Wally expert!</span>
                   </div>
                   
                   {/* Confidence Meter with Moving Ball */}
