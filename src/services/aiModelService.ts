@@ -192,31 +192,31 @@ export class AIModelService {
   }
 
   getConfidenceMessage(confidence: number, exampleCount: number): string {
-    // Don't show confident messages with too few examples or no variety
+    // Don't show confident messages with too few examples
+    if (exampleCount < 3) {
+      return "🤖 Learning Wally's red stripes and bobble hat...";
+    }
+    
     if (exampleCount < 5) {
-      return "🤖 Need more training examples to make predictions...";
+      return "🤔 Getting familiar with Wally's glasses and walking stick...";
     }
     
-    if (exampleCount < 8) {
-      return "🤔 Still learning... need more examples!";
-    }
-    
-    // Add more uncertainty when sample size is small
-    const uncertainty = Math.max(0, (12 - exampleCount) * 0.08);
+    // Add more uncertainty when sample size is small  
+    const uncertainty = Math.max(0, (8 - exampleCount) * 0.06);
     const adjustedConfidence = Math.max(0, confidence - uncertainty);
     
     if (adjustedConfidence < 0.4) {
-      return "🤔 Where's Wally? I have no clue...";
+      return "🤔 Where's Wally? Can't spot those red stripes...";
     } else if (adjustedConfidence < 0.6) {
-      return "🤷‍♂️ Hmm... is that Wally? Not sure...";
+      return "🤷‍♂️ Hmm... is that his bobble hat? Not sure...";
     } else if (adjustedConfidence < 0.75) {
-      return "🧐 Getting better at spotting Wally...";
+      return "🧐 Getting better at spotting those striped shirts...";
     } else if (adjustedConfidence < 0.85) {
-      return "😊 I'm learning Wally's hiding spots!";
+      return "😊 I can recognize Wally's glasses and brown shoes!";
     } else if (adjustedConfidence < 0.92) {
-      return "😎 Getting good at finding Wally!";
+      return "😎 Those red-white stripes are easy to spot now!";
     } else {
-      return "🎯 Found him! I can spot Wally anywhere!";
+      return "🎯 Found Wally! Red stripes, bobble hat, and glasses - got it!";
     }
   }
 }

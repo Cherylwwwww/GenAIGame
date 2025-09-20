@@ -224,10 +224,10 @@ Please check your internet connection and try refreshing the page.`);
       return;
     }
 
-    // Don't make predictions until we have enough training examples AND variety
+    // Start making predictions after 3 training examples
     const exampleCount = aiModelService.getExampleCount();
-    if (exampleCount < 5) {
-      console.log(`⚠️ Need at least 5 training examples for predictions (have ${exampleCount})`);
+    if (exampleCount < 3) {
+      console.log(`⚠️ Need at least 3 training examples for Wally predictions (have ${exampleCount})`);
       return;
     }
     
@@ -237,7 +237,7 @@ Please check your internet connection and try refreshing the page.`);
     const negativeExamples = annotatedImages.filter(img => img.userAnnotation === null).length;
     
     if (positiveExamples === 0 || negativeExamples === 0) {
-      console.log('⚠️ Need both positive and negative examples for reliable predictions');
+      console.log('⚠️ Need both Wally examples and non-Wally examples for reliable predictions');
       return;
     }
     
@@ -249,14 +249,14 @@ Please check your internet connection and try refreshing the page.`);
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
         
-        // Much stricter confidence thresholds
-        if (confidence < 0.6) {
+        // Lower confidence threshold since we start with fewer examples
+        if (confidence < 0.4) {
           console.log(`🤔 Low confidence prediction (${Math.round(confidence * 100)}%), not showing result`);
           return;
         }
         
-        // Additional check: if predicting "has Wally" but confidence isn't very high, don't show
-        if (hasObject && confidence < 0.75) {
+        // Additional check: if predicting "has Wally" but confidence isn't high enough, don't show
+        if (hasObject && confidence < 0.5) {
           console.log(`🤔 Predicting Wally but confidence too low (${Math.round(confidence * 100)}%), not showing`);
           return;
         }
@@ -267,11 +267,11 @@ Please check your internet connection and try refreshing the page.`);
             : img
         ));
         
-        console.log(`🔮 AI Prediction: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
+        console.log(`🔮 Wally Detection: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
       }
       
     } catch (error) {
-      console.error('❌ Failed to update test predictions:', error);
+      console.error('❌ Failed to update Wally predictions:', error);
     }
   };
 
@@ -648,13 +648,13 @@ Please check your internet connection and try refreshing the page.`);
                     )}
 
                     {/* Placeholder when no model */}
-                    {(!gameState.hasTrainedModel || aiModelService.getExampleCount() < 5) && (
+                    {(!gameState.hasTrainedModel || aiModelService.getExampleCount() < 3) && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
                         <div className="text-white text-center">
                           <p className="text-lg font-medium">
-                            {aiModelService.getExampleCount() < 5 
-                              ? `Need ${5 - aiModelService.getExampleCount()} more examples!`
-                              : "Train AI to find Wally!"
+                            {aiModelService.getExampleCount() < 3 
+                              ? `Need ${3 - aiModelService.getExampleCount()} more Wally examples!`
+                              : "Train AI to recognize Wally's stripes!"
                             }
                           </p>
                         </div>
