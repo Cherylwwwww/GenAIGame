@@ -176,6 +176,9 @@ Please check your internet connection and try refreshing the page.`);
       
       const annotatedCount = updatedImages.filter(img => img.userAnnotation !== undefined).length;
       
+      // Update test predictions with real AI model
+      updateTestPredictions();
+      
       return {
         ...prev,
         images: updatedImages,
@@ -184,17 +187,12 @@ Please check your internet connection and try refreshing the page.`);
       };
     });
     
-    // Update test predictions with real AI model after state update
-    setTimeout(() => {
-      updateTestPredictions();
-    }, 500); // Give more time for state to update
-    
     // Auto-advance to next image after annotation
     setTimeout(() => {
       if (currentImageIndex < gameState.images.length - 1) {
         handleNextImage();
       }
-    }, 1200); // Give more time to see the prediction
+    }, 800);
   };
 
   const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {
@@ -238,30 +236,38 @@ Please check your internet connection and try refreshing the page.`);
     const positiveExamples = annotatedImages.filter(img => img.userAnnotation !== null).length;
     const negativeExamples = annotatedImages.filter(img => img.userAnnotation === null).length;
     
-    // Allow predictions with just positive examples initially
-    if (positiveExamples === 0 && negativeExamples === 0) {
-      console.log('⚠️ Need at least one annotation for predictions');
+    if (positiveExamples === 0 || negativeExamples === 0) {
+      console.log('⚠️ Need both Wally examples and non-Wally examples for reliable predictions');
       return;
     }
     
     try {
       const testImage = testImages[0];
-      console.log('🔮 Making prediction for test image:', testImage.url);
       const prediction = await aiModelService.predict(testImage.url);
       
       if (prediction) {
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
         
-        console.log(`🔮 Wally Detection Result: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
+        // Lower confidence threshold since we start with fewer examples
+        if (confidence < 0.4) {
+          console.log(`🤔 Low confidence prediction (${Math.round(confidence * 100)}%), not showing result`);
+          return;
+        }
+        
+        // Additional check: if predicting "has Wally" but confidence isn't high enough, don't show
+        if (hasObject && confidence < 0.5) {
+          console.log(`🤔 Predicting Wally but confidence too low (${Math.round(confidence * 100)}%), not showing`);
+          return;
+        }
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
             ? { ...img, modelPrediction: hasObject, confidence }
             : img
         ));
-      } else {
-        console.log('⚠️ No prediction returned from AI model');
+        
+        console.log(`🔮 Wally Detection: ${prediction.label} (${Math.round(confidence * 100)}% confidence)`);
       }
       
     } catch (error) {
@@ -631,7 +637,7 @@ Please check your internet connection and try refreshing the page.`);
                     )}
                     
                     {/* Prediction Result */}
-                    {testImages[0].modelPrediction !== undefined && (
+                    {gameState.hasTrainedModel && testImages[0].modelPrediction !== undefined && (
                       <div className="absolute top-4 right-4">
                         <div className={`px-4 py-2 rounded-xl font-bold text-lg shadow-lg ${
                           testImages[0].modelPrediction ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
@@ -640,30 +646,22 @@ Please check your internet connection and try refreshing the page.`);
                         </div>
                       </div>
                     )}
-    // Need at least one annotation to make predictions
-    
-    console.log(`🔮 Making prediction with ${exampleCount} examples (${positiveExamples} positive, ${negativeExamples} negative)`);
-                          {!aiModelService.isLoaded() ? (
-                            <p className="text-lg font-medium">🤖 Loading AI brain...</p>
-                          ) : aiModelService.getExampleCount() < 3 ? (
-                            <p className="text-lg font-medium">
-                              Need {3 - aiModelService.getExampleCount()} more Wally examples!
-                            </p>
-                          ) : gameState.annotatedCount < 3 ? (
-                            <p className="text-lg font-medium">
-                              Annotate {3 - gameState.annotatedCount} more images to start predictions!
-                            </p>
-                          ) : (
-                            <p className="text-lg font-medium">🔮 Analyzing for Wally...</p>
-                          )}
+
+                    {/* Placeholder when no model */}
+                    {(!gameState.hasTrainedModel || aiModelService.getExampleCount() < 3) && (
+                      <div className="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
+                        <div className="text-white text-center">
+                          <p className="text-lg font-medium">
+                            {aiModelService.getExampleCount() < 3 
+                              ? `Need ${3 - aiModelService.getExampleCount()} more Wally examples!`
+                              : "Train AI to recognize Wally's stripes!"
+                            }
+                          </p>
                         </div>
                       </div>
                     )}
                   </div>
                 </div>
-                
-                {/* Dynamic Confidence Progress Bar */}
-                <div className="space-y-4">
                 
                 {/* Dynamic Confidence Progress Bar */}
                 <div className="space-y-4">
@@ -703,18 +701,14 @@ Please check your internet connection and try refreshing the page.`);
                       }
                     </p>
                   </div>
+                  
                 </div>
               </div>
             )}
           </div>
         </div>
         
-        {/* Bottom Panel - Model Training */}
-        <AnnotationPanel
-          gameState={gameState}
-          onTrainModel={handleTrainModel}
-          onNextLevel={handleNextLevel}
-        />
+        {/* Bottom Bar - Tips */}
       </div>
     </div>
   );

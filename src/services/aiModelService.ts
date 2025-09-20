@@ -138,8 +138,6 @@ export class AIModelService {
       return null;
     }
 
-    console.log(`🔮 Starting prediction with ${this.getNumClasses()} classes and ${this.exampleCount} examples`);
-
     try {
       // Create image element
       const img = new Image();
@@ -151,18 +149,13 @@ export class AIModelService {
         img.src = imageUrl;
       });
 
-      console.log('🖼️ Image loaded successfully for prediction');
-
       // Extract features
       const activation = this.net.infer(img, true);
       
       // Make prediction
       const result = await this.classifier.predictClass(activation, 3);
       
-      console.log('🔮 Raw prediction result:', result);
-      console.log('🔮 Available labels:', Object.keys(result.confidences));
-      console.log('🔮 Predicted label:', result.label);
-      console.log('🔮 Confidence:', result.confidences[result.label]);
+      console.log('🔮 Prediction result:', result);
       
       // Clean up tensor
       activation.dispose();
