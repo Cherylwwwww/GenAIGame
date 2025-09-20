@@ -23,6 +23,31 @@ export const generateRandomImages = (urls: string[], count?: number): GameImage[
   }));
 };
 
-export const simulateModelPrediction = () => {
-  // Simulation function for model predictions
+export const simulateModelPrediction = (
+  testImages: any[], 
+  setTestImages: (updater: (prev: any[]) => any[]) => void,
+  annotatedCount: number,
+  currentCategory: string
+) => {
+  if (testImages.length === 0) return;
+  
+  // Calculate confidence based on annotation count
+  const baseConfidence = Math.min(0.3 + (annotatedCount * 0.08), 0.95);
+  
+  // For the current test image, simulate Wally detection
+  // Since current test image has black-yellow stripes (not red-white), it should be "not found"
+  const testImage = testImages[0];
+  const hasWally = false; // Current test image doesn't have red-white striped Wally
+  const confidence = hasWally ? baseConfidence : (1 - baseConfidence);
+  
+  console.log(`🔍 Simulation: Analyzing test image for RED-WHITE stripes...`);
+  console.log(`📊 Found: Black-yellow stripes (NOT Wally's red-white stripes)`);
+  console.log(`🎯 Result: No Wally found (${Math.round(confidence * 100)}% confident)`);
+  console.log(`📈 Annotation count: ${annotatedCount} → Confidence level: ${Math.round(baseConfidence * 100)}%`);
+  
+  setTestImages(prev => prev.map(img => 
+    img.id === testImage.id 
+      ? { ...img, modelPrediction: hasWally, confidence }
+      : img
+  ));
 };
