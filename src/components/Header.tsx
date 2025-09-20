@@ -57,13 +57,13 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Center - Current Task */}
           <div className="text-center">
-            <div className="bg-white px-6 py-3 rounded-2xl border-4 border-red-500 shadow-lg">
+            <div className="bg-white px-8 py-4 rounded-2xl border-4 border-red-500 shadow-xl">
               {isUsingRealTraining && (
-                <span className="text-sm bg-yellow-200 text-blue-800 px-3 py-1 rounded-full mt-1 inline-block border-2 border-blue-400 font-bold">
+                <span className="text-base bg-yellow-200 text-blue-800 px-4 py-2 rounded-full mt-1 inline-block border-2 border-blue-400 font-bold">
                   🤖 Real AI Training
                 </span>
               )}
-              <p className="text-xs text-blue-700 mt-1 font-semibold bg-yellow-100 px-2 py-1 rounded-full inline-block">
+              <p className="text-lg text-blue-700 mt-2 font-black bg-yellow-100 px-6 py-3 rounded-full inline-block border-2 border-blue-300 shadow-md">
                 Look for: RED-WHITE horizontal striped shirt, bobble hat, round glasses
               </p>
             </div>
