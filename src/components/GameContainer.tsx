@@ -942,7 +942,7 @@ export const GameContainer: React.FC = () => {
       {/* Confidence Achievement Popup */}
       {showConfidencePopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gradient-to-br from-yellow-300 to-yellow-400 rounded-2xl shadow-2xl p-8 max-w-md mx-4 border-4 border-red-500 transform animate-bounce">
+          <div className="bg-gradient-to-br from-yellow-300 to-yellow-400 rounded-2xl shadow-2xl p-8 max-w-md mx-4 border-4 border-red-500">
             <div className="text-center">
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-2xl font-black text-red-700 mb-4">
@@ -964,7 +964,7 @@ export const GameContainer: React.FC = () => {
               </div>
               <button
                 onClick={handleConfidencePopupClose}
-                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-blue-600 hover:scale-105 transform transition-all duration-200 shadow-lg border-2 border-yellow-300"
+                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-blue-600 transition-colors duration-200 shadow-lg border-2 border-yellow-300"
               >
                 <div className="flex items-center justify-center space-x-2">
                   <span>🎮</span>
