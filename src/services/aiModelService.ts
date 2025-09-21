@@ -273,18 +273,15 @@ export class AIModelService {
         .reduce((sum, r) => sum + r.confidence, 0) / Math.max(1, scanResults.length - positiveDetections);
       
       console.log('❌ KNN: NO WALLY FOUND', {
-          region: `${Math.round(bestResult.x)}%, ${Math.round(bestResult.y)}%`,
-          confidence: Math.round(bestResult.confidence * 100) + '%',
           totalRegionsScanned: scanResults.length,
           lookingFor: 'RED-WHITE horizontal striped shirt, bobble hat, round glasses'
         });
         
         return {
-          label: bestResult.label,
-          confidence: bestResult.confidence,
         label: 'not_Wally',
         confidence: Math.max(0.6, avgNegativeConfidence),
         confidences: { 'not_Wally': Math.max(0.6, avgNegativeConfidence) }
+        };
         // No positive detections found
       
     } catch (error) {
