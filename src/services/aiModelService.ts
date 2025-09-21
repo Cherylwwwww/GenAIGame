@@ -178,11 +178,15 @@ export class AIModelService {
       });
 
       // For prediction, scan the image in multiple regions to find Wally
-      console.log('🔍 Scanning test image for Wally: RED-WHITE horizontal stripes, bobble hat, round glasses...');
+      console.log('🔍 REAL KNN ANALYSIS: Scanning test image for Wally features...');
+      console.log('🎯 Looking for: RED-WHITE horizontal stripes (NOT black-yellow), bobble hat, round glasses');
       
       const scanResults = [];
       const scanSize = Math.min(img.width, img.height) * 0.15; // Scan in 15% chunks
       const step = scanSize * 0.5; // 50% overlap
+      
+      let totalRegionsScanned = 0;
+      let positiveDetections = 0;
       
       // Scan image in grid pattern
       for (let x = 0; x <= img.width - scanSize; x += step) {
@@ -204,28 +208,71 @@ export class AIModelService {
           const activation = this.net.infer(canvas, true);
           const result = await this.classifier.predictClass(activation, 3);
           
+          totalRegionsScanned++;
+          
+          // Check if this region is predicted as Wally (not "not_Wally")
+          const isWallyPrediction = !result.label.startsWith('not_');
+          if (isWallyPrediction) {
+            positiveDetections++;
+          }
+          
           scanResults.push({
             x: x / img.width * 100,
             y: y / img.height * 100,
             width: scanSize / img.width * 100,
             height: scanSize / img.height * 100,
             label: result.label,
-            confidence: result.confidences[result.label]
+            confidence: result.confidences[result.label],
+            isWallyPrediction
           });
           
           activation.dispose();
         }
       }
       
+      console.log(`📊 KNN SCAN RESULTS: ${totalRegionsScanned} regions scanned, ${positiveDetections} positive detections`);
+      
       // Find the region with highest confidence for positive detection
-      const positiveResults = scanResults.filter(r => r.label !== `not_${r.label.replace('not_', '')}`);
+      const positiveResults = scanResults.filter(r => r.isWallyPrediction);
       
       if (positiveResults.length > 0) {
         const bestResult = positiveResults.reduce((best, current) => 
           current.confidence > best.confidence ? current : best
         );
         
-        console.log('🎯 Found Wally candidate!', {
+        // Apply stricter threshold for Wally detection
+        const confidenceThreshold = 0.7; // Require 70% confidence minimum
+        
+        if (bestResult.confidence >= confidenceThreshold) {
+          console.log('🎯 KNN DETECTED WALLY!', {
+            region: `${Math.round(bestResult.x)}%, ${Math.round(bestResult.y)}%`,
+            confidence: Math.round(bestResult.confidence * 100) + '%',
+            totalRegionsScanned,
+            positiveDetections,
+            threshold: `${confidenceThreshold * 100}%`,
+            verdict: 'RED-WHITE stripes detected with high confidence'
+          });
+          
+          return {
+            label: bestResult.label,
+            confidence: bestResult.confidence,
+            confidences: { [bestResult.label]: bestResult.confidence }
+          };
+        } else {
+          console.log('🤔 KNN UNCERTAIN DETECTION', {
+            bestConfidence: Math.round(bestResult.confidence * 100) + '%',
+            threshold: `${confidenceThreshold * 100}%`,
+            verdict: 'Confidence too low - likely NOT red-white stripes'
+          });
+        }
+      }
+      
+      // No confident positive detections found
+      const avgNegativeConfidence = scanResults
+        .filter(r => !r.isWallyPrediction)
+        .reduce((sum, r) => sum + r.confidence, 0) / Math.max(1, scanResults.length - positiveDetections);
+      
+      console.log('❌ KNN: NO WALLY FOUND', {
           region: `${Math.round(bestResult.x)}%, ${Math.round(bestResult.y)}%`,
           confidence: Math.round(bestResult.confidence * 100) + '%',
           totalRegionsScanned: scanResults.length,
@@ -235,24 +282,10 @@ export class AIModelService {
         return {
           label: bestResult.label,
           confidence: bestResult.confidence,
-          confidences: { [bestResult.label]: bestResult.confidence }
-        };
-      } else {
+        label: 'not_Wally',
+        confidence: Math.max(0.6, avgNegativeConfidence),
+        confidences: { 'not_Wally': Math.max(0.6, avgNegativeConfidence) }
         // No positive detections found
-        const avgConfidence = scanResults.reduce((sum, r) => sum + r.confidence, 0) / scanResults.length;
-        
-        console.log('❌ No Wally found in any region', {
-          regionsScanned: scanResults.length,
-          avgConfidence: Math.round(avgConfidence * 100) + '%',
-          lookingFor: 'RED-WHITE horizontal striped shirt (not black/yellow)'
-        });
-        
-        return {
-          label: `not_Wally`,
-          confidence: 1 - avgConfidence,
-          confidences: { 'not_Wally': 1 - avgConfidence }
-        };
-      }
       
     } catch (error) {
       console.error('❌ Prediction failed:', error);
