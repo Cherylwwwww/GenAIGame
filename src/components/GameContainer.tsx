@@ -7,6 +7,7 @@ import { categories } from '../utils/gameData';
 import { generateRandomImages, calculateAccuracy, simulateModelPrediction, generateTestImages } from '../utils/gameLogic';
 import { trainingService } from '../services/trainingService';
 import { aiModelService } from '../services/aiModelService';
+import { testImageService } from '../services/testImageService';
 import { supabase } from '../lib/supabase';
 
 export const GameContainer: React.FC = () => {
@@ -34,6 +35,7 @@ export const GameContainer: React.FC = () => {
   const imageRef = useRef<HTMLDivElement>(null);
   const [aiModeStatus, setAiModeStatus] = useState<'loading' | 'real' | 'simulation'>('loading');
   const [showConfidencePopup, setShowConfidencePopup] = useState(false);
+  const [isSelectingTestImage, setIsSelectingTestImage] = useState(false);
 
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
     if (!imageRef.current) return { x: 0, y: 0 };
@@ -100,7 +102,9 @@ export const GameContainer: React.FC = () => {
     const categoryIndex = (gameState.currentLevel - 1) % categories.length;
     const category = categories[categoryIndex];
     const newImages = generateRandomImages(category.images); // Use all available images
-    const newTestImages = generateTestImages(category.testImages);
+    
+    // 使用AI智能选择测试图像
+    initializeTestImages(newImages, gameState.currentLevel);
     
     setGameState(prev => ({
       ...prev,
@@ -111,12 +115,58 @@ export const GameContainer: React.FC = () => {
       annotatedCount: 0,
       modelState: 'underfitting'
     }));
-    setTestImages(newTestImages);
     setCurrentImageIndex(0);
     
     // Create new training session
     initializeTrainingSession(category.targetObject);
   }, [gameState.currentLevel]);
+
+  const initializeTestImages = async (trainingImages: GameImage[], currentLevel: number) => {
+    try {
+      setIsSelectingTestImage(true);
+      console.log('🤖 AI正在智能选择测试图像...');
+      
+      // 等待AI模型加载完成
+      if (aiModeStatus === 'loading') {
+        await new Promise(resolve => {
+          const checkInterval = setInterval(() => {
+            if (aiModeStatus !== 'loading') {
+              clearInterval(checkInterval);
+              resolve(void 0);
+            }
+          }, 100);
+        });
+      }
+      
+      if (aiModeStatus === 'real' && aiModelService.isLoaded()) {
+        // 使用AI智能选择测试图像
+        const aiSelectedTestImages = await testImageService.generateTestImageSet(
+          trainingImages, 
+          currentLevel, 
+          0, // 初始时没有标注
+          3  // 生成3个测试图像
+        );
+        setTestImages(aiSelectedTestImages);
+        console.log('✅ AI成功选择了智能测试图像');
+      } else {
+        // 备用方案：使用传统方法
+        const categoryIndex = (currentLevel - 1) % categories.length;
+        const category = categories[categoryIndex];
+        const fallbackTestImages = generateTestImages(category.testImages);
+        setTestImages(fallbackTestImages);
+        console.log('🔄 使用传统方法选择测试图像');
+      }
+    } catch (error) {
+      console.error('❌ 测试图像选择失败:', error);
+      // 最终备用方案
+      const categoryIndex = (currentLevel - 1) % categories.length;
+      const category = categories[categoryIndex];
+      const fallbackTestImages = generateTestImages(category.testImages);
+      setTestImages(fallbackTestImages);
+    } finally {
+      setIsSelectingTestImage(false);
+    }
+  };
 
   const initializeAIModel = async () => {
     try {
@@ -189,7 +239,7 @@ export const GameContainer: React.FC = () => {
     // Update test predictions after state is updated
     setTimeout(() => {
       if (newAnnotatedCount >= 3) {
-        updateTestPredictions();
+        updateTestPredictionsWithAI(newAnnotatedCount);
       }
     }, 100);
     
@@ -228,17 +278,39 @@ export const GameContainer: React.FC = () => {
     }
   };
 
-  const updateTestPredictions = async () => {
+  const updateTestPredictionsWithAI = async (annotatedCount: number) => {
     if (testImages.length === 0) return;
+    
+    // 如果训练样本达到一定数量，考虑重新选择更合适的测试图像
+    if (annotatedCount === 5 || annotatedCount === 8) {
+      try {
+        console.log(`🔄 训练样本达到 ${annotatedCount} 个，AI重新评估测试图像...`);
+        const newTestImage = await testImageService.selectOptimalTestImage(
+          gameState.images, 
+          gameState.currentLevel, 
+          annotatedCount
+        );
+        
+        // 只更新第一个测试图像，保持其他测试图像不变
+        setTestImages(prev => [
+          newTestImage,
+          ...prev.slice(1)
+        ]);
+        
+        console.log('✅ AI重新选择了更适合的测试图像');
+      } catch (error) {
+        console.warn('⚠️ AI重新选择测试图像失败，继续使用当前图像:', error);
+      }
+    }
     
     // In simulation mode, use annotation count for predictions
     if (aiModeStatus !== 'real') {
       console.log('🔍 Simulation mode: Analyzing test image for Wally features...');
-      simulateModelPrediction(testImages, setTestImages, gameState.annotatedCount, gameState.currentCategory);
+      simulateModelPrediction(testImages, setTestImages, annotatedCount, gameState.currentCategory);
       return;
     }
 
-    console.log('🔍 updateTestPredictions called');
+    console.log('🔍 AI正在分析测试图像...');
     console.log('📊 AI model loaded:', aiModelService.isLoaded());
     console.log('📊 Example count:', aiModelService.getExampleCount());
     
@@ -262,16 +334,15 @@ export const GameContainer: React.FC = () => {
     
     try {
       const testImage = testImages[0];
-      console.log('🔍 Analyzing test image for Wally (red-white stripes, bobble hat, round glasses, blue jeans, brown shoes)...');
+      console.log('🔍 AI正在分析测试图像中的Wally特征 (红白条纹、帽子、眼镜、蓝色牛仔裤、棕色鞋子)...');
       const prediction = await aiModelService.predict(testImage.url);
       
       if (prediction) {
         const hasObject = prediction.label === gameState.currentCategory;
         const confidence = prediction.confidence;
         
-        console.log(`🎯 AI Decision: ${hasObject ? '✅ WALLY SPOTTED!' : '❌ NO WALLY FOUND'} (${Math.round(confidence * 100)}% confidence)`);
-        console.log(`🔍 Looking for: RED-WHITE horizontal stripes, bobble hat, round black glasses, blue jeans, brown shoes`);
-        console.log(`❌ NOT looking for: Black-yellow stripes or other color combinations`);
+        console.log(`🎯 AI判断结果: ${hasObject ? '✅ 发现Wally!' : '❌ 未发现Wally'} (置信度: ${Math.round(confidence * 100)}%)`);
+        console.log(`🔍 寻找特征: 红白横条纹、帽子、圆形黑眼镜、蓝色牛仔裤、棕色鞋子`);
         
         setTestImages(prev => prev.map(img => 
           img.id === testImage.id 
@@ -279,11 +350,11 @@ export const GameContainer: React.FC = () => {
             : img
         ));
       } else {
-        console.log('❌ No prediction returned from AI model');
+        console.log('❌ AI模型未返回预测结果');
       }
       
     } catch (error) {
-      console.error('❌ Failed to update Wally predictions:', error);
+      console.error('❌ AI预测更新失败:', error);
     }
   };
 
@@ -855,16 +926,25 @@ export const GameContainer: React.FC = () => {
                   </div>
                   
                   {/* Dynamic Confidence Messages */}
-                  <div className="text-center min-h-[3rem] flex items-center justify-center">
-                    <p className="text-sm font-bold text-red-800 italic animate-pulse bg-yellow-100 px-4 py-3 rounded-lg border-2 border-red-400 shadow-md">
-                      {isModelLoading && "🤖 Loading AI brain..."}
-                      {!isModelLoading && testImages[0]?.confidence !== undefined 
-                        ? aiModelService.getConfidenceMessage(testImages[0].confidence, gameState.annotatedCount)
-                        : aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
+                  {isSelectingTestImage ? (
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="animate-spin w-8 h-8 border-4 border-white border-t-transparent rounded-full"></div>
+                      <p className="text-lg font-medium">🤖 AI正在智能选择测试图像...</p>
+                      <p className="text-sm opacity-90">基于您的训练数据选择最合适的挑战</p>
+                    </div>
+                  ) : (
+                    <p className="text-lg font-medium">
+                      {gameState.annotatedCount === 0
+                        ? "标注3张图像来训练AI!"
+                        : gameState.annotatedCount === 1
+                          ? "再标注2张图像来训练AI!"
+                      {isSelectingTestImage && "🎯 AI正在选择最佳测试图像..."}
+                          : gameState.annotatedCount === 2
+                            ? "再标注1张图像来训练AI!"
+                        : !isSelectingTestImage && aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
                       }
                     </p>
-                  </div>
-                  
+                  )}
                 </div>
               </div>
             )}
