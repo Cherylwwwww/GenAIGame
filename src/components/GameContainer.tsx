@@ -464,6 +464,7 @@ export const GameContainer: React.FC = () => {
     console.log('🎯 Annotated count:', gameState.annotatedCount);
     console.log('🎯 Has trained model:', gameState.hasTrainedModel);
     console.log('🎯 Model accuracy:', gameState.modelAccuracy);
+    console.log('🎯 Red ball position:', Math.min(15 + (gameState.annotatedCount * 10), 85));
     
     // Check if we should show confidence popup
     if (gameState.annotatedCount >= 7) {
@@ -883,11 +884,17 @@ export const GameContainer: React.FC = () => {
         
         {/* Next Level Button */}
         <div className="mt-8 flex justify-center">
+          {/* Calculate red ball position for button enabling */}
+          {(() => {
+            const redBallPosition = Math.min(15 + (gameState.annotatedCount * 10), 85);
+            const shouldEnableButton = redBallPosition >= 85;
+            
+            return (
           <button
             onClick={handleNextLevel}
-            disabled={!gameState.hasTrainedModel || gameState.modelAccuracy < 70}
+            disabled={!shouldEnableButton}
             className={`px-12 py-4 rounded-2xl font-bold text-xl transition-all duration-300 shadow-xl border-4 ${
-              gameState.hasTrainedModel && gameState.modelAccuracy >= 70
+              shouldEnableButton
                 ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 hover:shadow-2xl hover:scale-105 border-yellow-400 transform hover:-translate-y-1'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400'
             }`}
@@ -897,21 +904,37 @@ export const GameContainer: React.FC = () => {
               <span>Next Level</span>
               <span className="text-2xl">→</span>
             </div>
-            {gameState.hasTrainedModel && gameState.modelAccuracy >= 70 && (
+            {shouldEnableButton && (
               <div className="text-sm mt-1 opacity-90">
                 Ready for Level {gameState.currentLevel + 1}!
               </div>
             )}
           </button>
+            );
+          })()}
         </div>
         
         {/* Status Message */}
         <div className="mt-4 text-center">
-          {gameState.annotatedCount >= 7 && (
+          {(() => {
+            const redBallPosition = Math.min(15 + (gameState.annotatedCount * 10), 85);
+            const shouldEnableButton = redBallPosition >= 85;
+            
+            if (shouldEnableButton) {
+              return (
             <p className="text-lg font-bold text-green-700 bg-green-100 px-6 py-3 rounded-full border-2 border-green-300 inline-block animate-pulse">
-              ✅ Perfect! Ready for the next challenge?
+              ✅ Red ball at 85%+! Ready for the next challenge?
             </p>
-          )}
+              );
+            } else {
+              const needed = Math.ceil((85 - redBallPosition) / 10);
+              return (
+                <p className="text-lg font-bold text-orange-700 bg-orange-100 px-6 py-3 rounded-full border-2 border-orange-300 inline-block">
+                  📈 Need {needed} more annotation{needed > 1 ? 's' : ''} to reach 85% (Currently: {redBallPosition}%)
+                </p>
+              );
+            }
+          })()}
         </div>
       </div>
       
