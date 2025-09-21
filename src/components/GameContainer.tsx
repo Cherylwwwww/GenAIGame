@@ -927,13 +927,6 @@ export const GameContainer: React.FC = () => {
               ✅ Red ball at 85%+! Ready for the next challenge?
             </p>
               );
-            } else {
-              const needed = Math.ceil((85 - redBallPosition) / 10);
-              return (
-                <p className="text-lg font-bold text-orange-700 bg-orange-100 px-6 py-3 rounded-full border-2 border-orange-300 inline-block">
-                  📈 Need {needed} more annotation{needed > 1 ? 's' : ''} to reach 85% (Currently: {redBallPosition}%)
-                </p>
-              );
             }
           })()}
         </div>
