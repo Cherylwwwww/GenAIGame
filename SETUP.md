@@ -1,7 +1,7 @@
-# Where's Wally AI Training Game - Complete Setup Guide
+# WALLY! isHERE! - AI Training Game - Complete Setup Guide
 
 ## 🎯 Overview
-This guide will help you set up the Where's Wally AI Training Game on your local machine. The project is a React-based web application that uses AI/ML technologies to create an interactive learning experience.
+This guide will help you set up the WALLY! isHERE! AI Training Game on your local machine. The project is a React-based web application that uses AI/ML technologies to create an interactive learning experience.
 
 ## 📋 Prerequisites
 
@@ -258,6 +258,6 @@ After setup, verify everything works:
 
 ## 🎉 You're Ready!
 
-Congratulations! Your Where's Wally AI Training Game is now set up and ready to use. The system combines computer vision, machine learning, and interactive gameplay to create an educational experience about AI training.
+Congratulations! Your WALLY! isHERE! AI Training Game is now set up and ready to use. The system combines computer vision, machine learning, and interactive gameplay to create an educational experience about AI training.
 
 Enjoy training your AI to find Wally! 🔍👓

@@ -1,4 +1,4 @@
-# Where's Wally AI Training Game
+# WALLY! isHERE! - AI Training Game
 
 An interactive educational game that teaches machine learning concepts through the classic "Where's Wally" challenge. Players annotate images to train an AI model to recognize Wally, demonstrating human-in-the-loop machine learning.
 
@@ -26,8 +26,8 @@ Before opening the project, ensure you have:
 
 ### Step 4: Navigate to Project Folder
 ```bash
-cd path/to/wheres-wally-ai-game
-# Example: cd Desktop/wheres-wally-ai-game
+cd path/to/wally-ishere-ai-game
+# Example: cd Desktop/wally-ishere-ai-game
 ```
 
 ### Step 5: Install Dependencies
@@ -50,7 +50,7 @@ npm run dev
    ```
 2. Open your web browser
 3. Go to: **http://localhost:5173**
-4. The Where's Wally AI Training Game will load automatically
+4. The WALLY! isHERE! AI Training Game will load automatically
 
 ### Step 8: Wait for AI Models to Load
 - The first time you open the website, it may take 30-60 seconds to download AI models
@@ -60,7 +60,7 @@ npm run dev
 ## 🎮 How to Play
 
 ### What You'll See:
-- Wally game interface with training images on the left
+- WALLY! isHERE! game interface with training images on the left
 - Test images on the right (initially blurred)
 - Confidence meter showing AI learning progress
 - Instructions to draw bounding boxes around Wally
@@ -123,6 +123,7 @@ For full features including data persistence:
 
 ```
 wheres-wally-ai-game/
+wally-ishere-ai-game/
 ├── src/
 │   ├── components/          # React components
 │   ├── services/           # AI and database services
@@ -144,7 +145,7 @@ This project demonstrates:
 
 ## 🚀 Getting Started
 
-Once everything is set up, the website game will be running locally on your computer at **http://localhost:5173**. Start annotating images and watch the AI learn to find Wally!
+Once everything is set up, the WALLY! isHERE! game will be running locally on your computer at **http://localhost:5173**. Start annotating images and watch the AI learn to find Wally!
 
 ## 📞 Support
 

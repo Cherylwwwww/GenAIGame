@@ -1,7 +1,7 @@
 # GitHub Project Setup Instructions
 
 ## Overview
-This section provides comprehensive instructions for users who want to download and run the Where's Wally AI Training Game project from GitHub. These instructions are designed for users with varying levels of technical expertise.
+This section provides comprehensive instructions for users who want to download and run the WALLY! isHERE! AI Training Game project from GitHub. These instructions are designed for users with varying levels of technical expertise.
 
 ## Prerequisites Check
 
@@ -72,10 +72,10 @@ Before beginning the installation process, users must verify their system meets 
 2. **Clone the Repository**
    ```bash
    # Replace 'your-username' and 'repository-name' with actual values
-   git clone https://github.com/your-username/wheres-wally-ai-game.git
+  git clone https://github.com/your-username/wally-ishere-ai-game.git
    
    # Navigate into the project directory
-   cd wheres-wally-ai-game
+  cd wally-ishere-ai-game
    ```
 
 3. **Verify Project Structure**
@@ -130,7 +130,7 @@ Before beginning the installation process, users must verify their system meets 
    Open the `.env` file in a text editor and ensure it contains:
    ```env
    # Basic configuration (required)
-   VITE_APP_NAME=Wheres Wally AI Game
+  VITE_APP_NAME=WALLY! isHERE! AI Game
    VITE_APP_VERSION=1.0.0
    
    # Supabase configuration (optional - see Database Setup)
@@ -154,7 +154,7 @@ Before beginning the installation process, users must verify their system meets 
    - Click "New Project" in the dashboard
    - Choose or create an organization
    - Fill in project details:
-     - **Name**: `wheres-wally-ai-game`
+     - **Name**: `wally-ishere-ai-game`
      - **Database Password**: Create a strong password (save this!)
      - **Region**: Select the region closest to your location
    - Click "Create new project"
@@ -377,4 +377,4 @@ Once installation is complete:
 - **Supabase Documentation**: https://supabase.com/docs
 - **Project Repository**: [Your GitHub Repository URL]
 
-This comprehensive setup process ensures that users can successfully download, install, and run the Where's Wally AI Training Game from GitHub, regardless of their technical background.
+This comprehensive setup process ensures that users can successfully download, install, and run the WALLY! isHERE! AI Training Game from GitHub, regardless of their technical background.

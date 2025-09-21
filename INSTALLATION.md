@@ -1,4 +1,4 @@
-# Where's Wally AI Training Game - Comprehensive Installation Guide
+# WALLY! isHERE! - AI Training Game - Comprehensive Installation Guide
 
 ## 📋 Table of Contents
 1. [System Requirements](#system-requirements)
@@ -179,10 +179,10 @@ cd Projects
 ### Step 2: Clone the Repository
 ```bash
 # Replace with your actual repository URL
-git clone https://github.com/yourusername/wheres-wally-ai-game.git
+git clone https://github.com/yourusername/wally-ishere-ai-game.git
 
 # Navigate to project directory
-cd wheres-wally-ai-game
+cd wally-ishere-ai-game
 
 # Verify project structure
 ls -la
@@ -246,7 +246,7 @@ Open the `.env` file in your code editor and configure:
 
 ```env
 # Basic configuration (required)
-VITE_APP_NAME=Wheres Wally AI Game
+VITE_APP_NAME=WALLY! isHERE! AI Game
 VITE_APP_VERSION=1.0.0
 
 # Supabase configuration (optional - see Database Setup section)
@@ -274,7 +274,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
    1. Click "New Project" in dashboard
    2. Choose or create organization
    3. Fill project details:
-      - Name: wheres-wally-ai-game
+      - Name: wally-ishere-ai-game
       - Database Password: [Create strong password - SAVE THIS!]
       - Region: [Choose closest to your location]
    4. Click "Create new project"
@@ -604,7 +604,7 @@ Before considering the installation complete, verify:
 
 ## 🎉 Installation Complete!
 
-Congratulations! Your Where's Wally AI Training Game is now fully installed and ready to use. The system combines computer vision, machine learning, and interactive gameplay to create an educational experience about AI training.
+Congratulations! Your WALLY! isHERE! AI Training Game is now fully installed and ready to use. The system combines computer vision, machine learning, and interactive gameplay to create an educational experience about AI training.
 
 ### Getting Started:
 1. Start by annotating training images (draw boxes around Wally)

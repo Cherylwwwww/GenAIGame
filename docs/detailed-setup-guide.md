@@ -1,4 +1,4 @@
-# Where's Wally AI Training Game - 超详细设置指南
+# WALLY! isHERE! - AI Training Game - 超详细设置指南
 
 ## 📋 目录
 1. [系统要求检查](#系统要求检查)
@@ -204,10 +204,10 @@ cd Projects
 **2.1 克隆仓库**
 ```bash
 # 替换为实际的仓库URL
-git clone https://github.com/yourusername/wheres-wally-ai-game.git
+git clone https://github.com/yourusername/wally-ishere-ai-game.git
 
 # 进入项目目录
-cd wheres-wally-ai-game
+cd wally-ishere-ai-game
 ```
 
 **2.2 验证项目结构**
@@ -326,7 +326,7 @@ vim .env
 **1.3 基本配置（本地模式）**
 ```env
 # 基本配置 - 项目可以在没有Supabase的情况下运行
-VITE_APP_NAME=Wheres Wally AI Game
+VITE_APP_NAME=WALLY! isHERE! AI Game
 VITE_APP_VERSION=1.0.0
 
 # Supabase配置（可选 - 如果不配置，系统将使用本地模式）
@@ -365,7 +365,7 @@ cat .env
 1. 登录后点击"New Project"
 2. 选择组织（或创建新组织）
 3. 填写项目信息：
-   - Name: wheres-wally-ai-game
+   - Name: wally-ishere-ai-game
    - Database Password: 创建强密码（记住这个密码）
    - Region: 选择最近的区域
 4. 点击"Create new project"
@@ -739,7 +739,7 @@ du -sh dist/
 
 ## 🎉 完成设置
 
-恭喜！如果您已经完成了以上所有步骤，您的Where's Wally AI Training Game现在应该已经完全设置好并正常运行了。
+恭喜！如果您已经完成了以上所有步骤，您的WALLY! isHERE! AI Training Game现在应该已经完全设置好并正常运行了。
 
 ### 最终检查清单：
 
