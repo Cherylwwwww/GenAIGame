@@ -18,6 +18,7 @@ import wallyImage11 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r2_c
 import wallyImage12 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c1_processed_by_imagy.png';
 import wallyImage13 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c2_processed_by_imagy.png';
 import wallyImage14 from '../assets/ChatGPT Image Sep 20, 2025, 02_34_50 PM_r3_c3_processed_by_imagy.png';
+import wallyImage15 from '../assets/ChatGPT Image Sep 21, 2025, 02_39_58 PM.png';
 
 import crowdSceneImage from '../assets/ChatGPT Image Sep 20, 2025, 02_44_14 PM.png';
 
@@ -27,7 +28,7 @@ export const categories: Category[] = [
     targetObject: "Wally",
     description: "Find Wally in the crowd - look for his red and white striped shirt, bobble hat, and glasses!",
     images: [
-      // All 14 unique local Wally training images in random order
+      // All 15 unique local Wally training images in random order
       wallyImage8,  // r1_c3 from second set
       wallyImage3,  // r1_c3 from first set
       wallyImage12, // r3_c1 from second set
@@ -41,7 +42,8 @@ export const categories: Category[] = [
       wallyImage11, // r2_c3 from second set
       wallyImage2,  // r1_c2 from first set
       wallyImage13, // r3_c2 from second set
-      wallyImage9   // r2_c1 from second set
+      wallyImage9,  // r2_c1 from second set
+      wallyImage15  // Additional training image
     ],
     testImages: [
       // Your provided crowd scene image
