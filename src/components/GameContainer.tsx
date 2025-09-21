@@ -643,7 +643,7 @@ export const GameContainer: React.FC = () => {
                   {/* Mouse interaction overlay */}
                   <div 
                     ref={imageRef}
-                    className="absolute inset-0 cursor-crosshair z-10"
+                    className="absolute inset-0 cursor-crosshair z-10 pointer-events-auto"
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
@@ -673,11 +673,11 @@ export const GameContainer: React.FC = () => {
               </div>
               
               {/* Annotation Tools */}
-              <div className="space-y-4 flex-shrink-0">
+              <div className="space-y-4 flex-shrink-0 relative z-20">
                 <button
                   onClick={() => handleAnnotate(gameState.images[currentImageIndex]?.id, null)}
                   disabled={gameState.isTraining || isRecordingAnnotation}
-                  className={`w-full px-6 py-3 rounded-xl font-bold text-lg transition-all duration-200 ${
+                  className={`w-full px-6 py-3 rounded-xl font-bold text-lg transition-all duration-200 relative z-30 pointer-events-auto ${
                     gameState.isTraining || isRecordingAnnotation
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 hover:shadow-lg hover:scale-105 border-2 border-yellow-400'
@@ -699,11 +699,11 @@ export const GameContainer: React.FC = () => {
                 </button>
                 
                 {/* Navigation */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between relative z-20">
                   <button
                     onClick={handlePrevImage}
                     disabled={currentImageIndex === 0 || isRecordingAnnotation}
-                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-lg transition-all duration-200 pointer-events-auto ${
                       currentImageIndex === 0 || isRecordingAnnotation
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
@@ -727,7 +727,7 @@ export const GameContainer: React.FC = () => {
                   <button
                     onClick={handleNextImage}
                     disabled={currentImageIndex === gameState.images.length - 1 || isRecordingAnnotation}
-                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-lg transition-all duration-200 pointer-events-auto ${
                       currentImageIndex === gameState.images.length - 1 || isRecordingAnnotation
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
