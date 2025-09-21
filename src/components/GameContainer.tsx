@@ -938,10 +938,9 @@ export const GameContainer: React.FC = () => {
                         ? "标注3张图像来训练AI!"
                         : gameState.annotatedCount === 1
                           ? "再标注2张图像来训练AI!"
-                      {isSelectingTestImage && "🎯 AI正在选择最佳测试图像..."}
                           : gameState.annotatedCount === 2
                             ? "再标注1张图像来训练AI!"
-                        : !isSelectingTestImage && aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
+                        : aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
                       }
                     </p>
                   )}
