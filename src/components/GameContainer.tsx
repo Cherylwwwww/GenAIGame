@@ -196,12 +196,12 @@ export const GameContainer: React.FC = () => {
       }
     }, 100);
     
-    // Auto-advance to next image after annotation
+    // Auto-advance to next image after annotation (only if not at last image)
     setTimeout(() => {
       if (currentImageIndex < gameState.images.length - 1) {
         handleNextImage();
       }
-    }, 800);
+    }, 500); // Reduced delay for better responsiveness
   };
 
   const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {
@@ -453,6 +453,8 @@ export const GameContainer: React.FC = () => {
     if (currentImageIndex > 0) {
       setCurrentImageIndex(prev => prev - 1);
       setCurrentBox(null); // Clear any temporary bounding box
+      // Clear any recording state when navigating
+      setIsRecordingAnnotation(false);
     }
   };
   const handleNextLevel = () => {
@@ -699,31 +701,40 @@ export const GameContainer: React.FC = () => {
                   <button
                     onClick={handlePrevImage}
                     disabled={currentImageIndex === 0}
-                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
                       currentImageIndex === 0
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-105 border-2 border-blue-300 shadow-sm'
                     }`}
+                    title="Go back to previous image to re-decide"
                   >
-                    ← Previous
+                    <span>←</span>
+                    <span>Previous</span>
                   </button>
                   
                   <div className="text-center">
                     <div className="text-lg font-bold text-red-700 bg-yellow-100 px-3 py-1 rounded-full border-2 border-red-300">
                       {currentImageIndex + 1} / {gameState.images.length}
                     </div>
+                    {gameState.images[currentImageIndex]?.userAnnotation !== undefined && (
+                      <div className="text-xs text-green-600 mt-1 font-medium">
+                        ✓ Annotated
+                      </div>
+                    )}
                   </div>
                   
                   <button
                     onClick={handleNextImage}
                     disabled={currentImageIndex === gameState.images.length - 1}
-                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
                       currentImageIndex === gameState.images.length - 1
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-105 border-2 border-blue-300 shadow-sm'
                     }`}
+                    title="Go to next image"
                   >
-                    Next →
+                    <span>Next</span>
+                    <span>→</span>
                   </button>
                 </div>
               </div>

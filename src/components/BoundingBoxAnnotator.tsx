@@ -80,10 +80,7 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
     if (disabled) return;
     setCurrentBox(null);
     onAnnotate(null);
-    // Automatically advance to next image after marking "no object"
-    if (onNextImage) {
-      setTimeout(() => onNextImage(), 300); // Small delay for visual feedback
-    }
+    // Note: Auto-advance is now handled in GameContainer
   };
 
   const displayBox = currentBox || existingBox;
@@ -129,13 +126,28 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
       
       {/* Instructions and Controls */}
       <div className="text-center mt-6">
+        {/* Show current annotation status */}
+        {existingBox !== undefined && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-sm text-green-700 font-medium">
+              {existingBox === null ? (
+                <>✓ Marked as "No Wally" - Use Previous button to change</>
+              ) : (
+                <>✓ Wally found and marked - Use Previous button to change</>
+              )}
+            </p>
+          </div>
+        )}
+        
         <button
           onClick={handleClearAnnotation}
           disabled={disabled || isRecording}
           className={`w-full px-8 py-4 rounded-xl font-bold text-lg transition-all duration-200 ${
             disabled || isRecording
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105 active:scale-95'
+              : existingBox === null
+                ? 'bg-gray-400 text-white cursor-default'
+                : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105 active:scale-95'
           }`}
           title={`Mark this image as having no Wally`}
         >
@@ -145,6 +157,11 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
                 <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
                 <span>Recording...</span>
               </>
+            ) : existingBox === null ? (
+              <>
+                <span className="text-xl">✓</span>
+                <span>Already marked "No Wally"</span>
+              </>
             ) : (
               <>
                 <span className="text-xl">🚫</span>
@@ -153,6 +170,11 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
             )}
           </div>
         </button>
+        
+        {/* Navigation hint */}
+        <div className="mt-4 text-sm text-gray-600">
+          <p>💡 Tip: Use "Previous" button to go back and change your decision</p>
+        </div>
       </div>
     </div>
   );
