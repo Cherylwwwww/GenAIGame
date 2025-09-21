@@ -35,6 +35,7 @@ export const GameContainer: React.FC = () => {
   const [aiModeStatus, setAiModeStatus] = useState<'loading' | 'real' | 'simulation'>('loading');
   const [showConfidencePopup, setShowConfidencePopup] = useState(false);
   const [isTestingImage, setIsTestingImage] = useState(false);
+  const [hasShownPopupForLevel, setHasShownPopupForLevel] = useState(false);
 
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
     if (!imageRef.current) return { x: 0, y: 0 };
@@ -114,6 +115,7 @@ export const GameContainer: React.FC = () => {
     }));
     setTestImages(newTestImages);
     setCurrentImageIndex(0);
+    setHasShownPopupForLevel(false); // Reset popup flag for new level
     
     // Create new training session
     initializeTrainingSession(category.targetObject);
@@ -206,6 +208,17 @@ export const GameContainer: React.FC = () => {
     }, 500);
   };
 
+  // Auto-trigger congratulations popup when red ball reaches 85%
+  useEffect(() => {
+    const redBallPosition = Math.min(15 + (gameState.annotatedCount * 10), 85);
+    
+    // Show popup when red ball reaches 85% and we haven't shown it for this level yet
+    if (redBallPosition >= 85 && !hasShownPopupForLevel && gameState.annotatedCount > 0) {
+      console.log('🎉 Auto-triggering congratulations popup - red ball at 85%!');
+      setShowConfidencePopup(true);
+      setHasShownPopupForLevel(true);
+    }
+  }, [gameState.annotatedCount, hasShownPopupForLevel]);
   const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {
     if (!aiModelService.isLoaded()) {
       console.log('⚠️ AI model not loaded yet, skipping example addition');
@@ -460,20 +473,8 @@ export const GameContainer: React.FC = () => {
     }
   };
   const handleNextLevel = () => {
-    console.log('🎯 Next Level clicked');
-    console.log('🎯 Annotated count:', gameState.annotatedCount);
-    console.log('🎯 Has trained model:', gameState.hasTrainedModel);
-    console.log('🎯 Model accuracy:', gameState.modelAccuracy);
-    console.log('🎯 Red ball position:', Math.min(15 + (gameState.annotatedCount * 10), 85));
-    
-    // Check if we should show confidence popup
-    if (gameState.annotatedCount >= 7) {
-      console.log('🎉 Showing confidence popup - annotated 7+ images!');
-      setShowConfidencePopup(true);
-    } else {
-      console.log('🔄 Going to next level directly - only', gameState.annotatedCount, 'annotations');
-      handleActualNextLevel();
-    }
+    // Since popup already shown automatically, go directly to next level
+    handleActualNextLevel();
   };
 
   const handleConfidencePopupClose = () => {
