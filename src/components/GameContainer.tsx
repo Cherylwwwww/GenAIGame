@@ -195,13 +195,6 @@ export const GameContainer: React.FC = () => {
         updateTestPredictionsWithRealAI();
       }
     }, 100);
-    
-    // Auto-advance to next image after annotation
-    setTimeout(() => {
-      if (currentImageIndex < gameState.images.length - 1) {
-        handleNextImage();
-      }
-    }, 800);
   };
 
   const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {
@@ -446,6 +439,7 @@ export const GameContainer: React.FC = () => {
     if (currentImageIndex < gameState.images.length - 1) {
       setCurrentImageIndex(prev => prev + 1);
       setCurrentBox(null); // Clear any temporary bounding box
+      setIsRecordingAnnotation(false); // Clear recording state
     }
   };
 
@@ -453,6 +447,7 @@ export const GameContainer: React.FC = () => {
     if (currentImageIndex > 0) {
       setCurrentImageIndex(prev => prev - 1);
       setCurrentBox(null); // Clear any temporary bounding box
+      setIsRecordingAnnotation(false); // Clear recording state
     }
   };
   const handleNextLevel = () => {
@@ -698,12 +693,13 @@ export const GameContainer: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <button
                     onClick={handlePrevImage}
-                    disabled={currentImageIndex === 0}
+                    disabled={currentImageIndex === 0 || isRecordingAnnotation}
                     className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                      currentImageIndex === 0
+                      currentImageIndex === 0 || isRecordingAnnotation
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
                     }`}
+                    title={currentImageIndex === 0 ? "Already at first image" : "Go to previous image"}
                   >
                     ← Previous
                   </button>
@@ -712,16 +708,22 @@ export const GameContainer: React.FC = () => {
                     <div className="text-lg font-bold text-red-700 bg-yellow-100 px-3 py-1 rounded-full border-2 border-red-300">
                       {currentImageIndex + 1} / {gameState.images.length}
                     </div>
+                    {gameState.images[currentImageIndex]?.userAnnotation !== undefined && (
+                      <div className="text-xs text-green-600 mt-1 font-bold">
+                        ✓ Annotated
+                      </div>
+                    )}
                   </div>
                   
                   <button
                     onClick={handleNextImage}
-                    disabled={currentImageIndex === gameState.images.length - 1}
+                    disabled={currentImageIndex === gameState.images.length - 1 || isRecordingAnnotation}
                     className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                      currentImageIndex === gameState.images.length - 1
+                      currentImageIndex === gameState.images.length - 1 || isRecordingAnnotation
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-2 border-blue-300'
                     }`}
+                    title={currentImageIndex === gameState.images.length - 1 ? "Already at last image" : "Go to next image"}
                   >
                     Next →
                   </button>

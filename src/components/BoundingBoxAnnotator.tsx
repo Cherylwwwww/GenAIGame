@@ -80,7 +80,10 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
     if (disabled) return;
     setCurrentBox(null);
     onAnnotate(null);
-    // Note: Auto-advance is now handled in GameContainer
+    // Auto-advance to next image after marking "No Wally"
+    if (onNextImage) {
+      setTimeout(() => onNextImage(), 500);
+    }
   };
 
   const displayBox = currentBox || existingBox;
