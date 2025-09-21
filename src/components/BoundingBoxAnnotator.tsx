@@ -78,8 +78,14 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
 
   const handleClearAnnotation = () => {
     if (disabled) return;
-    setCurrentBox(null);
+    
+    // Set annotation to null (meaning "No Wally Here")
     onAnnotate(null);
+    
+    // Auto-advance to next image after marking "No Wally"
+    if (onNextImage) {
+      setTimeout(() => onNextImage(), 500);
+    }
   };
 
   const displayBox = currentBox || existingBox;
