@@ -195,6 +195,15 @@ export const GameContainer: React.FC = () => {
         updateTestPredictionsWithRealAI();
       }
     }, 100);
+    
+    // Auto-advance to next image after any annotation
+    setTimeout(() => {
+      if (currentImageIndex < gameState.images.length - 1) {
+        setCurrentImageIndex(prev => prev + 1);
+        setCurrentBox(null);
+        setIsRecordingAnnotation(false);
+      }
+    }, 500);
   };
 
   const addExampleToAIModel = async (imageId: string, annotation: BoundingBox | null) => {

@@ -80,10 +80,6 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
     if (disabled) return;
     setCurrentBox(null);
     onAnnotate(null);
-    // Auto-advance to next image after marking "No Wally"
-    if (onNextImage) {
-      setTimeout(() => onNextImage(), 500);
-    }
   };
 
   const displayBox = currentBox || existingBox;
@@ -148,9 +144,7 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
           className={`w-full px-8 py-4 rounded-xl font-bold text-lg transition-all duration-200 ${
             disabled || isRecording
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : existingBox === null
-                ? 'bg-gray-400 text-white cursor-default'
-                : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105 active:scale-95'
+              : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 hover:shadow-lg hover:scale-105 active:scale-95'
           }`}
           title={`Mark this image as having no Wally`}
         >
@@ -159,11 +153,6 @@ export const BoundingBoxAnnotator: React.FC<BoundingBoxAnnotatorProps> = ({
               <>
                 <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
                 <span>Recording...</span>
-              </>
-            ) : existingBox === null ? (
-              <>
-                <span className="text-xl">✓</span>
-                <span>Already marked "No Wally"</span>
               </>
             ) : (
               <>
