@@ -34,6 +34,7 @@ export const GameContainer: React.FC = () => {
   const imageRef = useRef<HTMLDivElement>(null);
   const [aiModeStatus, setAiModeStatus] = useState<'loading' | 'real' | 'simulation'>('loading');
   const [showConfidencePopup, setShowConfidencePopup] = useState(false);
+  const [isTestingImage, setIsTestingImage] = useState(false);
 
   const getRelativeCoordinates = useCallback((e: React.MouseEvent) => {
     if (!imageRef.current) return { x: 0, y: 0 };
@@ -122,9 +123,11 @@ export const GameContainer: React.FC = () => {
     try {
       setIsModelLoading(true);
       setAiModeStatus('loading');
-      // Force simulation mode for better control
-      setAiModeStatus('simulation');
-      console.log('🔄 USING SIMULATION MODE - Controlled Wally Detection');
+      
+      // Try to load real AI model
+      await aiModelService.loadModel();
+      setAiModeStatus('real');
+      console.log('✅ REAL AI MODE ACTIVATED - TensorFlow.js + MobileNet + KNN');
       console.log('🎯 Looking for: RED-WHITE horizontal striped shirt, bobble hat, round glasses');
     } catch (error) {
       console.error('❌ Failed to initialize AI model:', error);
@@ -189,7 +192,7 @@ export const GameContainer: React.FC = () => {
     // Update test predictions after state is updated
     setTimeout(() => {
       if (newAnnotatedCount >= 3) {
-        updateTestPredictions();
+        updateTestPredictionsWithRealAI();
       }
     }, 100);
     
@@ -228,62 +231,63 @@ export const GameContainer: React.FC = () => {
     }
   };
 
-  const updateTestPredictions = async () => {
+  const updateTestPredictionsWithRealAI = async () => {
     if (testImages.length === 0) return;
     
-    // In simulation mode, use annotation count for predictions
-    if (aiModeStatus !== 'real') {
-      console.log('🔍 Simulation mode: Analyzing test image for Wally features...');
-      simulateModelPrediction(testImages, setTestImages, gameState.annotatedCount, gameState.currentCategory);
-      return;
-    }
-
-    console.log('🔍 updateTestPredictions called');
-    console.log('📊 AI model loaded:', aiModelService.isLoaded());
-    console.log('📊 Example count:', aiModelService.getExampleCount());
-    
-    if (!aiModelService.isLoaded()) {
-      console.log('⚠️ AI model not loaded yet, skipping test predictions');
-      return;
-    }
-    
-    // Check if we have both positive and negative examples
-    const annotatedImages = gameState.images.filter(img => img.userAnnotation !== undefined);
-    const positiveExamples = annotatedImages.filter(img => img.userAnnotation !== null).length;
-    const negativeExamples = annotatedImages.filter(img => img.userAnnotation === null).length;
-    
-    console.log(`📊 Training examples: ${positiveExamples} positive, ${negativeExamples} negative`);
-    
-    // Allow predictions with fewer examples for testing
-    if (positiveExamples === 0 && negativeExamples === 0) {
-      console.log('⚠️ Need at least some training examples');
-      return;
-    }
+    setIsTestingImage(true);
     
     try {
-      const testImage = testImages[0];
-      console.log('🔍 Analyzing test image for Wally (red-white stripes, bobble hat, round glasses, blue jeans, brown shoes)...');
-      const prediction = await aiModelService.predict(testImage.url);
-      
-      if (prediction) {
-        const hasObject = prediction.label === gameState.currentCategory;
-        const confidence = prediction.confidence;
+      // Always try to use real AI first
+      if (aiModeStatus === 'real' && aiModelService.isLoaded()) {
+        console.log('🤖 REAL AI ANALYSIS: Using trained model for test image prediction');
+        console.log('📊 AI model loaded:', aiModelService.isLoaded());
+        console.log('📊 Training examples:', aiModelService.getExampleCount());
         
-        console.log(`🎯 AI Decision: ${hasObject ? '✅ WALLY SPOTTED!' : '❌ NO WALLY FOUND'} (${Math.round(confidence * 100)}% confidence)`);
-        console.log(`🔍 Looking for: RED-WHITE horizontal stripes, bobble hat, round black glasses, blue jeans, brown shoes`);
-        console.log(`❌ NOT looking for: Black-yellow stripes or other color combinations`);
+        // Check if we have sufficient training examples
+        const annotatedImages = gameState.images.filter(img => img.userAnnotation !== undefined);
+        const positiveExamples = annotatedImages.filter(img => img.userAnnotation !== null).length;
+        const negativeExamples = annotatedImages.filter(img => img.userAnnotation === null).length;
         
-        setTestImages(prev => prev.map(img => 
-          img.id === testImage.id 
-            ? { ...img, modelPrediction: hasObject, confidence }
-            : img
-        ));
-      } else {
-        console.log('❌ No prediction returned from AI model');
+        console.log(`📊 Training data: ${positiveExamples} positive, ${negativeExamples} negative examples`);
+        
+        if (positiveExamples > 0 || negativeExamples > 0) {
+          const testImage = testImages[0];
+          console.log('🔍 REAL AI: Analyzing test image with trained model...');
+          console.log('🎯 Scanning for: RED-WHITE horizontal stripes, bobble hat, round glasses');
+          
+          const prediction = await aiModelService.predict(testImage.url);
+          
+          if (prediction) {
+            const hasObject = prediction.label === gameState.currentCategory;
+            const confidence = prediction.confidence;
+            
+            console.log(`🎯 REAL AI RESULT: ${hasObject ? '✅ WALLY DETECTED!' : '❌ NO WALLY FOUND'}`);
+            console.log(`📊 Confidence: ${Math.round(confidence * 100)}%`);
+            console.log(`🔍 Analysis: Looking for RED-WHITE stripes, NOT black-yellow or other patterns`);
+            
+            setTestImages(prev => prev.map(img => 
+              img.id === testImage.id 
+                ? { ...img, modelPrediction: hasObject, confidence }
+                : img
+            ));
+            
+            return; // Successfully used real AI
+          }
+        } else {
+          console.log('⚠️ Insufficient training data for real AI prediction');
+        }
       }
       
+      // Fallback to simulation mode if real AI fails or not available
+      console.log('🔄 Falling back to simulation mode for test prediction');
+      simulateModelPrediction(testImages, setTestImages, gameState.annotatedCount, gameState.currentCategory);
+      
     } catch (error) {
-      console.error('❌ Failed to update Wally predictions:', error);
+      console.error('❌ Real AI prediction failed:', error);
+      console.log('🔄 Using simulation fallback');
+      simulateModelPrediction(testImages, setTestImages, gameState.annotatedCount, gameState.currentCategory);
+    } finally {
+      setIsTestingImage(false);
     }
   };
 
@@ -373,31 +377,17 @@ export const GameContainer: React.FC = () => {
     try {
       let accuracy, modelState;
       
-      if (aiModeStatus === 'real') {
+      if (aiModeStatus === 'real' && aiModelService.isLoaded()) {
         // Calculate real model accuracy by testing on training data
         const result = await calculateRealModelAccuracy();
         accuracy = result.accuracy;
         modelState = result.modelState;
         
-        // Get real AI predictions for test images
-        const testImage = testImages[0];
-        if (testImage && aiModelService.isLoaded() && aiModelService.getExampleCount() >= 3) {
-          console.log(`🔍 Analyzing test image for Wally (RED-WHITE horizontal stripes, bobble hat, round glasses, blue jeans, brown shoes)...`);
-          const prediction = await aiModelService.predict(testImage.url);
-          if (prediction) {
-            const hasObject = prediction.label === gameState.currentCategory;
-            const confidence = prediction.confidence;
-            
-            // Only update if confidence is reasonable
-            if (confidence >= 0.4) {
-              setTestImages(prev => prev.map(img => 
-                img.id === testImage.id 
-                  ? { ...img, modelPrediction: hasObject, confidence }
-                  : img
-              ));
-            }
-          }
-        }
+        console.log(`🤖 REAL AI TRAINING COMPLETE: ${accuracy}% accuracy, ${modelState} state`);
+        
+        // Update test predictions with real AI after training
+        setTimeout(() => updateTestPredictionsWithRealAI(), 500);
+        
       } else {
         // Simulation mode: Calculate accuracy based on annotation quality
         const annotatedImages = gameState.images.filter(img => img.userAnnotation !== undefined);
@@ -810,7 +800,7 @@ export const GameContainer: React.FC = () => {
 
                     {/* Placeholder when no model */}
                     {(testImages[0].modelPrediction === undefined) && (
-                      <div className="absolute inset-0 bg-red-600 bg-opacity-70 rounded-xl flex items-center justify-center border-4 border-yellow-400">
+                      <div className="absolute inset-0 bg-blue-600 bg-opacity-70 rounded-xl flex items-center justify-center border-4 border-yellow-400">
                         <div className="text-white text-center">
                           <p className="text-lg font-medium">
                             {gameState.annotatedCount === 0
@@ -822,6 +812,11 @@ export const GameContainer: React.FC = () => {
                                   : "AI is analyzing..."
                             }
                           </p>
+                          {isTestingImage && (
+                            <p className="text-sm mt-2 animate-pulse">
+                              🤖 Real AI analyzing test image...
+                            </p>
+                          )}
                         </div>
                       </div>
                     )}
@@ -857,10 +852,13 @@ export const GameContainer: React.FC = () => {
                   {/* Dynamic Confidence Messages */}
                   <div className="text-center min-h-[3rem] flex items-center justify-center">
                     <p className="text-sm font-bold text-red-800 italic animate-pulse bg-yellow-100 px-4 py-3 rounded-lg border-2 border-red-400 shadow-md">
-                      {isModelLoading && "🤖 Loading AI brain..."}
-                      {!isModelLoading && testImages[0]?.confidence !== undefined 
-                        ? aiModelService.getConfidenceMessage(testImages[0].confidence, gameState.annotatedCount)
-                        : aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
+                      {isModelLoading && "🤖 Loading Real AI Model..."}
+                      {isTestingImage && "🔍 Real AI Analyzing Test Image..."}
+                      {!isModelLoading && !isTestingImage && (
+                        testImages[0]?.confidence !== undefined 
+                          ? `🎯 ${aiModeStatus === 'real' ? 'Real AI' : 'Simulation'}: ${aiModelService.getConfidenceMessage(testImages[0].confidence, gameState.annotatedCount)}`
+                          : aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
+                      )}
                       }
                     </p>
                   </div>
