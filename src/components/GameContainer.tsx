@@ -858,6 +858,7 @@ export const GameContainer: React.FC = () => {
                         testImages[0]?.confidence !== undefined 
                           ? `🎯 ${aiModeStatus === 'real' ? 'Real AI' : 'Simulation'}: ${aiModelService.getConfidenceMessage(testImages[0].confidence, gameState.annotatedCount)}`
                           : aiModelService.getConfidenceMessage(0, gameState.annotatedCount)
+                      )}
                     </p>
                   </div>
                   
