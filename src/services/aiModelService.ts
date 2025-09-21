@@ -282,28 +282,28 @@ export class AIModelService {
   getConfidenceMessage(confidence: number, exampleCount: number): string {
     // Don't show confident messages with too few examples
     if (exampleCount < 3) {
-      return "🤖 正在学习识别Wally的红白横条纹衬衫和帽子...";
+      return "🤖 Learning to spot Wally's RED-WHITE horizontal striped shirt and bobble hat...";
     }
     
     if (exampleCount < 4) {
-      return "🤔 正在研究Wally的红白条纹、圆眼镜、蓝色牛仔裤和棕色鞋子...";
+      return "🤔 Studying Wally's RED-WHITE stripes, round glasses, blue jeans, and brown shoes...";
     }
     
     // Progressive confidence based on training examples
     const adjustedConfidence = confidence;
     
     if (exampleCount < 6) {
-      return "🧐 越来越擅长识别红白横条纹和圆眼镜...";
+      return "🧐 Getting better at recognizing RED-WHITE horizontal stripes and round glasses...";
     } else if (exampleCount < 8) {
-      return "😊 我能识别Wally的红白条纹衬衫、帽子和圆形黑眼镜了!";
+      return "😊 I can spot Wally's RED-WHITE striped shirt, bobble hat, and round black glasses!";
     } else if (exampleCount < 10) {
-      return "😎 发现了红白横条纹、蓝色牛仔裤和棕色鞋子!";
+      return "😎 Found the RED-WHITE horizontal stripes, blue jeans, and brown shoes!";
     } else if (adjustedConfidence < 0.4) {
-      return "❌ 未发现Wally - 当前图像是黑黄条纹，不是红白条纹!";
+      return "❌ No Wally found - current image has black-yellow stripes, not RED-WHITE stripes!";
     } else if (adjustedConfidence < 0.6) {
-      return "🤷‍♂️ 正在学习区分红白条纹和其他图案...";
+      return "🤷‍♂️ Getting better at distinguishing RED-WHITE stripes from other patterns...";
     } else {
-      return "🎯 找到Wally了! 红白横条纹衬衫、帽子、圆眼镜和蓝色牛仔裤 - 完美匹配!";
+      return "🎯 Found Wally! RED-WHITE horizontal striped shirt, bobble hat, round glasses, and blue jeans - perfect match!";
     }
   }
 }
